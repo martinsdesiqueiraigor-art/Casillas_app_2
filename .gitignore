@@ -45,3 +45,6 @@ supabase/.temp/
 supabase/.branches/
 
 node_modules/
+
+# Backup temporário de integração Auth
+*.backup-auth
