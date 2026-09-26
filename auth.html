@@ -1,0 +1,102 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0d1117">
+  <title>Casillas — Acesso</title>
+
+  <link rel="stylesheet" href="./css/reset.css">
+  <link rel="stylesheet" href="./css/variables.css">
+  <link rel="stylesheet" href="./css/components.css">
+  <link rel="stylesheet" href="./css/auth.css">
+</head>
+
+<body>
+  <main class="auth-page">
+    <section class="auth-card" aria-labelledby="auth-title">
+
+      <div class="auth-brand">
+        <div class="auth-logo">C</div>
+        <div>
+          <h1 id="auth-title">Casillas</h1>
+          <p>Calculadora Técnica de Usinagem</p>
+        </div>
+      </div>
+
+      <div class="auth-tabs" role="tablist">
+        <button
+          id="tab-login"
+          class="btn btn-primary auth-tab"
+          type="button"
+          role="tab"
+          aria-selected="true">
+          Entrar
+        </button>
+
+        <button
+          id="tab-signup"
+          class="btn btn-outline auth-tab"
+          type="button"
+          role="tab"
+          aria-selected="false">
+          Criar conta
+        </button>
+      </div>
+
+      <form id="auth-form" novalidate>
+
+        <div class="input-group">
+          <label class="input-label" for="auth-email">E-mail</label>
+          <input
+            id="auth-email"
+            class="input"
+            type="email"
+            autocomplete="email"
+            placeholder="seu@email.com"
+            required>
+        </div>
+
+        <div class="input-group">
+          <label class="input-label" for="auth-password">Senha</label>
+          <input
+            id="auth-password"
+            class="input"
+            type="password"
+            autocomplete="current-password"
+            placeholder="Sua senha"
+            minlength="6"
+            required>
+        </div>
+
+        <button
+          id="btn-auth-submit"
+          class="btn btn-primary auth-submit"
+          type="submit">
+          Entrar
+        </button>
+
+      </form>
+
+      <button
+        id="btn-forgot-password"
+        class="btn btn-outline auth-secondary"
+        type="button">
+        Esqueci minha senha
+      </button>
+
+      <p id="auth-message" class="auth-message" role="status" aria-live="polite"></p>
+
+      <p class="auth-footer">
+        Sua conta será usada para controlar seu acesso,
+        período de avaliação e futura licença do Casillas.
+      </p>
+
+    </section>
+  </main>
+
+  <script type="module" src="./js/auth-page.js"></script>
+</body>
+</html>
+
+

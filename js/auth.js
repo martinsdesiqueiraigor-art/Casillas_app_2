@@ -26,6 +26,12 @@ export async function signUp(email, password) {
   });
 }
 
+export async function resetPassword(email) {
+  return supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: `${window.location.origin}/auth.html`
+  });
+}
+
 export async function signOut() {
   return supabase.auth.signOut({
     scope: 'local'
