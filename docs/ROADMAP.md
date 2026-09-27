@@ -33,9 +33,10 @@
 - [x] Fundação Supabase
 - [x] Trial de 30 dias
 - [x] Infraestrutura de autenticação
-- [ ] Conta / Auth integrado ao aplicativo
-- [ ] Conectar trial ao usuário autenticado
+- [x] Conta / Auth integrado ao aplicativo
+- [x] Conectar trial ao usuário autenticado
 - [ ] Licenciamento
+- [ ] Entitlements
 - [ ] Controle de acesso
 - [ ] Operações comerciais seguras / Edge Functions
 - [ ] Área administrativa

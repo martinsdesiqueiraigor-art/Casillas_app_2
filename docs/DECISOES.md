@@ -230,15 +230,39 @@ Novos arquivos arquiteturais podem ser criados separadamente quando isso reduzir
 
 ---
 
-## 16. Autenticação antes da autoridade definitiva do trial
+## 16. Autenticação integrada antes da autoridade do trial
 
-A interface de autenticação deve ser integrada antes de tornar o Supabase a autoridade exclusiva do fluxo de acesso do aplicativo.
+A integração do Supabase Auth foi concluída antes da transferência da autoridade do trial para o Supabase.
 
-Motivo:
+O aplicativo atualmente:
 
-O aplicativo precisa identificar corretamente o usuário antes de consultar as regras comerciais associadas à conta.
+- utiliza o Supabase Auth para identidade;
+- mantém a sessão do usuário;
+- direciona usuários não autenticados para `auth.html`;
+- associa o trial ao usuário autenticado;
+- utiliza o Supabase como autoridade do trial para usuários não licenciados.
 
----
+Essa etapa foi concluída conforme planejado.
+
+### Estado de migração
+
+A ativação paga legada continua funcionando temporariamente para usuários que já possuem uma ativação válida.
+
+Essa compatibilidade será mantida durante a migração para:
+
+- licenças comerciais;
+- entitlements;
+- controle definitivo de acesso.
+
+O sistema legado não deve ser considerado a autoridade definitiva do novo sistema comercial.
+
+### Registro da implementação
+
+Commit:
+
+`b238dde` — `fix: tornar Supabase autoridade do trial`
+
+Esse commit também registra a correção de encoding realizada em `js/trial.js` e a publicação da alteração em `origin/casillas-2.0`.
 
 ## 17. Pagamentos somente depois da infraestrutura comercial
 

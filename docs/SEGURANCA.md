@@ -190,6 +190,12 @@ O trial comercial é controlado pelo backend.
 
 O usuário autenticado chama:
 
+Para usuários não licenciados, o Supabase é a autoridade atual do trial.
+
+A validade do trial não depende do IndexedDB ou do localStorage.
+
+Se a verificação do trial no Supabase falhar, o aplicativo não libera o acesso por fallback local.
+
 start_casillas_trial()
 
 A função pública controlada encaminha a operação para a função privada responsável pelo processamento.
@@ -211,6 +217,12 @@ O frontend não deve ser a autoridade sobre a validade do trial.
 O sistema legado possui mecanismos locais de proteção contra manipulação do trial.
 
 Esses mecanismos continuam existindo durante a transição.
+
+A ativação paga legada permanece válida temporariamente para usuários que já possuem
+uma ativação válida.
+
+Ela não é a autoridade do trial para usuários não licenciados e será migrada
+gradualmente para o novo sistema comercial.
 
 Eles não devem ser considerados a autoridade comercial definitiva.
 
@@ -372,9 +384,6 @@ Concluído:
 
 Em desenvolvimento:
 
-- interface de autenticação
-- conta do usuário
-- integração completa do trial
 - licenciamento
 - entitlements
 - controle de acesso

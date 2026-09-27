@@ -47,6 +47,7 @@ Importa ou utiliza:
 - js/db.js
 - js/trial.js
 - js/supabase.bundle.js
+- js/auth.js
 
 Responsabilidade:
 
@@ -76,17 +77,20 @@ Também é utilizado por:
 
 Responsabilidade atual:
 
-- trial local legado
-- ativação
-- códigos de ativação
-- identificação de dispositivo
-- integração inicial com Supabase
+- verificação do acesso;
+- trial no Supabase para usuários não licenciados;
+- ativação legada;
+- códigos de ativação;
+- identificação de dispositivo;
+- compatibilidade durante a migração comercial.
 
 Estado arquitetural:
 
-O sistema local ainda existe.
+O Supabase é atualmente a autoridade do trial para usuários não licenciados.
 
-O Supabase já possui o trial de 30 dias no backend, mas a integração ainda não substituiu completamente a autoridade local.
+O sistema local de ativação permanece temporariamente para preservar a compatibilidade com usuários que já possuem uma ativação válida.
+
+A migração comercial ainda não foi concluída para licenças e entitlements.
 
 ---
 
@@ -388,20 +392,20 @@ Nenhum arquivo de alta dependência deve ser substituído diretamente sem:
 - CSS aditivo
 
 ---
-
 ## Estratégia para o Casillas 2.0
 
 A evolução deve seguir esta ordem:
 
-1. Autenticação
-2. Conta do usuário
-3. Integração do trial com usuário autenticado
+1. ~~Autenticação~~ — concluída
+2. ~~Conta do usuário~~ — concluída
+3. ~~Integração do trial com usuário autenticado~~ — concluída
 4. Licenciamento
-5. Controle de acesso
-6. Operações comerciais seguras
-7. Administração
-8. Pagamentos
-9. Segurança final
-10. Publicação
+5. Entitlements
+6. Controle de acesso
+7. Operações comerciais seguras
+8. Administração
+9. Pagamentos
+10. Segurança final
+11. Publicação
 
 Os módulos técnicos existentes devem permanecer independentes desse processo.

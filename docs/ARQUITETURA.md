@@ -42,6 +42,9 @@ Tecnologia:
 - @supabase/supabase-js
 
 O usuário autenticado é identificado pelo Supabase Auth.
+O aplicativo verifica a existência de uma sessão antes de iniciar a área principal.
+
+Usuários não autenticados são direcionados para `auth.html`.
 
 ## 3. Sistema comercial
 
@@ -56,6 +59,9 @@ Responsável por:
 - Futuramente pagamentos
 
 A autoridade comercial deve permanecer no backend.
+Para usuários não licenciados, o Supabase é atualmente a autoridade do trial.
+
+A ativação paga legada permanece temporariamente válida durante a migração para o novo sistema comercial.
 
 ### Tabelas principais
 
@@ -123,9 +129,9 @@ BANCO POSTGRESQL
 | Histórico local | IndexedDB |
 | Sessão | Supabase Auth |
 | Identidade do usuário | Supabase Auth |
-| Trial | Supabase |
-| Licença | Supabase |
-| Entitlements | Supabase |
+| Trial de usuário não licenciado | Supabase / PostgreSQL |
+| Licença | Sistema comercial do backend |
+| Entitlements | Sistema comercial do backend |
 | Autorização comercial | Backend |
 | Administração | Backend |
 ## Segurança
@@ -164,6 +170,8 @@ Casillas_app/
 ├── dados/
 ├── icons/
 ├── js/
+│   ├── auth.js
+│   ├── auth-page.js
 │   ├── app.js
 │   ├── db.js
 │   ├── state.js
@@ -176,6 +184,7 @@ Casillas_app/
 │   ├── migrations/
 │   └── tests/
 ├── docs/
+├── auth.html
 └── index.html
 
 ## Diretriz para futuras alterações

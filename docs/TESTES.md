@@ -174,11 +174,14 @@ PASS
 
 O módulo de trial foi conectado ao Supabase.
 
-A integração inicial foi adicionada sem substituir ainda a autoridade do sistema legado.
+Para usuários não licenciados, o Supabase passou a ser a autoridade do trial.
+
+A ativação paga legada continua funcionando temporariamente para usuários que já possuem
+uma ativação válida.
 
 Estado:
 
-EM DESENVOLVIMENTO
+CONCLUÍDO — autoridade do trial migrada para o Supabase
 
 ---
 
@@ -307,14 +310,14 @@ Um recurso só será considerado concluído quando:
 
 ### Em desenvolvimento
 
-* Interface de autenticação
-* Cadastro
-* Login dentro do aplicativo
-* Sessão persistente
-* Integração definitiva do trial
+* Teste integrado de cadastro → login → sessão → trial → acesso
+* Teste de expiração real do trial
+* Teste de falha de conexão com Supabase
+* Teste de acesso com licença legada já ativada
 * Licenciamento
 * Entitlements
 * Controle de acesso
+* Operações comerciais seguras
 
 ---
 

@@ -4,7 +4,7 @@
 
 Este documento registra a estrutura atual do banco de dados do Casillas 2.0 no Supabase.
 
-O banco é responsável pela identidade comercial, trial, licenciamento, controle de acesso e dados administrativos.
+O banco é responsável pela identidade do usuário, trial, licenciamento, controle de acesso, eventos comerciais e dados administrativos.
 
 Os módulos técnicos do aplicativo não dependem diretamente dessas tabelas.
 
@@ -12,25 +12,17 @@ Os módulos técnicos do aplicativo não dependem diretamente dessas tabelas.
 
 ## Projeto Supabase
 
-Projeto:
+**Projeto:** Casillas
 
-Casillas
+**Região:** South America (São Paulo)
 
-Região:
+**Região técnica:** `sa-east-1`
 
-South America (São Paulo)
+**Plano atual:** Free
 
-Região técnica:
+O frontend utiliza somente a chave pública apropriada para aplicações cliente.
 
-sa-east-1
-
-Plano atual:
-
-Free
-
-O frontend utiliza apenas a chave pública apropriada para aplicações cliente.
-
-Chaves secretas e service_role não devem ser utilizadas no navegador.
+Chaves secretas e `service_role` não devem ser utilizadas no navegador.
 
 ---
 
@@ -38,388 +30,305 @@ Chaves secretas e service_role não devem ser utilizadas no navegador.
 
 As principais tabelas são:
 
-- products
-- profiles
-- trials
-- licenses
-- entitlements
-- access_events
-- admin_roles
+### `products`
+
+Catálogo de produtos disponíveis no sistema comercial.
+
+Responsabilidade:
+
+- identificar o produto;
+- armazenar informações comerciais;
+- controlar se o produto está ativo.
+
+O produto Casillas já está cadastrado.
 
 ---
 
-## 1. products
+### `profiles`
 
-Representa os produtos comerciais disponíveis.
+Perfil associado ao usuário autenticado.
 
-Responsabilidades:
+Responsabilidade:
 
-- identificar produtos
-- nome do produto
-- descrição
-- status ativo/inativo
+- manter dados complementares do usuário;
+- relacionar o usuário ao sistema comercial;
+- permitir políticas próprias de acesso.
 
-Produto atual:
-
-Casillas
-
-Slug:
-
-casillas
-
-Descrição:
-
-Calculadora técnica de usinagem
-
-Estado:
-
-ativo
-
-A tabela possui leitura pública limitada aos produtos ativos.
+A criação inicial do perfil é realizada automaticamente pelo backend após o cadastro do usuário.
 
 ---
 
-## 2. profiles
+### `trials`
 
-Representa o perfil comercial do usuário autenticado.
+Controla o período de avaliação de cada usuário.
 
-Relação principal:
+Responsabilidade:
 
-Supabase Auth → profiles
+- associar o trial ao usuário;
+- registrar início e término;
+- controlar status;
+- impedir reutilização indevida do período de avaliação.
 
-O registro é associado ao usuário através do identificador do Supabase Auth.
+O trial do Casillas possui duração de **30 dias**.
 
-Responsabilidades:
-
-- perfil do usuário
-- dados básicos da conta
-- informações necessárias ao sistema comercial
-
-Acesso atual:
-
-- usuário autenticado pode consultar o próprio perfil
-- usuário autenticado pode atualizar o próprio perfil
-- usuário não pode acessar o perfil de outro usuário
-
-A tabela possui RLS habilitado.
+Para usuários não licenciados, o Supabase é a autoridade do trial.
 
 ---
 
-## 3. trials
+### `licenses`
 
-Representa o período de teste do produto.
+Estrutura destinada ao controle das licenças comerciais.
 
-Relações principais:
+Responsabilidade futura:
 
-- usuário
-- produto
+- registrar licença;
+- produto;
+- usuário;
+- origem da licença;
+- status;
+- datas;
+- identificação comercial.
 
-Responsabilidades:
-
-- início do trial
-- término do trial
-- status
-- controle do período de teste
-
-Trial atual:
-
-30 dias
-
-Status utilizado atualmente:
-
-ACTIVE
-
-Quando o período termina, o trial pode ser considerado expirado pelo sistema.
-
-Acesso atual:
-
-- usuário autenticado pode consultar o próprio trial
-- criação e controle comercial são realizados pelo backend
-
-A tabela possui RLS habilitado.
+Atualmente a estrutura existe, mas ainda não há licenças comerciais operacionais.
 
 ---
 
-## 4. licenses
+### `entitlements`
 
-Representa licenças comerciais.
+Estrutura destinada a representar os direitos de acesso do usuário.
 
-Responsabilidades futuras:
+Responsabilidade futura:
 
-- licença adquirida
-- validade
-- produto associado
-- usuário associado
-- estado da licença
+- determinar quais recursos o usuário pode utilizar;
+- separar licença comercial de direito de acesso;
+- permitir evolução para diferentes planos e recursos.
 
-Acesso direto pelo cliente:
-
-Não permitido atualmente.
-
-A tabela possui RLS habilitado.
-
-Operações comerciais devem ser realizadas por uma camada backend segura.
+Atualmente a estrutura existe, mas ainda não há entitlements operacionais.
 
 ---
 
-## 5. entitlements
+### `access_events`
 
-Representa os direitos de acesso concedidos ao usuário.
+Estrutura para registrar eventos relevantes de acesso e autorização.
 
-Responsabilidades:
+Responsabilidade futura:
 
-- determinar quais recursos estão disponíveis
-- associar direitos a usuários
-- permitir evolução do sistema comercial
+- auditoria;
+- diagnóstico;
+- rastreamento de alterações de acesso;
+- histórico de eventos comerciais.
 
-Exemplos futuros:
-
-- acesso ao Casillas
-- licença permanente
-- licença temporária
-- recursos adicionais
-
-Acesso direto pelo cliente:
-
-Não permitido atualmente.
+Atualmente não há eventos comerciais registrados nessa tabela.
 
 ---
 
-## 6. access_events
+### `admin_roles`
 
-Registra eventos relacionados ao acesso e ao sistema comercial.
+Estrutura destinada às funções administrativas.
 
-Possíveis eventos:
+Responsabilidade futura:
 
-- login
-- logout
-- início de trial
-- ativação
-- alteração de licença
-- alteração de acesso
+- identificar administradores;
+- controlar permissões administrativas;
+- permitir criação de área administrativa segura.
 
-A tabela é considerada sensível.
-
-Acesso direto pelo cliente:
-
-Não permitido atualmente.
+Atualmente não há administradores cadastrados nessa tabela.
 
 ---
 
-## 7. admin_roles
+## Row Level Security — RLS
 
-Representa funções administrativas.
+As tabelas comerciais utilizam RLS.
 
-Responsabilidades:
+O princípio adotado é:
 
-- identificar administradores
-- controlar permissões administrativas
-- separar usuários comuns de operadores administrativos
+> O frontend nunca deve ser considerado autoridade de segurança.
 
-Acesso direto pelo cliente:
+As políticas devem impedir que um usuário autenticado consulte ou altere dados pertencentes a outro usuário.
 
-Não permitido atualmente.
-
-As decisões administrativas devem permanecer no backend.
+A autorização comercial definitiva deve ser controlada pelo backend.
 
 ---
 
-## RLS
+## Funções do banco
 
-Row Level Security está habilitado nas tabelas comerciais.
+### `private.set_updated_at()`
 
-Objetivo:
-
-Impedir que usuários autenticados acessem registros pertencentes a outros usuários.
-
-Políticas atuais relevantes:
-
-### products
-
-Leitura pública de produtos ativos.
-
-### profiles
-
-Usuário autenticado pode consultar o próprio registro.
-
-Usuário autenticado pode atualizar o próprio registro.
-
-### trials
-
-Usuário autenticado pode consultar o próprio trial.
-
-### licenses
-
-Sem acesso direto para usuários comuns.
-
-### entitlements
-
-Sem acesso direto para usuários comuns.
-
-### access_events
-
-Sem acesso direto para usuários comuns.
-
-### admin_roles
-
-Sem acesso direto para usuários comuns.
+Função auxiliar para atualização automática de campos de data de alteração.
 
 ---
 
-## Funções privadas
+### `private.handle_new_user()`
 
-O projeto possui funções internas no schema private.
-
-Funções importantes:
-
-- private.set_updated_at()
-- private.handle_new_user()
-- private.start_casillas_trial()
-
-Essas funções não devem ser expostas diretamente ao navegador.
-
-Quando uma função utiliza SECURITY DEFINER, ela deve permanecer protegida e possuir validações apropriadas.
+Função executada pelo fluxo de cadastro para criação automática do perfil do usuário.
 
 ---
 
-## Criação automática do perfil
+### `private.start_casillas_trial()`
 
-Quando um usuário é criado no Supabase Auth, o backend possui um trigger responsável por criar o perfil correspondente.
+Função protegida responsável pelo início do trial.
 
-Fluxo:
+Características:
 
-Usuário criado
-
-↓
-
-auth.users
-
-↓
-
-private.handle_new_user()
-
-↓
-
-public.profiles
-
-Isso evita depender do frontend para criar manualmente o perfil comercial.
+- exige usuário autenticado;
+- utiliza `auth.uid()`;
+- cria ou atualiza o trial;
+- utiliza duração de 30 dias;
+- trata trial expirado;
+- executa com privilégios controlados;
+- não fica disponível diretamente para usuários anônimos.
 
 ---
 
-## Trial
+### `public.start_casillas_trial()`
 
-O início do trial é realizado através da função pública controlada:
+Wrapper público controlado que chama a função privada.
 
-start_casillas_trial()
+A execução é permitida somente para usuários autenticados.
 
-Essa função utiliza a camada privada:
-
-private.start_casillas_trial()
-
-A operação exige usuário autenticado.
-
-O backend:
-
-- identifica o usuário
-- localiza o produto Casillas
-- cria ou atualiza o trial
-- define o período de 30 dias
-- controla o status
-
-O frontend não deve determinar a data real de término do trial como autoridade comercial.
+O wrapper não transforma o frontend em autoridade comercial; ele apenas fornece uma interface controlada para a operação de backend.
 
 ---
 
-## Autoridade dos dados
+## Autoridade atual
 
-| Informação | Autoridade |
+| Área | Autoridade |
 |---|---|
-| Identidade do usuário | Supabase Auth |
-| Perfil | profiles |
-| Produto | products |
-| Trial | trials |
-| Licença | licenses |
-| Direitos de acesso | entitlements |
-| Eventos comerciais | access_events |
-| Administração | admin_roles |
+| Cálculos técnicos | Módulos do aplicativo |
+| Interface | Frontend |
+| Histórico local | IndexedDB |
+| Identidade | Supabase Auth |
+| Sessão | Supabase Auth |
+| Trial de usuário não licenciado | Supabase / PostgreSQL |
+| Licenças | Sistema comercial do backend |
+| Entitlements | Sistema comercial do backend |
+| Controle comercial de acesso | Backend |
+| Eventos comerciais | Backend |
+| Administração | Backend |
 
 ---
 
-## Segurança
+## Migração do sistema legado
 
-Nunca colocar no frontend:
+O sistema possui atualmente duas camadas de acesso comercial.
 
-- service_role
-- secret keys
-- senhas
-- credenciais administrativas
+### Sistema novo
 
-O frontend utiliza somente credenciais apropriadas para cliente público.
+O Supabase controla:
 
-RLS permanece habilitado nas tabelas expostas.
+- identidade;
+- sessão;
+- trial;
+- estrutura de licenças;
+- estrutura de entitlements;
+- estrutura de eventos;
+- estrutura administrativa.
 
-Operações sensíveis devem ser executadas no backend.
+### Sistema legado
 
----
+A ativação local existente ainda é mantida temporariamente para usuários que já possuem uma ativação válida.
 
-## Testes
+Isso é uma estratégia de migração e compatibilidade.
 
-Os testes de banco atualmente verificam:
+O sistema legado não deve ser considerado a autoridade definitiva do novo sistema comercial.
 
-- configuração básica do ambiente
-- RLS de profiles
-- isolamento entre usuários
-- acesso ao próprio perfil
-- bloqueio de acesso ao perfil de outro usuário
-
-Estado atual:
-
-17 testes executados com sucesso.
+As funções legadas ainda permanecem porque existem dependências no código atual que serão migradas posteriormente.
 
 ---
 
 ## Estado atual
 
-Concluído:
+### Concluído
 
-- projeto Supabase
-- schema comercial inicial
-- RLS
-- profiles
-- products
-- trials
-- licenses
-- entitlements
-- access_events
-- admin_roles
-- trigger de criação de perfil
-- trial de 30 dias
-- RPC do trial
-- testes de RLS
+- Projeto Supabase criado.
+- Schema comercial criado.
+- Produto Casillas criado.
+- Tabelas comerciais criadas.
+- RLS configurado.
+- Policies iniciais configuradas.
+- Perfil automático após cadastro.
+- Trial backend de 30 dias.
+- RPC de início do trial testada.
+- Leitura autenticada do trial testada.
+- Supabase Auth integrado.
+- Fluxo de login e cadastro implementado.
+- Sessão integrada ao aplicativo.
+- Trial conectado ao usuário autenticado.
+- Supabase definido como autoridade do trial para usuários não licenciados.
+- Falha na verificação do trial não libera acesso por fallback local.
 
-Ainda em desenvolvimento:
+### Em desenvolvimento
 
-- autenticação integrada à interface
-- conta do usuário dentro do aplicativo
-- integração completa do trial com autenticação
-- licenciamento
-- entitlements operacionais
-- controle de acesso
-- operações comerciais seguras
-- área administrativa
-- pagamentos
+- Licenciamento comercial.
+- Entitlements operacionais.
+- Controle definitivo de acesso.
+- Registro de eventos de acesso.
+- Operações comerciais seguras.
+- Área administrativa.
+- Integração de pagamentos.
+- Migração gradual da ativação legada.
 
 ---
 
-## Regra arquitetural
+## Segurança
 
-O banco de dados é a autoridade para informações comerciais.
+Não devem existir no frontend:
 
-IndexedDB e localStorage não devem ser utilizados para determinar:
+- `service_role`;
+- senhas administrativas;
+- chaves privadas;
+- credenciais de banco;
+- qualquer segredo que permita ignorar RLS ou autorização comercial.
 
-- validade real do trial
-- validade de licença
-- autorização comercial
-- permissões administrativas
+O cliente Supabase do frontend utiliza somente credenciais públicas apropriadas para aplicações cliente.
 
-O frontend apresenta o estado recebido do backend, mas não deve ser a fonte de verdade comercial.
+A segurança depende de:
+
+- Supabase Auth;
+- RLS;
+- policies;
+- funções protegidas;
+- validação no backend;
+- separação entre identidade e autorização;
+- não utilização do armazenamento local como autoridade comercial definitiva.
+
+---
+
+## Próximas etapas
+
+1. Validar o fluxo completo de cadastro → login → sessão → trial → acesso.
+2. Validar trial expirado.
+3. Implementar licenciamento comercial.
+4. Implementar entitlements.
+5. Implementar controle definitivo de acesso.
+6. Registrar eventos comerciais.
+7. Criar operações administrativas seguras.
+8. Integrar pagamentos.
+9. Migrar definitivamente as funções comerciais legadas quando não houver mais dependências.
+10. Realizar auditoria final de segurança.
+
+---
+
+## Testes atuais
+
+Já foram realizados:
+
+- testes de RLS;
+- 17 testes de banco;
+- teste de login;
+- teste de criação automática de perfil;
+- teste da RPC de trial;
+- teste de leitura autenticada do trial;
+- teste do cliente Supabase no frontend;
+- teste local da integração do aplicativo;
+- validação da correção de encoding de `trial.js`.
+
+Commit relacionado à mudança de autoridade do trial:
+
+`b238dde` — `fix: tornar Supabase autoridade do trial`
+
+---
+
+## Última atualização
+
+27/09/2026
