@@ -8,6 +8,7 @@ import { initKeyboard, bindInputsToKeyboard, hideKeyboard } from './keyboard.js'
 import {initMenu, setActiveMenuItem, initOptionsMenu, closeOptionsMenu, initShareButton, renderMenuIcons } from './menu.js';
 import { ICONS } from './icons.js';
 import { supabase } from './supabase.bundle.js';
+import { getCurrentUser } from './auth.js';
 
 // Registro dos módulos (carregamento dinâmico)
 const MODULE_LOADERS = {
@@ -213,6 +214,19 @@ function wireOptionsButtons() {
 }
 
 async function boot() {
+  const { user, error: authError } = await getCurrentUser();
+
+  if (authError) {
+    console.error('[AUTH] Erro ao verificar sessão:', authError);
+    window.location.href = './auth.html';
+    return;
+  }
+
+  if (!user) {
+    window.location.href = './auth.html';
+    return;
+  }
+
   try {
     await initDB();
   } catch (err) {
