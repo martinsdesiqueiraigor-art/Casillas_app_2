@@ -454,72 +454,9 @@ function wireActivationButtons() {
 // ═══════════════════════════════════════════════════════════
 
 export async function checkTrialStatus() {
-  const supabaseTrial = await getSupabaseTrial();
-
-  if (supabaseTrial.ok) {
-    wireActivationButtons();
-    hideActivationScreen();
-    showTrialBanner(supabaseTrial.daysLeft);
-    return supabaseTrial;
-  }
-
-  const now = Date.now();
-
-  let installDate = await getDB('config', KEYS.install);
-
-  // ═══════════════════════════════════════════════════════════
-  // ANTI-BURLA: verificar integridade ANTES de calcular o trial
-  // ═══════════════════════════════════════════════════════════
-  const integridade = await verificarIntegridade(installDate);
-
-  if (!integridade.ok) {
-    // Se o app está ativado, ignora a manipulação (cliente pagou)
-    const isActivated = (await getDB('config', KEYS.activated)) === true;
-    if (!isActivated) {
-      const tentativas = registrarManipulacao();
-      console.warn('[TRIAL] Manipulação detectada:', integridade.motivo, '| Tentativas:', tentativas);
-
-      // Se excedeu o limite, bloqueia
-      if (tentativas > MAX_TENTATIVAS_MANIPULACAO) {
-        showActivationScreen('Detectamos uma manipulação nos dados do app. Ative para continuar.');
-        return { ok: false, activated: false, reason: 'manipulado', daysLeft: 0 };
-      }
-
-      // Senão, avisa e restaura do localStorage
-      if (typeof window !== 'undefined' && window.showToast) {
-        window.showToast('Detectamos uma inconsistência. Não limpe os dados do app.', 'warning');
-      }
-    }
-
-    // Restaura o installDate do localStorage (se existir)
-    const lsInstall = parseInt(localStorage.getItem(LS_KEYS.installBackup) || '0', 10);
-    if (lsInstall > 0) {
-      installDate = lsInstall;
-      await setDB('config', KEYS.install, installDate);
-    }
-  }
-
-  // Se não existir installDate, cria
-  if (typeof installDate !== 'number' || !Number.isFinite(installDate)) {
-    installDate = now;
-    await setDB('config', KEYS.install, installDate);
-  }
-
-  // Se passou por tudo, atualiza o backup no localStorage
-  if (integridade.ok && typeof installDate === 'number') {
-    const deviceId = getOrCreateDeviceId();
-    const hash = await gerarHashInstall(installDate, deviceId);
-    localStorage.setItem(LS_KEYS.installBackup, String(installDate));
-    localStorage.setItem(LS_KEYS.installHash, hash);
-    localStorage.setItem(LS_KEYS.fingerprint, gerarFingerprint());
-  }
-
-  const isActivated = (await getDB('config', KEYS.activated)) === true;
-
-  const lastSeen = await getDB('config', KEYS.lastSeen);
-  await setDB('config', KEYS.lastSeen, now);
-
   wireActivationButtons();
+  // Licença legada já ativada continua válida durante a migração.
+  const isActivated = (await getDB('config', KEYS.activated)) === true;
 
   if (isActivated) {
     hideActivationScreen();
@@ -528,23 +465,26 @@ export async function checkTrialStatus() {
     return { ok: true, activated: true, daysLeft: Infinity };
   }
 
-  if (typeof lastSeen === 'number' && now < lastSeen - DAY_MS) {
-    showActivationScreen('Detectamos uma alteração no relógio. Ative o app para continuar.');
-    return { ok: false, activated: false, reason: 'tampered', daysLeft: 0 };
+  // Para usuários não licenciados, o Supabase é a autoridade do trial.
+  const supabaseTrial = await getSupabaseTrial();
+
+  if (supabaseTrial.ok) {
+    hideActivationScreen();
+    showTrialBanner(supabaseTrial.daysLeft);
+    return supabaseTrial;
   }
 
-  const elapsed = now - installDate;
-  const daysUsed = Math.floor(elapsed / DAY_MS);
-  const daysLeft = Math.max(0, TRIAL_DAYS - daysUsed);
-
-  if (daysLeft <= 0) {
+  if (supabaseTrial.reason === 'expired') {
     showActivationScreen('Seu período de avaliação terminou. Ative o app para continuar.');
-    return { ok: false, activated: false, reason: 'expired', daysLeft: 0 };
+    return supabaseTrial;
   }
 
-  hideActivationScreen();
-  showTrialBanner(daysLeft);
-  return { ok: true, activated: false, daysLeft };
+  showActivationScreen('Não foi possível verificar seu acesso. Verifique sua conexão e tente novamente.');
+  return {
+    ok: false,
+    activated: false,
+    reason: supabaseTrial.reason || 'access-check-failed',
+    daysLeft: 0
+  };
 }
-
 export { TRIAL_DAYS, WHATSAPP, MAX_DEVICES_PER_CODE, hashCodigo };
