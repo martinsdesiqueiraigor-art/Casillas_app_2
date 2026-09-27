@@ -48,3 +48,5 @@ node_modules/
 
 # Backup temporário de integração Auth
 *.backup-auth
+
+supabase/backup-2026-09-27*.sql
