@@ -454,6 +454,15 @@ function wireActivationButtons() {
 // ═══════════════════════════════════════════════════════════
 
 export async function checkTrialStatus() {
+  const supabaseTrial = await getSupabaseTrial();
+
+  if (supabaseTrial.ok) {
+    wireActivationButtons();
+    hideActivationScreen();
+    showTrialBanner(supabaseTrial.daysLeft);
+    return supabaseTrial;
+  }
+
   const now = Date.now();
 
   let installDate = await getDB('config', KEYS.install);
