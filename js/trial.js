@@ -11,6 +11,30 @@ const WHATSAPP = '5519996816755';
 const DAY_MS = 86400000;
 const MAX_DEVICES_PER_CODE = 3;
 
+async function getSupabaseEntitlement() {
+  const { data: { user }, error: userError } = await supabase.auth.getUser();
+
+  if (userError || !user) {
+    return { ok: false, reason: userError ? 'auth-error' : 'not-authenticated' };
+  }
+
+  const { data, error } = await supabase.rpc('get_casillas_entitlement');
+
+  if (error) {
+    console.error('[TRIAL] Erro ao consultar entitlement:', error);
+    return { ok: false, reason: 'entitlement-error', error };
+  }
+
+  const entitlement = Array.isArray(data) ? data[0] : data;
+  const validUntil = entitlement?.valid_until;
+  const isWithinValidity = !validUntil || new Date(validUntil) > new Date();
+
+  return {
+    ok: entitlement?.has_access === true && isWithinValidity,
+    entitlement
+  };
+}
+
 async function getSupabaseTrial() {
   const { data: { user }, error: userError } = await supabase.auth.getUser();
 
@@ -455,6 +479,15 @@ function wireActivationButtons() {
 
 export async function checkTrialStatus() {
   wireActivationButtons();
+  const entitlement = await getSupabaseEntitlement();
+
+  if (entitlement.ok) {
+    hideActivationScreen();
+    const banner = document.getElementById('trial-banner');
+    if (banner) banner.classList.add('hidden');
+    return { ok: true, activated: true, daysLeft: Infinity };
+  }
+
   // Licença legada já ativada continua válida durante a migração.
   const isActivated = (await getDB('config', KEYS.activated)) === true;
 
