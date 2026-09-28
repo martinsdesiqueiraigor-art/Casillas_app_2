@@ -12,6 +12,7 @@ import { getCurrentUser } from './auth.js';
 
 // Registro dos módulos (carregamento dinâmico)
 const MODULE_LOADERS = {
+  home:      () => import('./modules/home.js'),
   trig:      () => import('./modules/trig.js'),
   coni:      () => import('./modules/coni.js'),
   poly:      () => import('./modules/poly.js'),
@@ -27,6 +28,7 @@ const MODULE_LOADERS = {
 };
 
 const MODULE_TITLES = {
+  home:     { name: 'Visão geral',        icon: '⌂' },
   trig:     { name: 'Trigonometria',      icon: '📐' },
   coni:     { name: 'Conicidade',         icon: '📏' },
   poly:     { name: 'Polígonos',          icon: '⬡' },
@@ -40,6 +42,8 @@ const MODULE_TITLES = {
   guia:     { name: 'Guia de Programação', icon: '📖' },
   consult:  { name: 'Consultoria',        icon: '💬' }
 };
+
+let accessStatus = null;
 
 async function loadModule(key) {
   if (!MODULE_LOADERS[key]) {
@@ -75,7 +79,7 @@ async function loadModule(key) {
       }
     }
 
-    mod.render(content);
+    mod.render(content, accessStatus);
     bindInputsToKeyboard(content);
 
     // Re-vincula após o módulo renderizar campos dinamicamente.
@@ -251,9 +255,27 @@ async function boot() {
     return;
   }
 
-  const initial = appState.currentModule || 'trig';
+  accessStatus = trial;
+  const accountStatus = document.getElementById('header-access-status');
+  if (accountStatus) {
+    if (trial.activated === true && trial.daysLeft === Infinity) {
+      accountStatus.textContent = 'Licença ativa';
+      accountStatus.dataset.access = 'licensed';
+    } else {
+      const days = trial.daysLeft;
+      accountStatus.textContent = `Trial ativo · ${days}d`;
+      accountStatus.dataset.access = 'trial';
+    }
+  }
+  const initial = 'home';
   await loadModule(initial);
 }
+
+window.addEventListener('casillas:navigate-module', (event) => {
+  const key = event.detail?.key;
+  if (!key || !MODULE_LOADERS[key] || key === 'home') return;
+  loadModule(key);
+});
 
 // ═══════════════════════════════════════════════════════════
 // DEBUG: Forçar atualização (limpa cache + service worker)

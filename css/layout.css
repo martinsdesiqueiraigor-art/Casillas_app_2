@@ -56,6 +56,21 @@ body {
   text-overflow: ellipsis;
 }
 
+.header-access-status {
+  display: block;
+  min-height: 12px;
+  margin-top: 2px;
+  color: var(--accent-secondary);
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.header-access-status[data-access="trial"] {
+  color: var(--warning);
+}
+
 .header-indicator {
   display: flex;
   flex-direction: column;
