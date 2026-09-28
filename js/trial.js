@@ -3,13 +3,11 @@
 // Cada código funciona em até 3 aparelhos diferentes.
 // Códigos podem ser revogados (lista negra embutida).
 
-import { getDB, setDB } from './db.js';
 import { supabase } from './supabase.bundle.js';
 
 const TRIAL_DAYS = 30;
 const WHATSAPP = '5519996816755';
 const DAY_MS = 86400000;
-const MAX_DEVICES_PER_CODE = 3;
 
 async function getSupabaseEntitlement() {
   const { data: { user }, error: userError } = await supabase.auth.getUser();
@@ -91,246 +89,9 @@ const KEYS = {
   install: 'trial-install-date',
   lastSeen: 'trial-last-seen',
   activated: 'trial-activated',
-  activeCode: 'trial-active-code',
-  deviceId: 'device-id',
-  activatedCodes: 'activated-codes-registry'
+  activeCode: 'trial-active-code'
 };
 
-// ═══════════════════════════════════════════════════════════
-// ANTI-BURLA — Chaves e funções
-// ═══════════════════════════════════════════════════════════
-const LS_KEYS = {
-  installBackup: 'casillas-install-backup',
-  installHash: 'casillas-install-hash',
-  fingerprint: 'casillas-fingerprint',
-  tentativas: 'casillas-tentativas-manipulacao'
-};
-
-const MAX_TENTATIVAS_MANIPULACAO = 1;  // 1 exceção, depois bloqueia
-
-// Gera fingerprint único do dispositivo
-function gerarFingerprint() {
-  try {
-    const dados = [
-      navigator.userAgent || '',
-      (screen.width || 0) + 'x' + (screen.height || 0),
-      navigator.language || '',
-      Intl.DateTimeFormat().resolvedOptions().timeZone || '',
-      navigator.platform || '',
-      navigator.hardwareConcurrency || 0
-    ].join('|');
-
-    // Hash simples (djb2) para não guardar o fingerprint em claro
-    let h = 5381;
-    for (let i = 0; i < dados.length; i++) {
-      h = ((h << 5) + h + dados.charCodeAt(i)) >>> 0;
-    }
-    return h.toString(16).padStart(8, '0').toUpperCase();
-  } catch {
-    return 'UNKNOWN';
-  }
-}
-
-// Gera hash do installDate + deviceId (usa SHA-256 se disponível)
-async function gerarHashInstall(installDate, deviceId) {
-  const dados = `${installDate}:${deviceId}:CasillasApp_SALT_2026_!@#`;
-
-  if (self.crypto && self.crypto.subtle && self.crypto.subtle.digest) {
-    try {
-      const enc = new TextEncoder();
-      const buf = await self.crypto.subtle.digest('SHA-256', enc.encode(dados));
-      return Array.from(new Uint8Array(buf))
-        .map((b) => b.toString(16).padStart(2, '0'))
-        .join('')
-        .toUpperCase();
-    } catch {
-      // Fallback abaixo
-    }
-  }
-
-  // Fallback: hash simples (djb2)
-  let h = 5381;
-  for (let i = 0; i < dados.length; i++) {
-    h = ((h << 5) + h + dados.charCodeAt(i)) >>> 0;
-  }
-  return h.toString(16).padStart(8, '0').toUpperCase().padEnd(64, '0');
-}
-
-// Verifica integridade do trial (IndexedDB + localStorage + fingerprint)
-async function verificarIntegridade(installDate) {
-  const deviceId = getOrCreateDeviceId();
-  const lsInstall = localStorage.getItem(LS_KEYS.installBackup);
-  const lsHash = localStorage.getItem(LS_KEYS.installHash);
-  const lsFingerprint = localStorage.getItem(LS_KEYS.fingerprint);
-  const tentativas = parseInt(localStorage.getItem(LS_KEYS.tentativas) || '0', 10);
-
-  const fingerprintAtual = gerarFingerprint();
-  const hashEsperado = await gerarHashInstall(installDate, deviceId);
-
-  // ─── Caso 1: Primeira vez (tudo vazio) ───
-  if (!lsInstall && !lsHash && !lsFingerprint) {
-    localStorage.setItem(LS_KEYS.installBackup, String(installDate));
-    localStorage.setItem(LS_KEYS.installHash, hashEsperado);
-    localStorage.setItem(LS_KEYS.fingerprint, fingerprintAtual);
-    return { ok: true, motivo: 'primeira-vez', tentativas };
-  }
-
-  // ─── Caso 2: localStorage tem dados, mas IndexedDB está vazio ───
-  if (lsInstall && !installDate) {
-    return { ok: false, motivo: 'indexeddb-limpo', tentativas };
-  }
-
-  // ─── Caso 3: Fingerprint mudou (troca de aparelho?) ───
-  if (lsFingerprint && lsFingerprint !== fingerprintAtual) {
-    return { ok: false, motivo: 'fingerprint-mudou', tentativas };
-  }
-
-  // ─── Caso 4: Hash não bate (manipulação) ───
-  if (lsHash && lsHash !== hashEsperado) {
-    return { ok: false, motivo: 'hash-diferente', tentativas };
-  }
-
-  // ─── Caso 5: installDate do IndexedDB é MAIOR que o do localStorage ───
-  // (indica que o IndexedDB foi sobrescrito com data mais recente)
-  if (lsInstall && installDate > parseInt(lsInstall, 10)) {
-    return { ok: false, motivo: 'data-futura', tentativas };
-  }
-
-  // ─── Tudo OK ───
-  return { ok: true, motivo: 'ok', tentativas };
-}
-
-// Registra uma tentativa de manipulação
-function registrarManipulacao() {
-  const tentativas = parseInt(localStorage.getItem(LS_KEYS.tentativas) || '0', 10);
-  localStorage.setItem(LS_KEYS.tentativas, String(tentativas + 1));
-  return tentativas + 1;
-}
-
-// Reseta as tentativas (após ativação legítima)
-function resetarTentativas() {
-  localStorage.removeItem(LS_KEYS.tentativas);
-}
-
-// ═══════════════════════════════════════════════════════════
-// LISTA DE CÓDIGOS VÁLIDOS (hash FNV-1a, 8 caracteres)
-// ═══════════════════════════════════════════════════════════
-// IMPORTANTE: Esta lista é gerada pelo gerar-codigo.html
-// Cole aqui os HASHES (não os códigos em texto puro)
-// Formato: 'A1B2C3D4'
-
-const CODIGOS_VALIDOS_HASH = [
-  'AD8AA78C',
-  'AE5D3EF2',
-  'C1C0F658',
-  'E103AB08',
-  '2F39DDDE',
-  '05FA2257',
-  'E965AA90',
-  '4804DC9C',
-  '9C4DF04C',
-  '09A60293',
-  // Cole os hashes aqui
-];
-
-// Lista negra (códigos revogados)
-const CODIGOS_REVOGADOS_HASH = [
-  // Cole os hashes revogados aqui
-];
-
-// ═══════════════════════════════════════════════════════════
-// FUNÇÕES AUXILIARES
-// ═══════════════════════════════════════════════════════════
-
-function getOrCreateDeviceId() {
-  let id = localStorage.getItem(KEYS.deviceId);
-  if (id && id.length >= 8) return id;
-
-  const bytes = new Uint8Array(16);
-  if (self.crypto && self.crypto.getRandomValues) {
-    self.crypto.getRandomValues(bytes);
-  } else {
-    for (let i = 0; i < bytes.length; i++) {
-      bytes[i] = Math.floor(Math.random() * 256);
-    }
-  }
-  id = Array.from(bytes).map((b) => b.toString(16).padStart(2, '0')).join('');
-  localStorage.setItem(KEYS.deviceId, id);
-  return id;
-}
-
-function hashCodigo(codigo) {
-  let h = 0x811c9dc5;
-  const s = String(codigo).toUpperCase().replace(/[^A-Z0-9]/g, '');
-  for (let i = 0; i < s.length; i++) {
-    h = ((h ^ s.charCodeAt(i)) * 16777619) >>> 0;
-  }
-  return h.toString(16).padStart(8, '0').toUpperCase();
-}
-
-function normalizeCode(raw) {
-  const clean = String(raw || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
-  if (clean.startsWith('CASILLAS') && clean.length >= 16) {
-    return 'CASILLAS-' + clean.slice(8, 12) + '-' + clean.slice(12, 16);
-  }
-  return clean;
-}
-
-// ═══════════════════════════════════════════════════════════
-// REGISTRO DE CÓDIGOS ATIVADOS
-// ═══════════════════════════════════════════════════════════
-
-async function getActivatedCodesRegistry() {
-  const reg = await getDB('config', KEYS.activatedCodes);
-  return (reg && typeof reg === 'object') ? reg : {};
-}
-
-async function registrarAtivacao(codeHash, deviceId) {
-  const reg = await getActivatedCodesRegistry();
-  if (!reg[codeHash]) reg[codeHash] = [];
-  if (!reg[codeHash].includes(deviceId)) {
-    reg[codeHash].push(deviceId);
-  }
-  await setDB('config', KEYS.activatedCodes, reg);
-  return reg[codeHash].length;
-}
-
-async function contarAparelhos(codeHash) {
-  const reg = await getActivatedCodesRegistry();
-  return (reg[codeHash] || []).length;
-}
-
-// ═══════════════════════════════════════════════════════════
-// VERIFICAÇÃO DE CÓDIGO
-// ═══════════════════════════════════════════════════════════
-
-async function validarCodigo(codigo) {
-  const normalizado = normalizeCode(codigo);
-  const hash = hashCodigo(normalizado);
-
-  if (CODIGOS_REVOGADOS_HASH.includes(hash)) {
-    return { ok: false, reason: 'revoked' };
-  }
-
-  if (!CODIGOS_VALIDOS_HASH.includes(hash)) {
-    return { ok: false, reason: 'invalid' };
-  }
-
-  const deviceId = getOrCreateDeviceId();
-  const aparelhos = await contarAparelhos(hash);
-
-  if (aparelhos >= MAX_DEVICES_PER_CODE) {
-    const reg = await getActivatedCodesRegistry();
-    const jaAtivouNeste = (reg[hash] || []).includes(deviceId);
-    if (!jaAtivouNeste) {
-      return { ok: false, reason: 'limit' };
-    }
-  }
-
-  return { ok: true, hash, codigo: normalizado };
-}
-
-// ═══════════════════════════════════════════════════════════
 // UI — TELA DE ATIVAÇÃO
 // ═══════════════════════════════════════════════════════════
 
@@ -397,49 +158,128 @@ function showTrialBanner(daysLeft) {
   }
 }
 
+function activationErrorMessage(error) {
+  const message = String(error?.message || '').toLowerCase();
+  const status = Number(error?.status || 0);
+
+  if (
+    status === 401 ||
+    status === 403 ||
+    error?.name === 'AuthSessionMissingError' ||
+    message.includes('não autenticado') ||
+    message.includes('auth session missing') ||
+    message.includes('invalid jwt')
+  ) {
+    return 'Sua sessão expirou. Entre novamente para ativar a licença.';
+  }
+
+  if (message.includes('já possui acesso comercial')) {
+    return 'Sua conta já possui acesso comercial ao Casillas.';
+  }
+
+  if (message.includes('código de licença inválido')) {
+    return 'Código inválido, indisponível ou já utilizado. Verifique e tente novamente.';
+  }
+
+  if (!status || status >= 500 || error?.name?.includes('Fetch')) {
+    return 'Não foi possível conectar ao serviço de ativação. Verifique sua conexão e tente novamente.';
+  }
+
+  return 'Não foi possível concluir a ativação. Tente novamente.';
+}
+
 function wireActivationButtons() {
   const btnSubmit = document.getElementById('btn-submit-activation');
   const btnBuy = document.getElementById('btn-buy-license');
+  const btnBanner = document.getElementById('btn-banner-activate');
   const input = document.getElementById('activation-code');
 
   if (btnSubmit && !btnSubmit.dataset.wired) {
     btnSubmit.dataset.wired = '1';
     btnSubmit.addEventListener('click', async () => {
-      const raw = (input && input.value) || '';
-      if (!raw.trim()) {
+      const rawCode = (input && input.value) || '';
+      if (!rawCode.trim()) {
         const { showToast } = await import('./utils.js');
         showToast('Digite o código de ativação.', 'warning');
         return;
       }
 
-      const resultado = await validarCodigo(raw);
+      const idleLabel = btnSubmit.textContent;
+      let activationConfirmed = false;
+      btnSubmit.disabled = true;
+      btnSubmit.textContent = 'Ativando...';
 
-      if (resultado.ok) {
-        const deviceId = getOrCreateDeviceId();
-        const total = await registrarAtivacao(resultado.hash, deviceId);
-        await setDB('config', KEYS.activated, true);
-        await setDB('config', KEYS.activeCode, resultado.codigo);
+      try {
+        const { data: { user }, error: authError } = await supabase.auth.getUser();
 
-        // Anti-burla: limpa tentativas após ativação legítima
-        resetarTentativas();
+        if (authError || !user) {
+          const { showToast } = await import('./utils.js');
+          const message = authError
+            ? activationErrorMessage(authError)
+            : 'Sua sessão expirou. Entre novamente para ativar a licença.';
+          showToast(message, 'error');
+          return;
+        }
+
+        const { data, error } = await supabase.rpc('activate_casillas_license', {
+          p_license_code: rawCode
+        });
+
+        if (error) {
+          const { showToast } = await import('./utils.js');
+          showToast(activationErrorMessage(error), 'error');
+          return;
+        }
+
+        const activation = Array.isArray(data) ? data[0] : data;
+        if (!activation || typeof activation !== 'object' || !activation.license_id) {
+          const { showToast } = await import('./utils.js');
+          showToast('O serviço retornou uma resposta inesperada. Nenhum acesso foi liberado.', 'error');
+          return;
+        }
+
+        activationConfirmed = true;
+        const entitlement = await getSupabaseEntitlement();
+
+        if (!entitlement.ok) {
+          const message = 'Licença processada, mas ainda não foi possível confirmar seu acesso. Verifique sua conexão e tente novamente.';
+          showActivationScreen(message);
+          const { showToast } = await import('./utils.js');
+          showToast(message, 'warning');
+          return;
+        }
 
         hideActivationScreen();
         const banner = document.getElementById('trial-banner');
         if (banner) banner.classList.add('hidden');
 
+        // O listener apenas carrega a interface; o entitlement já foi confirmado acima.
         window.dispatchEvent(new CustomEvent('casillas:activated'));
 
         const { showToast } = await import('./utils.js');
-        showToast(`App ativado! (${total}/${MAX_DEVICES_PER_CODE} aparelhos)`, 'success');
-      } else {
-        const { showToast } = await import('./utils.js');
-        const msgs = {
-          invalid: 'Código inválido. Verifique e tente novamente.',
-          revoked: 'Este código foi revogado. Contate o suporte.',
-          limit: `Este código já foi ativado em ${MAX_DEVICES_PER_CODE} aparelhos.`
-        };
-        showToast(msgs[resultado.reason] || 'Erro na ativação.', 'error');
+        showToast('Licença ativada com sucesso!', 'success');
+      } catch (error) {
+        if (activationConfirmed) {
+          const message = 'Licença processada, mas ainda não foi possível confirmar seu acesso. Verifique sua conexão e tente novamente.';
+          showActivationScreen(message);
+          const { showToast } = await import('./utils.js');
+          showToast(message, 'warning');
+        } else {
+          const { showToast } = await import('./utils.js');
+          showToast(activationErrorMessage(error), 'error');
+        }
+      } finally {
+        btnSubmit.disabled = false;
+        btnSubmit.textContent = idleLabel;
       }
+    });
+  }
+
+  if (btnBanner && !btnBanner.dataset.wired) {
+    btnBanner.dataset.wired = '1';
+    btnBanner.addEventListener('click', () => {
+      showActivationScreen();
+      if (input) input.focus();
     });
   }
 
@@ -488,16 +328,6 @@ export async function checkTrialStatus() {
     return { ok: true, activated: true, daysLeft: Infinity };
   }
 
-  // Licença legada já ativada continua válida durante a migração.
-  const isActivated = (await getDB('config', KEYS.activated)) === true;
-
-  if (isActivated) {
-    hideActivationScreen();
-    const banner = document.getElementById('trial-banner');
-    if (banner) banner.classList.add('hidden');
-    return { ok: true, activated: true, daysLeft: Infinity };
-  }
-
   // Para usuários não licenciados, o Supabase é a autoridade do trial.
   const supabaseTrial = await getSupabaseTrial();
 
@@ -520,4 +350,4 @@ export async function checkTrialStatus() {
     daysLeft: 0
   };
 }
-export { TRIAL_DAYS, WHATSAPP, MAX_DEVICES_PER_CODE, hashCodigo };
+export { TRIAL_DAYS, WHATSAPP };

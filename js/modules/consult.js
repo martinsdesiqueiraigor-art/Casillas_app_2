@@ -169,15 +169,7 @@ export function render(container) {
     type: 'button',
     class: 'btn btn-secondary',
     text: '🔑 Ativação',
-    onclick: async () => {
-      try {
-        const mod = await import('../trial.js');
-        const codigo = await mod.getActivationCodeForCurrentDevice();
-        abrirWhatsApp(`Olá! Preciso ativar o Casillas App. Meu código: ${codigo}`);
-      } catch {
-        showToast('Não foi possível obter o código', 'error');
-      }
-    }
+    onclick: () => abrirWhatsApp('Olá! Preciso de ajuda para ativar minha licença do Casillas App.')
   }));
   btnsAtivacao.appendChild(createElementSafe('button', {
     type: 'button',
