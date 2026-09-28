@@ -1,334 +1,81 @@
-# Casillas App 2.0 — Banco de Dados
+# Casillas App 2.0 — Supabase e dados comerciais
 
-## Objetivo
+Este documento descreve o papel atual do backend, sem substituir as migrations nem uma consulta de catálogo remoto. Dados do projeto e do modelo comercial abaixo correspondem ao contexto confirmado do marco de 28/09/2026.
 
-Este documento registra a estrutura atual do banco de dados do Casillas 2.0 no Supabase.
+## Projeto
 
-O banco é responsável pela identidade do usuário, trial, licenciamento, controle de acesso, eventos comerciais e dados administrativos.
+- Nome: `Casillas`
+- Referência: `maayjshlsxvxtrgjpcep`
+- Região: São Paulo (`sa-east-1`)
+- Plano: Free
 
-Os módulos técnicos do aplicativo não dependem diretamente dessas tabelas.
+O frontend usa configuração pública apropriada para cliente. Nenhuma `service_role`, chave secreta, senha ou credencial administrativa deve entrar em HTML, JavaScript público ou documentação.
 
----
+## Entidades
 
-## Projeto Supabase
+As migrations locais definem as tabelas comerciais abaixo. RLS está habilitado nelas; políticas e permissões devem ser conferidas nas migrations e no ambiente remoto antes de qualquer mudança de banco.
 
-**Projeto:** Casillas
-
-**Região:** South America (São Paulo)
-
-**Região técnica:** `sa-east-1`
-
-**Plano atual:** Free
-
-O frontend utiliza somente a chave pública apropriada para aplicações cliente.
-
-Chaves secretas e `service_role` não devem ser utilizadas no navegador.
-
----
-
-## Estrutura comercial
-
-As principais tabelas são:
-
-### `products`
-
-Catálogo de produtos disponíveis no sistema comercial.
-
-Responsabilidade:
-
-- identificar o produto;
-- armazenar informações comerciais;
-- controlar se o produto está ativo.
-
-O produto Casillas já está cadastrado.
-
----
-
-### `profiles`
-
-Perfil associado ao usuário autenticado.
-
-Responsabilidade:
-
-- manter dados complementares do usuário;
-- relacionar o usuário ao sistema comercial;
-- permitir políticas próprias de acesso.
-
-A criação inicial do perfil é realizada automaticamente pelo backend após o cadastro do usuário.
-
----
-
-### `trials`
-
-Controla o período de avaliação de cada usuário.
-
-Responsabilidade:
-
-- associar o trial ao usuário;
-- registrar início e término;
-- controlar status;
-- impedir reutilização indevida do período de avaliação.
-
-O trial do Casillas possui duração de **30 dias**.
-
-Para usuários não licenciados, o Supabase é a autoridade do trial.
-
----
-
-### `licenses`
-
-Estrutura destinada ao controle das licenças comerciais.
-
-Responsabilidade futura:
-
-- registrar licença;
-- produto;
-- usuário;
-- origem da licença;
-- status;
-- datas;
-- identificação comercial.
-
-Atualmente a estrutura existe, mas ainda não há licenças comerciais operacionais.
-
----
-
-### `entitlements`
-
-Estrutura destinada a representar os direitos de acesso do usuário.
-
-Responsabilidade futura:
-
-- determinar quais recursos o usuário pode utilizar;
-- separar licença comercial de direito de acesso;
-- permitir evolução para diferentes planos e recursos.
-
-Atualmente a estrutura existe, mas ainda não há entitlements operacionais.
-
----
-
-### `access_events`
-
-Estrutura para registrar eventos relevantes de acesso e autorização.
-
-Responsabilidade futura:
-
-- auditoria;
-- diagnóstico;
-- rastreamento de alterações de acesso;
-- histórico de eventos comerciais.
-
-Atualmente não há eventos comerciais registrados nessa tabela.
-
----
-
-### `admin_roles`
-
-Estrutura destinada às funções administrativas.
-
-Responsabilidade futura:
-
-- identificar administradores;
-- controlar permissões administrativas;
-- permitir criação de área administrativa segura.
-
-Atualmente não há administradores cadastrados nessa tabela.
-
----
-
-## Row Level Security — RLS
-
-As tabelas comerciais utilizam RLS.
-
-O princípio adotado é:
-
-> O frontend nunca deve ser considerado autoridade de segurança.
-
-As políticas devem impedir que um usuário autenticado consulte ou altere dados pertencentes a outro usuário.
-
-A autorização comercial definitiva deve ser controlada pelo backend.
-
----
-
-## Funções do banco
-
-### `private.set_updated_at()`
-
-Função auxiliar para atualização automática de campos de data de alteração.
-
----
-
-### `private.handle_new_user()`
-
-Função executada pelo fluxo de cadastro para criação automática do perfil do usuário.
-
----
-
-### `private.start_casillas_trial()`
-
-Função protegida responsável pelo início do trial.
-
-Características:
-
-- exige usuário autenticado;
-- utiliza `auth.uid()`;
-- cria ou atualiza o trial;
-- utiliza duração de 30 dias;
-- trata trial expirado;
-- executa com privilégios controlados;
-- não fica disponível diretamente para usuários anônimos.
-
----
-
-### `public.start_casillas_trial()`
-
-Wrapper público controlado que chama a função privada.
-
-A execução é permitida somente para usuários autenticados.
-
-O wrapper não transforma o frontend em autoridade comercial; ele apenas fornece uma interface controlada para a operação de backend.
-
----
-
-## Autoridade atual
-
-| Área | Autoridade |
+| Tabela | Papel |
 |---|---|
-| Cálculos técnicos | Módulos do aplicativo |
-| Interface | Frontend |
-| Histórico local | IndexedDB |
-| Identidade | Supabase Auth |
-| Sessão | Supabase Auth |
-| Trial de usuário não licenciado | Supabase / PostgreSQL |
-| Licenças | Sistema comercial do backend |
-| Entitlements | Sistema comercial do backend |
-| Controle comercial de acesso | Backend |
-| Eventos comerciais | Backend |
-| Administração | Backend |
+| `products` | Catálogo e estado ativo de produtos, incluindo `casillas`. |
+| `profiles` | Perfil associado à identidade Auth. |
+| `trials` | Período de avaliação associado ao usuário e produto. |
+| `licenses` | Registro e estado das licenças comerciais. |
+| `entitlements` | Direitos de acesso comerciais associados ao usuário/produto. |
+| `access_events` | Histórico de eventos de acesso/ativação. |
+| `admin_roles` | Atribuições administrativas. |
 
----
+## Fluxo de acesso
 
-## Migração do sistema legado
+- Supabase Auth fornece a identidade autenticada.
+- O cliente consulta `get_casillas_entitlement()` antes do trial.
+- Se não houver entitlement comercial válido, consulta `start_casillas_trial()`.
+- O trial é de 30 dias, associado à conta e controlado pelo servidor.
+- A ativação chama `activate_casillas_license`; o processamento do código e a criação/atualização de entitlement ocorrem no backend.
+- A licença atual é vitalícia, vinculada à conta autenticada e sem limite de aparelhos.
 
-O sistema possui atualmente duas camadas de acesso comercial.
+A Home apenas apresenta o resultado devolvido ao fluxo do aplicativo. IndexedDB/localStorage não determinam validade comercial.
 
-### Sistema novo
+## Funções e versionamento
 
-O Supabase controla:
+As funções usadas pelo cliente são `start_casillas_trial`, `get_casillas_entitlement` e `activate_casillas_license`. A criação inicial e a exposição do trial estão registradas nas migrations locais; a correção da ativação está em `supabase/migrations/20260928160324_fix_activate_casillas_license_entitlement_check.sql`.
 
-- identidade;
-- sessão;
-- trial;
-- estrutura de licenças;
-- estrutura de entitlements;
-- estrutura de eventos;
-- estrutura administrativa.
+Na busca estática deste marco, não foi encontrada uma definição de `get_casillas_entitlement` nas migrations locais, embora a função remota faça parte do fluxo atual conforme o estado confirmado do projeto. **Backlog:** verificar a origem/versionamento dessa definição e sincronizá-la por uma etapa própria, sem alterar o Supabase neste trabalho documental.
 
-### Sistema legado
+O inventário completo, parâmetros, privilégios e políticas devem ser obtidos das migrations e de consultas somente leitura ao projeto remoto. Este documento não afirma que fez uma consulta remota nesta atualização.
 
-A ativação local existente ainda é mantida temporariamente para usuários que já possuem uma ativação válida.
+## Segurança e RLS
 
-Isso é uma estratégia de migração e compatibilidade.
+- RLS está habilitado nas tabelas comerciais expostas.
+- Policies devem limitar linhas conforme identidade/necessidade; RLS não substitui grants nem regras internas de RPCs.
+- Funções privilegiadas devem validar identidade, manter search path seguro e expor somente as permissões necessárias.
+- O cliente não deve receber segredos administrativos.
 
-O sistema legado não deve ser considerado a autoridade definitiva do novo sistema comercial.
+Consulte [Segurança](SEGURANCA.md) e as migrations em `supabase/migrations/`. Nenhuma alteração de schema ou dado foi feita para esta documentação.
 
-As funções legadas ainda permanecem porque existem dependências no código atual que serão migradas posteriormente.
+## Histórico e próximos passos
 
----
+Os registros antigos que descreviam licenças/entitlements como ainda não operacionais eram snapshots de etapas anteriores e foram supersedidos pelo fluxo comercial atual.
 
-## Estado atual
+Próximos pontos técnicos: versionar a definição de `get_casillas_entitlement`, completar a bateria integrada de trial (ativo, expirado e erro), e manter testes de isolamento/RLS em dia. Nenhum desses pontos requer mudança de banco nesta atualização documental.
+## Funções registradas nas migrations locais
 
-### Concluído
+**Fonte desta seção:** migrations locais nomeadas abaixo. Esta é documentação estática do repositório e não confirma sozinha a versão atualmente implantada.
 
-- Projeto Supabase criado.
-- Schema comercial criado.
-- Produto Casillas criado.
-- Tabelas comerciais criadas.
-- RLS configurado.
-- Policies iniciais configuradas.
-- Perfil automático após cadastro.
-- Trial backend de 30 dias.
-- RPC de início do trial testada.
-- Leitura autenticada do trial testada.
-- Supabase Auth integrado.
-- Fluxo de login e cadastro implementado.
-- Sessão integrada ao aplicativo.
-- Trial conectado ao usuário autenticado.
-- Supabase definido como autoridade do trial para usuários não licenciados.
-- Falha na verificação do trial não libera acesso por fallback local.
+| Função | Definição local e papel | Segurança local registrada |
+|---|---|---|
+| `private.set_updated_at()` | Trigger function que atualiza `NEW.updated_at`; associada a triggers de tabelas que possuem `updated_at`. | `SECURITY DEFINER`, `SET search_path = ''`; execução direta revogada para `PUBLIC`, `anon` e `authenticated`. Migration `20260925180000_initial_commercial_schema.sql`. |
+| `private.handle_new_user()` | Trigger function que cria `profiles` após inserção em `auth.users`. | `SECURITY DEFINER`, `SET search_path = ''`; execução direta revogada para `PUBLIC`, `anon` e `authenticated`; chamada pelo trigger. Mesma migration inicial. |
+| `private.start_casillas_trial()` | Exige `auth.uid()`, localiza produto Casillas ativo e insere trial com 30 dias. A restrição de usuário/produto leva a conflito: a função preserva um trial ainda vigente e marca expirado quando `ends_at` já passou; não renova `ends_at` nessa ramificação. | `SECURITY DEFINER`, `SET search_path = ''`; a migration revoga EXECUTE de `PUBLIC`, `anon` e `authenticated` e concede a `authenticated`, para uso pelo wrapper. Migration `20260926024716_create_trial_function.sql`. |
+| `public.start_casillas_trial()` | Wrapper SQL que chama a função privada e retorna `public.trials`. | `SECURITY INVOKER`, `SET search_path = ''`; EXECUTE revogado de `PUBLIC` e `anon`, concedido a `authenticated`. Migration `20260926025046_expose_start_casillas_trial.sql`. |
+| `private.activate_casillas_license(text)` | Valida e ativa licença, cria entitlement e registra evento de ativação; migration local contém o ajuste para ignorar entitlements não válidos no bloqueio de nova ativação. | `SECURITY DEFINER`, `SET search_path = ''`; migration revoga EXECUTE de `PUBLIC`, `anon` e `authenticated`, concedendo a `authenticated`. Migration `20260928160324_fix_activate_casillas_license_entitlement_check.sql`. Revalidar remoto antes de tratar grants como estado atual. |
 
-### Em desenvolvimento
+`get_casillas_entitlement()` é chamado pelo cliente e foi informado como existente remotamente, mas sua definição não foi localizada nas migrations locais. Não inferir linguagem, SECURITY mode, search path ou grants remotos a partir desta documentação.
 
-- Licenciamento comercial.
-- Entitlements operacionais.
-- Controle definitivo de acesso.
-- Registro de eventos de acesso.
-- Operações comerciais seguras.
-- Área administrativa.
-- Integração de pagamentos.
-- Migração gradual da ativação legada.
+## RLS e acesso nas migrations locais
 
----
+A migration `20260925180000_initial_commercial_schema.sql` habilita RLS em `products`, `profiles`, `trials`, `licenses`, `entitlements`, `access_events` e `admin_roles`. Ela revoga grants diretos de `anon` e `authenticated` nas tabelas e reabre somente os acessos necessários: leitura de produtos ativos; leitura e atualização das colunas `full_name`/`locale` do próprio perfil; leitura do próprio trial. As outras tabelas não recebem grants diretos para esses papéis nessa migration. Isso descreve a base local; conferir migrations posteriores e estado remoto antes de depender operacionalmente desses controles.
 
-## Segurança
+## Histórico de testes
 
-Não devem existir no frontend:
-
-- `service_role`;
-- senhas administrativas;
-- chaves privadas;
-- credenciais de banco;
-- qualquer segredo que permita ignorar RLS ou autorização comercial.
-
-O cliente Supabase do frontend utiliza somente credenciais públicas apropriadas para aplicações cliente.
-
-A segurança depende de:
-
-- Supabase Auth;
-- RLS;
-- policies;
-- funções protegidas;
-- validação no backend;
-- separação entre identidade e autorização;
-- não utilização do armazenamento local como autoridade comercial definitiva.
-
----
-
-## Próximas etapas
-
-1. Validar o fluxo completo de cadastro → login → sessão → trial → acesso.
-2. Validar trial expirado.
-3. Implementar licenciamento comercial.
-4. Implementar entitlements.
-5. Implementar controle definitivo de acesso.
-6. Registrar eventos comerciais.
-7. Criar operações administrativas seguras.
-8. Integrar pagamentos.
-9. Migrar definitivamente as funções comerciais legadas quando não houver mais dependências.
-10. Realizar auditoria final de segurança.
-
----
-
-## Testes atuais
-
-Já foram realizados:
-
-- testes de RLS;
-- 17 testes de banco;
-- teste de login;
-- teste de criação automática de perfil;
-- teste da RPC de trial;
-- teste de leitura autenticada do trial;
-- teste do cliente Supabase no frontend;
-- teste local da integração do aplicativo;
-- validação da correção de encoding de `trial.js`.
-
-Commit relacionado à mudança de autoridade do trial:
-
-`b238dde` — `fix: tornar Supabase autoridade do trial`
-
----
-
-## Última atualização
-
-27/09/2026
+Documentação anterior registra teste de RLS, 17 asserções aprovadas, login, trigger/perfil, RPC de início de trial e leitura autenticada. O resumo técnico atual da cobertura está em `docs/TESTES.md`. Esses resultados são históricos; não foram repetidos nesta atualização.

@@ -1,8 +1,8 @@
 # Manuais do Casillas App
 
-Esta pasta contém os manuais em PDF disponibilizados para os usuários.
+Esta pasta é reservada a manuais PDF destinados aos usuários. No estado auditado, os nomes abaixo são arquivos planejados; não há confirmação de PDFs presentes nem de integração automática desses arquivos com a interface.
 
-## Arquivos esperados:
+Nomes previstos:
 
 - `manual-roscas.pdf`
 - `manual-tolerancias.pdf`
@@ -10,12 +10,4 @@ Esta pasta contém os manuais em PDF disponibilizados para os usuários.
 - `manual-cnc.pdf`
 - `manual-usinagem.pdf`
 
-## Como adicionar:
-
-1. Coloque o arquivo PDF nesta pasta com o nome exato
-2. Faça commit + push
-3. O app detectará automaticamente e habilitará o download
-
-## Enquanto não houver PDF:
-
-Os botões no app mostrarão "Em breve" até que os PDFs sejam adicionados.
+Adicionar um PDF nesta pasta não foi identificado como suficiente para habilitar automaticamente um link no aplicativo. Para disponibilizar um manual, confirme o arquivo, integre explicitamente o link no módulo/interface correspondente e teste a entrega e o cache.

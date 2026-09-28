@@ -1,190 +1,72 @@
-﻿# Casillas App 2.0 — Progresso
+# Casillas App 2.0 — Progresso
 
-## Infraestrutura
+## Referência
 
-- [x] Repositório criado
-- [x] Branch `casillas-2.0` publicada
-- [x] Backup físico da versão 2.0
-- [x] Versão v1.3.1 preservada
-- [x] `origin` / `legacy` configurados
-- [x] Node.js instalado
-- [x] Git instalado
-- [x] VS Code configurado
-- [x] Supabase CLI configurado
-- [x] Docker configurado
+- Branch de trabalho: `casillas-2.0`
+- Commit de referência para este marco: `24475a08cf6eadd83ec3fe8623735163540e5112` — `feat: refinar Home do Casillas 2.0`
+- Projeto Supabase informado: `Casillas` (`maayjshlsxvxtrgjpcep`), região `sa-east-1`, plano Free.
+- Este registro é documental; não representa uma nova consulta ao Supabase.
 
----
+## Concluído conforme código e histórico disponível
 
-## Supabase
+### Identidade e acesso
 
-- [x] Projeto `Casillas` criado
-- [x] CLI vinculada ao projeto
-- [x] Schema comercial criado
-- [x] Tabela `products`
-- [x] Tabela `profiles`
-- [x] Tabela `trials`
-- [x] Tabela `licenses`
-- [x] Tabela `entitlements`
-- [x] Tabela `access_events`
-- [x] Tabela `admin_roles`
-- [x] RLS habilitado
-- [x] Policies iniciais configuradas
-- [x] Função de criação automática de perfil
-- [x] Produto Casillas criado
-- [x] Trial de 30 dias no backend
-- [x] RPC de início do trial testada
-- [x] Leitura autenticada do trial testada
-- [x] Função privada de início do trial protegida
-- [x] Wrapper público autenticado para início do trial
-- [x] Uso do schema privado configurado
+- Supabase Auth integrado ao fluxo da aplicação.
+- A sessão e a identidade do usuário são verificadas antes da inicialização protegida.
+- `checkTrialStatus()` consulta primeiro o entitlement comercial remoto e, sem acesso comercial válido, consulta/inicia o trial remoto.
+- O trial remoto tem duração configurada de 30 dias; trial ativo libera o app e informa dias restantes; trial expirado bloqueia o acesso.
+- A ativação comercial usa a RPC `activate_casillas_license`; o cliente consulta o entitlement após a ativação.
+- A antiga flag `trial-activated` deixou de ser fonte de autorização.
+- O antigo sistema local de validação, device ID, limite de aparelhos e anti-manipulação foi removido de `js/trial.js`.
+- A licença comercial não depende de limite de aparelhos; a conta autenticada é a identidade associada ao acesso.
 
----
+### Aplicativo e Home
 
-## Autenticação
+- A Home visual foi refinada no commit de referência, com grupos de ferramentas, acesso rápido e catálogo.
+- O roteador registra 12 módulos: trigonometria, conicidade, polígonos, furação circular, roscas, tolerâncias ISO, chaveta DIN 6885, conicidades padrão, potência de corte, programação CNC, guia de programação e consultoria.
+- O usuário informou que a Home foi testada visualmente com sucesso. Essa evidência é manual e não substitui testes automatizados ou validação de todos os módulos.
+- O Service Worker está em `casillas-v10`.
+- O botão de ativação em Consultoria abre o WhatsApp com mensagem de suporte; não recupera código por aparelho.
 
-- [x] Supabase Auth configurado
-- [x] Login implementado
-- [x] Cadastro implementado
-- [x] Recuperação de senha implementada
-- [x] Logout implementado
-- [x] Persistência de sessão implementada
-- [x] Página de autenticação criada
-- [x] `auth.js` integrado
-- [x] `auth-page.js` integrado
-- [x] Aplicativo verifica usuário autenticado antes de iniciar
-- [x] Usuário não autenticado é direcionado para `auth.html`
-- [x] Perfil do usuário criado automaticamente pelo backend
+## Pendências e validações
 
----
+- Executar teste funcional integrado do trial (cadastro/login, trial existente, recarga, logout e novo login) em conta de teste, sem alterar dados de produção.
+- Testar estados de expiração e falha de rede de forma controlada.
+- Confirmar em ambiente Supabase controlado os cenários de entitlement ativo, revogado e expirado; esta documentação não executou chamadas remotas.
+- Verificar e versionar de forma reproduzível a definição remota `get_casillas_entitlement()` em migration, após revisão e processo próprios. A busca local não encontrou sua definição nas migrations existentes.
+- Revisar segurança, permissões e RLS das funções/tabelas em ciclo próprio.
+- Revisar atualização de cache do Service Worker nos navegadores suportados.
+- Não tratar pagamentos, painel administrativo ou publicação pública como concluídos sem evidência atual específica.
 
-## Frontend
+## Ferramenta legada
 
-- [x] Cliente Supabase
-- [x] Bundle Supabase
-- [x] `app.js` conectado ao Supabase
-- [x] `auth.js` conectado ao aplicativo
-- [x] `trial.js` conectado ao aplicativo
-- [x] Fluxo de autenticação integrado à aplicação
-- [x] Verificação central de acesso no carregamento do aplicativo
-- [x] Trial conectado ao usuário autenticado
+`gerar-codigo.html` permanece temporariamente preservada como ferramenta administrativa independente. Ela gera códigos/hash localmente e não cria, ativa ou revoga licenças no Supabase. O Service Worker ainda a pré-cacheia. Consultar `docs/DECISAO-GERAR-CODIGO-2026-09-28.md` no backup de referência antes de qualquer remoção.
 
----
+## Backups e histórico
 
-## Autoridade do Trial
+Preservar os backups existentes. `docs/backup-2026-09-27/` é material histórico e pode conter descrições de arquitetura já superadas; não deve ser confundido com o estado atual nem alterado durante tarefas documentais sem pedido específico.
+## Proveniência e validação
 
-- [x] Supabase utilizado como autoridade do trial para usuários não licenciados
-- [x] Trial associado ao usuário autenticado
-- [x] Verificação do trial realizada no backend
-- [x] Trial expirado bloqueia o acesso
-- [x] Falha na verificação do Supabase não libera acesso por fallback local
-- [x] Sistema legado de ativação paga preservado durante a migração
-- [x] Código de ativação legado continua válido para usuários já ativados
-- [x] Funções legadas mantidas temporariamente por dependências existentes
-- [x] Correção de encoding em `js/trial.js`
-- [x] Teste local após correção de encoding
-- [x] Commit `b238dde` — `fix: tornar Supabase autoridade do trial`
-- [x] Alteração publicada em `origin/casillas-2.0`
+### Histórico documentado (não repetido neste marco)
 
-> **Estado de migração:** o Supabase é a autoridade do trial para usuários não licenciados. A ativação paga legada continua funcionando temporariamente para preservar compatibilidade durante a migração para o novo sistema comercial.
+- A documentação de 27/09/2026 registrava projeto Supabase e schema comercial inicial, RLS, Auth, criação automática de perfil, RPC de trial e leitura autenticada do trial.
+- Foram registrados 17 testes de banco/RLS aprovados; consulte `docs/TESTES.md` para o que a suíte local cobre. O resultado não prova estado remoto atual.
+- Commit `b238dde` — `fix: tornar Supabase autoridade do trial` — foi registrado como a migração da autoridade do trial para o Supabase e publicado em `origin/casillas-2.0` naquele momento.
+- Commit-base atual deste marco: `24475a08cf6eadd83ec3fe8623735163540e5112` — `feat: refinar Home do Casillas 2.0`; refinou Home e atualizou o cache para v10.
+- Node.js, Git, VS Code, Supabase CLI e Docker constavam como configurados no registro anterior; instalação/configuração não foi revalidada aqui.
 
----
+### Validado atualmente neste marco
 
-## Testes
+- Código local confirma os 12 loaders e a Home na entrada.
+- O usuário informou teste visual bem-sucedido da Home.
+- O código de `trial.js` chama entitlement antes do trial; isso é inspeção local, não teste funcional remoto.
+- Nenhum teste de backend ou de interface foi executado nesta atualização documental.
 
-- [x] Testes de RLS
-- [x] 17 testes de banco aprovados
-- [x] Login Supabase testado
-- [x] Usuário de teste criado
-- [x] Trigger de criação de perfil testado
-- [x] RPC de trial testada
-- [x] Leitura autenticada do trial testada
-- [x] Cliente Supabase no frontend testado
-- [x] Aplicativo iniciado localmente
-- [x] Verificação do trial integrada ao carregamento
-- [x] Correção de encoding de `trial.js` validada
-- [x] Arquivo corrigido testado em ambiente local
+### Ainda não validado atualmente
 
-### Testes ainda necessários
+- Bateria integrada do trial, estados de erro e expiração.
+- RLS, permissões e definição das funções na implantação remota.
+- Testes de todos os módulos, dispositivos, instalação/offline e atualização do Service Worker.
+- Publicação e URL pública atual do PWA.
 
-- [ ] Teste integrado completo: cadastro → login → sessão → trial → acesso
-- [ ] Teste de expiração real do trial
-- [ ] Teste de usuário sem trial
-- [ ] Teste de falha de conexão com Supabase
-- [ ] Teste de acesso com licença legada já ativada
-- [ ] Teste completo do fluxo de recuperação de senha
-- [ ] Teste integrado em diferentes dispositivos/navegadores
-- [ ] Teste final das regras RLS após conclusão do sistema comercial
-
----
-
-## Sistema Comercial
-
-### Concluído
-
-- [x] Estrutura inicial de produtos
-- [x] Estrutura de perfis
-- [x] Estrutura de trials
-- [x] Estrutura de licenças
-- [x] Estrutura de entitlements
-- [x] Estrutura de eventos de acesso
-- [x] Estrutura de administradores
-- [x] RLS inicial
-- [x] Trial backend de 30 dias
-- [x] Autoridade do trial transferida para Supabase
-
-### Em desenvolvimento
-
-- [ ] Licenciamento comercial
-- [ ] Entitlements operacionais
-- [ ] Controle definitivo de acesso
-- [ ] Registro de eventos de acesso
-- [ ] Operações comerciais seguras
-- [ ] Área administrativa
-- [ ] Integração de pagamentos
-
----
-
-## Próximo passo
-
-### Fase atual
-
-**Migrar do trial para o sistema comercial completo.**
-
-Prioridade:
-
-1. Validar o fluxo completo de autenticação + trial.
-2. Implementar o sistema de licenciamento.
-3. Implementar `entitlements` como autoridade de acesso aos recursos pagos.
-4. Integrar controle de acesso.
-5. Registrar eventos comerciais relevantes.
-6. Manter a ativação legada funcionando durante a migração.
-7. Remover gradualmente a dependência do sistema comercial legado somente depois da migração completa.
-
----
-
-## Princípio atual de arquitetura
-
-O aplicativo possui duas áreas que devem permanecer separadas:
-
-**Funcionalidade técnica**
-- cálculos;
-- módulos de usinagem;
-- histórico local;
-- funcionamento offline quando aplicável.
-
-**Identidade e acesso comercial**
-- usuário;
-- sessão;
-- trial;
-- licença;
-- entitlement;
-- controle de acesso;
-- eventos comerciais.
-
-A persistência local não deve ser utilizada como autoridade definitiva para autorização comercial.
-
----
-
-## Última atualização
-
-27/09/2026
+Use `docs/MARCO-2026-09-28-FLUXO-COMERCIAL.md` como snapshot histórico de `844d838`; este documento e o marco `HOME-E-FLUXO-COMERCIAL` descrevem a referência posterior `24475a0`.

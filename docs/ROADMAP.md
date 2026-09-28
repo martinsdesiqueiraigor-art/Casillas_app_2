@@ -1,69 +1,50 @@
-﻿# Casillas App 2.0 — Roadmap
+# Casillas App 2.0 — Roadmap
 
-## Estado atual
+## Estado de referência
 
-- Versão: 2.0 em desenvolvimento
-- Branch: casillas-2.0
-- Repositório: Casillas_app_2
-- Casillas v1.3.1 preservado em branch main
-- Supabase conectado
-- Banco inicial criado
-- RLS configurado
-- Testes de banco passando
-- Autenticação Supabase testada
-- Trial de 30 dias implementado no backend
+- Branch: `casillas-2.0`
+- Commit de referência: `24475a08cf6eadd83ec3fe8623735163540e5112` — refinamento visual da Home.
+- Supabase Auth, trial remoto e entitlement comercial fazem parte do fluxo cliente atual.
+- O projeto Supabase informado é `Casillas`, região `sa-east-1`, plano Free. Este documento não valida estado remoto atual.
+- Service Worker: `casillas-v10`.
 
+## Arquitetura vigente
+
+O acesso requer usuário autenticado. A aplicação consulta entitlement comercial; se não houver entitlement válido, consulta o trial remoto. `activate_casillas_license` é usado para ativar uma licença e o entitlement é consultado após o sucesso. IndexedDB não concede autorização. A licença não tem limite de aparelhos. A flag local `trial-activated` não é fonte de acesso.
+
+Home e módulos técnicos devem permanecer desacoplados do sistema comercial.
+
+## Próximas etapas
+
+1. Executar teste integrado do trial com a conta de teste já existente e registrar evidências sem alterar estado comercial indevidamente.
+2. Testar recarga, logout/login e erros de conectividade; testar expiração somente em ambiente/dados controlados.
+3. Revisar a rastreabilidade da função `get_casillas_entitlement()`: documentar a definição remota e preparar sua representação versionada após revisão própria.
+4. Revalidar grants, RLS e funções relacionadas ao acesso comercial antes de publicação.
+5. Testar atualização do Service Worker `casillas-v10`, instalação PWA, cache e comportamento offline. O acesso comercial requer conectividade para autenticação e consulta do servidor.
+6. Auditar futuramente `gerar-codigo.html` como ferramenta legada; mantê-la e seu pré-cache até confirmar que nenhum processo administrativo depende da URL.
+7. Revisar os manuais PDF e sua integração com a interface; a presença de arquivos na pasta, por si só, não foi confirmada como mecanismo de detecção automática.
+8. Avaliar publicação e pagamentos em etapas separadas, com URLs e resultados de implantação verificados no momento da execução.
+
+## Regra de execução
+
+Para cada etapa: definir escopo → inspecionar dependências → criar ponto de restauração quando houver mudança estrutural → implementar → testar → revisar diff e estado Git → documentar. Não inferir que uma etapa está pronta sem evidência observável.
 ## Princípios de desenvolvimento
 
-1. Separar código novo do legado
-2. Definir a autoridade de cada informação
-3. Criar uma camada central de acesso
-4. Manter os módulos técnicos independentes do sistema comercial
-5. Criar testes antes de substituições importantes
-6. Fazer commits pequenos e rastreáveis
-7. Manter main protegido
-8. Usar Definition of Done em cada etapa
-9. Não depender do frontend para segurança
-10. Deixar pagamentos para depois da infraestrutura comercial
-11. Mapear dependências antes de substituir arquivos
-
-## Etapas
-
-- [x] Auditoria e arquitetura
-- [x] Fundação Supabase
-- [x] Trial de 30 dias
-- [x] Infraestrutura de autenticação
-- [x] Conta / Auth integrado ao aplicativo
-- [x] Conectar trial ao usuário autenticado
-- [ ] Licenciamento
-- [ ] Entitlements
-- [ ] Controle de acesso
-- [ ] Operações comerciais seguras / Edge Functions
-- [ ] Área administrativa
-- [ ] Pagamentos
-- [ ] Segurança e testes finais
-- [ ] Finalização do PWA / Service Worker
-- [ ] Publicação do Casillas 2.0
-
-## Regra de trabalho
-
-Antes de uma alteração importante:
-
-1. Verificar dependências
-2. Criar ponto de restauração
-3. Implementar
-4. Executar testes
-5. Comparar o resultado
-6. Criar commit
+1. Backend é a autoridade para identidade e acesso comercial; nunca confiar em estado editável do navegador.
+2. Manter módulos técnicos desacoplados de Auth, trial, licença e pagamentos.
+3. Mapear consumidores antes de alterar arquivos centrais ou APIs.
+4. Fazer mudanças pequenas, rastreáveis e em escopos separados (cliente, banco, publicação).
+5. Proteger secrets e validar RLS, grants e funções no escopo correspondente.
+6. Não tratar resultados antigos de teste como validação atual.
+7. Preservar históricos e backups; não esconder ou remover cópias sem decisão.
 
 ## Definition of Done
 
-Uma etapa só é considerada concluída quando:
+Uma etapa pode ser marcada como concluída quando: escopo e dependências estão documentados; implementação/diff corresponde ao pedido; verificações adequadas foram executadas; riscos de segurança e cache foram considerados; comportamento esperado foi observado; documentação foi atualizada; e o estado Git foi revisado. Commit/publicação só ocorrem quando explicitamente autorizados.
 
-- código implementado
-- dependências verificadas
-- testes executados
-- segurança considerada
-- documentação atualizada
-- commit criado
-- estado do Git confirmado
+## Etapas atualizadas
+
+- **Concluídas no cliente:** Auth integrado; trial remoto; consulta de entitlement; ativação por RPC; remoção da flag local como autorização; remoção do limite/device ID legado de `trial.js`; Home refinada.
+- **Em validação:** fluxo funcional de trial e entitlement, erros/rede/expiração, atualização PWA e testes em dispositivos.
+- **Rastreabilidade pendente:** definir origem versionada de `get_casillas_entitlement()` após comparar a função remota, sem presumir divergência funcional.
+- **Backlog:** revisão futura de `gerar-codigo.html` e decisão sobre seu pré-cache; integração explícita dos PDFs de manuais; publicação pública e pagamentos com escopo e evidências próprios.

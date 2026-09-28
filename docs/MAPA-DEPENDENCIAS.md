@@ -1,411 +1,86 @@
-# Casillas App 2.0 — Mapa de Dependências
+# Casillas App 2.0 — Mapa de dependências
 
-## Objetivo
+## Estado de referência
 
-Este documento registra as principais relações entre os arquivos do Casillas 2.0.
+Este mapa descreve o código local na branch `casillas-2.0`. A autorização comercial é decidida pelo Supabase; IndexedDB permanece voltado ao estado e aos dados locais do aplicativo. O Service Worker está na versão `casillas-v10`.
 
-O objetivo é evitar alterações importantes sem verificar previamente quem depende de cada arquivo.
+## Entrada e acesso
 
----
-
-## Arquivos principais
-
-| Arquivo | Responsabilidade |
+| Arquivo | Responsabilidade e relações |
 |---|---|
-| index.html | Estrutura principal da aplicação |
-| js/app.js | Inicialização e controle principal |
-| js/trial.js | Sistema de trial e ativação |
-| js/db.js | Persistência local |
-| js/state.js | Estado da aplicação |
-| js/supabase.js | Configuração do cliente Supabase |
-| js/supabase.bundle.js | Cliente Supabase empacotado |
-| js/modules/ | Módulos técnicos |
-| service-worker.js | Cache e funcionamento PWA |
+| `index.html` | Estrutura da aplicação, telas de autenticação/ativação, navegação, banner do trial e carregamento de `js/app.js`. |
+| `auth.html`, `js/auth-page.js`, `js/auth.js` | Interface e operações Supabase Auth; sessão identifica o usuário. |
+| `js/app.js` | Ponto de entrada. Inicializa persistência, interface e menu; chama `checkTrialStatus()` antes de carregar Home. |
+| `js/trial.js` | Consulta entitlement, consulta/inicia trial, ativa licença pela RPC e atualiza a interface de acesso. |
+| `js/supabase.bundle.js` | Cliente Supabase usado no navegador. |
+| `js/supabase.js` | Configuração pública do cliente; não deve conter credenciais secretas. |
 
----
+## Fluxo de acesso
 
-## Relações principais
+1. `js/app.js` exige sessão Supabase e interrompe a inicialização protegida se não houver usuário autenticado.
+2. Antes de carregar o módulo inicial, chama `checkTrialStatus()` em `js/trial.js`.
+3. `checkTrialStatus()` consulta `get_casillas_entitlement()`. A resposta válida libera o acesso comercial e oculta o banner de trial.
+4. Sem entitlement válido, consulta `start_casillas_trial()`. Trial `ACTIVE` e dentro do prazo libera acesso e apresenta os dias restantes. Trial expirado ou falha de verificação bloqueia a interface.
+5. A ativação de licença usa `activate_casillas_license`; depois o cliente confirma o entitlement.
 
-### index.html
+As funções remotas são a autoridade dos dados comerciais. O resumo acima descreve a integração cliente; a definição implantada e as permissões devem ser verificadas separadamente no Supabase antes de mudanças de backend.
 
-Depende de:
+## Módulos técnicos e Home
 
-- js/app.js
+`js/app.js` registra 12 módulos carregáveis: `trig`, `coni`, `poly`, `furos`, `rosca`, `tol`, `potencia`, `chaveta`, `conicpad`, `prog`, `guia` e `consult`. `home` é a tela inicial e catálogo, implementada em `js/modules/home.js`, não um dos 12 módulos técnicos listados.
 
-Responsabilidade:
+A Home agrupa os módulos em Cálculos; Roscas e ajustes; Usinagem; Guias e suporte. O acesso rápido aponta para Trigonometria, Roscas, Potência de Corte e Programação CNC. A Home dispara `casillas:navigate-module`, tratado por `js/app.js`.
 
-- carregar a aplicação
-- fornecer a estrutura HTML
-- disponibilizar elementos da interface
+Os módulos técnicos devem continuar desacoplados de Auth, trial, licenciamento e operações comerciais.
 
----
+## Dados locais
 
-### js/app.js
+- `js/db.js` fornece acesso ao IndexedDB.
+- `js/state.js` utiliza `getDB`/`setDB` para persistir estado e dados locais.
+- Essa persistência não é autoridade para licença, entitlement ou validade de trial.
 
-Importa ou utiliza:
+## Consultoria e ferramenta legada
 
-- js/db.js
-- js/trial.js
-- js/supabase.bundle.js
-- js/auth.js
+`js/modules/consult.js` usa o helper de WhatsApp definido na própria área de consultoria; não depende mais de código de ativação por aparelho.
 
-Responsabilidade:
+`gerar-codigo.html` é uma ferramenta independente legada de geração/hash local. Não participa do fluxo normal nem cria licenças no Supabase. A decisão registrada é preservá-la temporariamente para eventual acesso administrativo direto. `service-worker.js` ainda a inclui no pré-cache, sem lógica específica para ela.
 
-- inicializar o aplicativo
-- controlar o fluxo principal
-- inicializar módulos
-- verificar o acesso ao aplicativo
-- coordenar a interface
+## Service Worker
 
-É um arquivo de alta dependência.
+`service-worker.js` pré-cacheia HTML, CSS, JavaScript e recursos da PWA usando `casillas-v10`. Mudanças nos arquivos carregados devem considerar invalidação e teste de cache. A presença no cache não significa que um recurso participe do fluxo de autorização.
 
-Alterações significativas devem ser feitas de forma cirúrgica.
+## Divergência a acompanhar
 
----
+O código cliente chama `get_casillas_entitlement()`. A busca local do histórico de migrations não localizou uma migration correspondente à função; a existência e definição remotas foram informadas como já implantadas. Manter a origem versionada dessa função como pendência de rastreabilidade, sem inferir que o backend remoto esteja ausente.
+## Mapa operacional compacto
 
-### js/trial.js
+| Arquivo/camada | Importa ou chama | Consumidores/risco |
+|---|---|---|
+| `index.html` | Carrega `js/app.js`; declara menu e áreas da interface. | Entrada da PWA; revisar com navegação e estilos. |
+| `auth.html` | Carrega o fluxo de página de autenticação. | `js/auth-page.js` e `js/auth.js` usam Supabase Auth. |
+| `js/app.js` | `db.js`, `state.js`, `trial.js`, `auth.js`, Supabase, menu/teclado e loaders dinâmicos. | Orquestra inicialização e autorização; alto risco. |
+| `js/trial.js` | `supabase.bundle.js`; RPCs de entitlement, trial e ativação. | Chamado por `app.js`; alto risco comercial. |
+| `js/db.js` | IndexedDB. | Inicialização em `app.js`; `state.js` usa persistência. Não usar como autorização. |
+| `js/state.js` | `db.js`. | `app.js` e módulos; `getDB`/`setDB` atendem estado local. |
+| `js/modules/home.js` | Ícones e DOM; emite `casillas:navigate-module`. | Recebe estado de acesso; evento tratado por `app.js`. |
+| `js/modules/*.js` | Utilitários, estado e `js/calc/` quando aplicável. | Loader dinâmico em `app.js`; manter sem dependência comercial. |
+| `js/modules/consult.js` | Helpers de WhatsApp e estado/UI local. | Ação de ativação leva ao suporte; não importa mais `trial.js` para código por aparelho. |
+| `js/supabase.js` / `js/supabase.bundle.js` | Configuração pública / cliente empacotado. | Auth e `trial.js`; nenhum secret administrativo pode ir ao navegador. |
+| `service-worker.js` | `CACHE_ASSETS`, incluindo módulos e arquivos estáticos. | Atualização de cache pode servir código antigo; revisar versão e instalação PWA. |
 
-Importa ou utiliza:
+### Dependências críticas e riscos
 
-- js/db.js
-- js/supabase.bundle.js
+- Mudanças em `trial.js` precisam considerar a ordem Auth → entitlement → trial, UI de bloqueio/banner, handler de ativação e chamadas do `app.js`.
+- Mudanças em `app.js` podem afetar os loaders, títulos, menus, estado de acesso e eventos Home.
+- Mudanças em `db.js`/`state.js` podem afetar persistência de múltiplos módulos, mas não devem alterar autorização comercial.
+- Mudanças em módulo devem conferir menu (`index.html`), `MODULE_LOADERS`/`MODULE_TITLES`, catálogo Home, CSS, dados e `CACHE_ASSETS`.
+- Mudanças de RPC/schema dependem de migrations versionadas, RLS/grants e revisão remota independente; não inferir que fonte local e remota estejam sincronizadas.
 
-Também é utilizado por:
+### Checklist antes de substituir ou remover
 
-- js/app.js
-- js/modules/consult.js
-
-Responsabilidade atual:
-
-- verificação do acesso;
-- trial no Supabase para usuários não licenciados;
-- ativação legada;
-- códigos de ativação;
-- identificação de dispositivo;
-- compatibilidade durante a migração comercial.
-
-Estado arquitetural:
-
-O Supabase é atualmente a autoridade do trial para usuários não licenciados.
-
-O sistema local de ativação permanece temporariamente para preservar a compatibilidade com usuários que já possuem uma ativação válida.
-
-A migração comercial ainda não foi concluída para licenças e entitlements.
-
----
-
-### js/db.js
-
-Utilizado por:
-
-- js/app.js
-- js/state.js
-- js/trial.js
-
-Responsabilidade:
-
-- IndexedDB
-- persistência local
-
-Não deve ser utilizado como autoridade para:
-
-- licença
-- trial comercial
-- autorização comercial
-- permissões de usuário
-
----
-
-### js/state.js
-
-Depende de:
-
-- js/db.js
-
-Responsabilidade:
-
-- gerenciamento do estado local da aplicação
-- persistência de informações relacionadas ao funcionamento do aplicativo
-
----
-
-### js/modules/
-
-Contém os módulos técnicos do Casillas.
-
-Responsabilidade:
-
-- cálculos
-- fórmulas
-- ferramentas técnicas
-- funcionalidades específicas de usinagem
-
-Regra arquitetural:
-
-Os módulos técnicos devem permanecer independentes de:
-
-- Supabase
-- autenticação
-- trial
-- licenciamento
-- pagamentos
-
----
-
-### js/modules/consult.js
-
-Possui dependência histórica de:
-
-- js/trial.js
-
-Utiliza:
-
-- WHATSAPP
-- getActivationCodeForCurrentDevice()
-
-Também possui funcionalidades relacionadas a:
-
-- consultoria
-- ativação
-- comunicação
-- links comerciais
-
-Esta dependência deve ser considerada antes de alterar ou reescrever trial.js.
-
----
-
-### js/supabase.js
-
-Responsabilidade:
-
-- configuração do cliente Supabase
-- URL do projeto
-- chave pública do projeto
-
-Não deve conter:
-
-- service_role
-- secret keys
-- senhas
-- credenciais administrativas
-
-Este arquivo serve como fonte de configuração para o cliente Supabase antes do empacotamento.
-
----
-
-### js/supabase.bundle.js
-
-Responsabilidade:
-
-- disponibilizar o cliente Supabase para o frontend estático
-
-Motivo:
-
-O GitHub Pages não resolve diretamente o import de:
-
-@supabase/supabase-js
-
-O bundle permite que o navegador carregue o cliente Supabase como módulo local.
-
----
-
-### service-worker.js
-
-Possui dependências relacionadas a:
-
-- js/app.js
-- js/trial.js
-- js/db.js
-
-Responsabilidade:
-
-- cache
-- recursos offline
-- funcionamento PWA
-
-Alterações em arquivos JavaScript importantes devem considerar o cache do Service Worker.
-
----
-
-## Supabase
-
-O sistema comercial possui as seguintes entidades principais:
-
-- products
-- profiles
-- trials
-- licenses
-- entitlements
-- access_events
-- admin_roles
-
-### Relações conceituais
-
-Usuário autenticado:
-
-Supabase Auth
-
-↓
-
-profiles
-
-↓
-
-trials
-
-licenses
-
-entitlements
-
-↓
-
-controle de acesso comercial
-
----
-
-## Autoridade das informações
-
-### Frontend
-
-Autoridade:
-
-- interface
-- navegação
-- apresentação
-- cálculos executados no cliente
-
-Não é autoridade para:
-
-- licença
-- trial comercial
-- autorização
-- permissões administrativas
-
-### IndexedDB
-
-Autoridade:
-
-- histórico local
-- preferências
-- estado local
-- dados necessários ao funcionamento offline
-
-Não é autoridade comercial.
-
-### Supabase Auth
-
-Autoridade:
-
-- identidade do usuário
-- sessão
-- autenticação
-
-### Backend / Supabase
-
-Autoridade:
-
-- trial
-- licenças
-- entitlements
-- autorização comercial
-- operações administrativas
-
----
-
-## Dependências críticas
-
-As seguintes dependências devem ser verificadas antes de alterações importantes:
-
-### trial.js
-
-Verificar:
-
-- app.js
-- consult.js
-- service-worker.js
-- gerar-codigo.html
-
-### app.js
-
-Verificar:
-
-- index.html
-- trial.js
-- db.js
-- módulos
-- service-worker.js
-
-### db.js
-
-Verificar:
-
-- app.js
-- state.js
-- trial.js
-
-### supabase.bundle.js
-
-Verificar:
-
-- app.js
-- trial.js
-- futuras camadas de autenticação
-- futuras camadas comerciais
-
----
-
-## Regra para substituição de arquivos
-
-Nenhum arquivo de alta dependência deve ser substituído diretamente sem:
-
-1. Mapear seus consumidores
-2. Verificar imports
-3. Verificar funções exportadas
-4. Verificar efeitos colaterais
-5. Criar ponto de restauração
-6. Implementar
-7. Testar
-8. Comparar comportamento
-9. Criar commit
-
----
-
-## Arquivos de maior risco de alteração
-
-### Alto risco
-
-- js/app.js
-- js/trial.js
-- js/db.js
-- service-worker.js
-
-### Risco médio
-
-- js/state.js
-- js/modules/consult.js
-- js/supabase.js
-
-### Menor risco arquitetural
-
-- novos módulos técnicos isolados
-- documentação
-- CSS aditivo
-
----
-## Estratégia para o Casillas 2.0
-
-A evolução deve seguir esta ordem:
-
-1. ~~Autenticação~~ — concluída
-2. ~~Conta do usuário~~ — concluída
-3. ~~Integração do trial com usuário autenticado~~ — concluída
-4. Licenciamento
-5. Entitlements
-6. Controle de acesso
-7. Operações comerciais seguras
-8. Administração
-9. Pagamentos
-10. Segurança final
-11. Publicação
-
-Os módulos técnicos existentes devem permanecer independentes desse processo.
+1. Buscar imports, exports, chamadas por nome, listeners/eventos e referências de texto no projeto.
+2. Conferir se páginas administrativas, ferramentas HTML, documentação ou Service Worker usam o recurso.
+3. Confirmar o comportamento substituto e compatibilidade dos dados existentes.
+4. Fazer backup somente conforme escopo autorizado, sem sobrescrever backups antigos.
+5. Implementar alteração mínima; validar sintaxe, lint/testes pertinentes, interface, PWA/cache e diff.
+6. Conferir `git status --short` para garantir que só os arquivos pretendidos foram tocados.

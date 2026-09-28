@@ -50,3 +50,30 @@ node_modules/
 *.backup-auth
 
 supabase/backup-2026-09-27*.sql
+
+# Local environment secrets
+.env
+.env.*
+!.env.example
+!.env.*.example
+
+# Local caches and test artifacts
+.cache/
+.vite/
+coverage/
+.npm/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# Editor and operating system temporary files
+.idea/
+*.swp
+*.swo
+*~
+*.tmp
+*.temp
+Desktop.ini

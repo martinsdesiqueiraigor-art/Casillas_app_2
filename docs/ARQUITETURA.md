@@ -1,212 +1,117 @@
 # Casillas App 2.0 — Arquitetura
 
+Estado deste documento: marco `24475a08cf6eadd83ec3fe8623735163540e5112`, branch `casillas-2.0`.
+
 ## Visão geral
 
-O Casillas 2.0 é dividido em quatro responsabilidades principais:
+O Casillas separa a interface e os cálculos técnicos da identidade e do acesso comercial. O Supabase é a autoridade para Auth, trial, licenças e entitlements. IndexedDB guarda estado de uso do aplicativo, não direitos comerciais.
 
-1. Aplicativo
-2. Conta e autenticação
-3. Sistema comercial
-4. Persistência local
+## Inicialização e acesso
 
-A separação existe para evitar que regras comerciais e de segurança fiquem dependentes do frontend.
+1. `auth.html` autentica a conta por Supabase Auth.
+2. `js/app.js` verifica o usuário autenticado; sem sessão válida, encaminha para autenticação.
+3. Antes de abrir a Home, `checkTrialStatus()` em `js/trial.js` consulta o entitlement comercial.
+4. Entitlement válido libera o acesso; sem entitlement válido, o cliente consulta/inicia o trial remoto.
+5. Trial `ACTIVE` dentro da validade libera o acesso; trial expirado ou erro sem alternativa válida mantém o bloqueio da interface.
+6. Após a confirmação, o aplicativo abre a Home e carrega os módulos pelo mapa `MODULE_LOADERS` de `js/app.js`.
 
-## 1. Aplicativo
+A ativação comercial envia o código à RPC `activate_casillas_license`; após a resposta, o cliente consulta novamente o entitlement antes de liberar a interface.
 
-Responsável por:
+## Camadas
 
-- Interface
-- Navegação
-- Calculadoras técnicas
-- Histórico local
-- Preferências
-- Teclado personalizado
-- Funcionamento offline
+### Interface e módulos
 
-Os módulos técnicos não devem depender diretamente do sistema comercial.
+- `index.html`: estrutura do aplicativo, cabeçalho, Home, navegação e tela de ativação.
+- `js/app.js`: autenticação inicial, verificação de acesso, roteamento e carregamento dinâmico.
+- `js/modules/home.js`: apresentação do estado de acesso recebido e atalhos para módulos existentes.
+- `js/modules/*.js`: interface dos módulos técnicos; encaminha operações para funções de `js/calc/` quando aplicável.
+- `css/`: tokens visuais, layout, componentes e estilos dos módulos.
 
-## 2. Conta e autenticação
+### Identidade e sistema comercial
 
-Responsável por:
+- `js/auth.js`, `js/auth-page.js`: operações de Supabase Auth usadas pelo fluxo de conta.
+- `js/trial.js`: consulta entitlement e trial; conduz a ativação por RPC.
+- Supabase/PostgreSQL: mantém trial, licenças, entitlements, eventos e controles de acesso.
+- RLS e funções de banco limitam acesso a dados e operações comerciais.
 
-- Cadastro
-- Login
-- Logout
-- Sessão
-- Identificação do usuário
-- Recuperação de acesso
+### Estado local e PWA
 
-Tecnologia:
+- `js/db.js` e `js/state.js`: IndexedDB para estado do aplicativo e dados locais de interface.
+- `service-worker.js`: cache PWA, atualmente `casillas-v10`; inclui a Home dinâmica.
+- O cache de recursos não substitui Auth ou a validação online de trial/entitlement.
 
-- Supabase Auth
-- @supabase/supabase-js
-
-O usuário autenticado é identificado pelo Supabase Auth.
-O aplicativo verifica a existência de uma sessão antes de iniciar a área principal.
-
-Usuários não autenticados são direcionados para `auth.html`.
-
-## 3. Sistema comercial
-
-Responsável por:
-
-- Trial
-- Licença
-- Entitlements
-- Controle de acesso
-- Eventos comerciais
-- Administração
-- Futuramente pagamentos
-
-A autoridade comercial deve permanecer no backend.
-Para usuários não licenciados, o Supabase é atualmente a autoridade do trial.
-
-A ativação paga legada permanece temporariamente válida durante a migração para o novo sistema comercial.
-
-### Tabelas principais
-
-- products
-- profiles
-- trials
-- licenses
-- entitlements
-- access_events
-- admin_roles
-
-## 4. Persistência local
-
-Responsável por:
-
-- Histórico
-- Estado do aplicativo
-- Preferências
-- Dados necessários para funcionamento offline
-- Cache
-
-IndexedDB e armazenamento local não devem ser utilizados como autoridade para:
-
-- validade da licença
-- duração real do trial
-- autorização comercial
-- quantidade de dispositivos autorizados
-
-## Fluxo conceitual
-
-USUÁRIO
-   |
-   v
-CASILLAS APP
-   |
-   +----> Interface
-   |
-   +----> Módulos técnicos
-   |
-   +----> Persistência local
-   |
-   v
-SUPABASE AUTH
-   |
-   v
-USUÁRIO AUTENTICADO
-   |
-   v
-SISTEMA COMERCIAL
-   |
-   +----> Trial
-   +----> Licença
-   +----> Entitlements
-   +----> Controle de acesso
-   |
-   v
-BANCO POSTGRESQL
-
-## Autoridade das informações
+## Autoridade dos dados
 
 | Informação | Autoridade |
 |---|---|
-| Cálculos técnicos | Código dos módulos |
-| Interface | Frontend |
-| Histórico local | IndexedDB |
-| Sessão | Supabase Auth |
-| Identidade do usuário | Supabase Auth |
-| Trial de usuário não licenciado | Supabase / PostgreSQL |
-| Licença | Sistema comercial do backend |
-| Entitlements | Sistema comercial do backend |
-| Autorização comercial | Backend |
-| Administração | Backend |
-## Segurança
+| Identidade e sessão | Supabase Auth |
+| Trial e validade | Supabase/PostgreSQL |
+| Licença e entitlement | Sistema comercial no Supabase |
+| Acesso comercial | Resultado validado pelo backend e apresentado pelo cliente |
+| Estado da interface e preferências | IndexedDB |
+| Fórmulas e cálculos | Módulos e funções locais de cálculo |
 
-O frontend nunca deve ser considerado uma autoridade de segurança.
+## Produto e módulos
 
-O cliente pode:
+A Home apresenta os 12 módulos em quatro grupos visuais: Cálculos; Roscas e ajustes; Usinagem; Guias e suporte. A lista nominal está no [README](../README.md). A Home não duplica cálculos nem cria uma regra própria de autorização.
 
-- solicitar informações
-- apresentar informações
-- iniciar operações autorizadas
+## Repositório e organização
 
-O backend deve:
+Repositório de desenvolvimento: [Casillas_app_2](https://github.com/martinsdesiqueiraigor-art/Casillas_app_2), branch `casillas-2.0`.
 
-- validar identidade
-- validar permissões
-- controlar operações comerciais
-- proteger dados sensíveis
+```text
+index.html, auth.html
+css/
+js/app.js, js/auth*.js, js/trial.js
+js/modules/, js/calc/, js/data/
+dados/, icons/, manuais/
+service-worker.js
+supabase/migrations/, supabase/tests/
+docs/
+```
 
-## Regra de dependência
+`gerar-codigo.html` permanece como ferramenta legada/admin independente e fora do fluxo comercial normal. A decisão de preservá-la temporariamente deve ser respeitada.
 
-Os módulos técnicos devem permanecer independentes de:
+## Diretrizes de alteração
 
-- Supabase
-- Auth
-- Licenciamento
-- Trial
-- Pagamentos
+- Não transferir autoridade comercial ao navegador ou ao armazenamento local.
+- Manter os módulos técnicos separados de Auth, trial e licenciamento.
+- Antes de alterar roteamento ou cache, mapear os consumidores e validar a experiência PWA.
+- Preservar documentos históricos e backups; corrigir somente o que estiver apresentado como estado atual.
 
-A camada comercial deve se comunicar com o aplicativo por interfaces bem definidas.
+Veja também [Segurança](SEGURANCA.md), [Mapa de dependências](MAPA-DEPENDENCIAS.md) e [Marco 2026-09-28](MARCO-2026-09-28-HOME-E-FLUXO-COMERCIAL.md).
+## Responsabilidades e caminho de autorização
 
-## Estrutura atual
+```text
+Navegador
+├── Interface e módulos técnicos (index.html, js/modules/, js/calc/)
+├── Identidade e sessão (js/auth*.js → Supabase Auth)
+├── Orquestração (js/app.js)
+│   └── checkTrialStatus() (js/trial.js)
+│       ├── RPC get_casillas_entitlement()
+│       ├── sem entitlement válido → RPC start_casillas_trial()
+│       └── ativação submetida → RPC activate_casillas_license()
+└── IndexedDB (js/db.js, js/state.js): preferências/estado local
 
-Casillas_app/
-├── css/
-├── dados/
-├── icons/
-├── js/
-│   ├── auth.js
-│   ├── auth-page.js
-│   ├── app.js
-│   ├── db.js
-│   ├── state.js
-│   ├── trial.js
-│   ├── supabase.js
-│   ├── supabase.bundle.js
-│   └── modules/
-├── manuais/
-├── supabase/
-│   ├── migrations/
-│   └── tests/
-├── docs/
-├── auth.html
-└── index.html
+Supabase/PostgreSQL: identidade, dados comerciais e decisão de entitlement/trial
+```
 
-## Diretriz para futuras alterações
+O fluxo e as verificações de acesso descritos aqui são os do cliente local. As funções remotas, permissões e políticas devem ser conferidas nas migrations disponíveis e em consultas somente leitura antes de afirmar o estado implantado.
 
-Antes de substituir ou alterar significativamente um arquivo:
+## Relações e pontos de entrada
 
-1. Identificar quem importa o arquivo
-2. Identificar quem utiliza suas funções
-3. Identificar efeitos colaterais
-4. Criar backup ou ponto de restauração
-5. Implementar a alteração
-6. Executar testes
-7. Verificar o comportamento do aplicativo
-8. Criar commit
+- `index.html` carrega `js/app.js`; `auth.html` usa a camada `js/auth-page.js`/`js/auth.js`.
+- `js/app.js` importa `initDB`, estado local, `checkTrialStatus`, Supabase Auth e o mapa de loaders para Home/módulos.
+- `js/trial.js` importa o cliente Supabase; não usa IndexedDB como autoridade comercial.
+- `js/modules/home.js` recebe o estado de acesso e emite `casillas:navigate-module`; `js/app.js` recebe o evento e carrega o módulo.
+- Os módulos técnicos mantêm a interface; `js/calc/` contém cálculos puros onde separados.
+- `service-worker.js` guarda recursos estáticos, não a decisão de autorização.
 
-## Objetivo arquitetural
+## Sequência para mudanças estruturais
 
-A arquitetura final deve permitir:
-
-- aplicativo técnico independente
-- autenticação confiável
-- trial controlado pelo backend
-- licenciamento seguro
-- funcionamento offline das calculadoras
-- evolução comercial sem reescrever os módulos técnicos
+1. Confirmar branch, commit e estado local; identificar backups e arquivos não rastreados.
+2. Mapear imports, exports, eventos, consumidores e recursos no pré-cache.
+3. Delimitar mudanças de interface, código, migrations e configurações como tarefas separadas.
+4. Alterar de forma pequena, preservando dados e autoridade comercial do backend.
+5. Executar verificações do escopo, testar fluxo e revisar diff, whitespace e status.
+6. Documentar o resultado e as limitações; publicar somente após validação e autorização apropriadas.

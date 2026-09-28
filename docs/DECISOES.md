@@ -1,3 +1,10 @@
+# Estado vigente em 28/09/2026
+
+A referência atual é o marco `24475a08cf6eadd83ec3fe8623735163540e5112` (`feat: refinar Home do Casillas 2.0`). Supabase Auth identifica o usuário; `js/trial.js` consulta entitlement remoto e, sem entitlement válido, o trial remoto. Licenças são ativadas por `activate_casillas_license`; o acesso não depende de flag local nem de limite de aparelhos. A implementação detalhada e as pendências de teste/rastreabilidade estão em `docs/MARCO-2026-09-28-HOME-E-FLUXO-COMERCIAL.md`.
+
+Este estado vigente substitui como descrição do presente as decisões 6 e 16 abaixo. Elas permanecem para preservar o histórico da transição; suas descrições de ativação local e migração comercial incompleta não representam a arquitetura atual.
+
+---
 # Casillas App 2.0 — Decisões Arquiteturais
 
 ## Objetivo
@@ -88,7 +95,7 @@ A autoridade definitiva sobre o período do trial será o backend.
 
 ---
 
-## 6. Sistema local de trial durante a transição
+## 6. [HISTÓRICA — superada] Sistema local de trial durante a transição
 
 O sistema legado de trial continuará existindo durante a transição.
 
@@ -230,7 +237,7 @@ Novos arquivos arquiteturais podem ser criados separadamente quando isso reduzir
 
 ---
 
-## 16. Autenticação integrada antes da autoridade do trial
+## 16. [HISTÓRICA — superada] Autenticação integrada antes da autoridade do trial
 
 A integração do Supabase Auth foi concluída antes da transferência da autoridade do trial para o Supabase.
 
