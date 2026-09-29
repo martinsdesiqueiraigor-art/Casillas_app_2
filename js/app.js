@@ -129,10 +129,9 @@ function initInstallButton() {
 
 function registerServiceWorker() {
   if (!('serviceWorker' in navigator)) return;
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./service-worker.js').catch((err) => {
-      console.warn('Falha ao registrar service worker:', err);
-    });
+  const serviceWorkerUrl = new URL('../service-worker.js', import.meta.url);
+  navigator.serviceWorker.register(serviceWorkerUrl).catch((err) => {
+    console.warn('Falha ao registrar service worker:', err);
   });
 }
 
