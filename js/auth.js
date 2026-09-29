@@ -28,7 +28,7 @@ export async function signUp(email, password) {
 
 export async function resetPassword(email) {
   return supabase.auth.resetPasswordForEmail(email, {
-    redirectTo: `${window.location.origin}/auth.html`
+    redirectTo: new URL('auth.html', window.location.href).href
   });
 }
 
