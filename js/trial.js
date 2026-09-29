@@ -95,7 +95,7 @@ const KEYS = {
 // UI — TELA DE ATIVAÇÃO
 // ═══════════════════════════════════════════════════════════
 
-function showActivationScreen(mensagem) {
+export function showActivationScreen(mensagem) {
   const screen = document.getElementById('activation-screen');
   if (screen) screen.classList.remove('hidden');
   const content = document.getElementById('app-content');

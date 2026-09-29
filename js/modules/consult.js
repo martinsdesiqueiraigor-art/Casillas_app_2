@@ -3,7 +3,7 @@
 
 import { createElementSafe, showToast } from '../utils.js';
 import { updateKPIs, updateHeader } from '../state.js';
-import { WHATSAPP } from '../trial.js';
+import { WHATSAPP, showActivationScreen } from '../trial.js';
 
 // ═══════════════════════════════════════════════════════════
 // LINKS
@@ -153,30 +153,35 @@ export function render(container) {
   cardCursos.appendChild(listaCursos);
   container.appendChild(cardCursos);
 
-  // ─── Card 5: Ativação ───
+  // ─── Card 5: Licença ───
   const cardAtivacao = createElementSafe('div', { class: 'card' });
+
   cardAtivacao.appendChild(createElementSafe('h3', {
     class: 'card-title',
-    text: '🔑 Ativação de licença'
+    text: '🔑 Licença'
   }));
+
   cardAtivacao.appendChild(createElementSafe('p', {
     class: 'result-hint',
-    text: 'Para ativar o app ou renovar sua licença, entre em contato.'
+    text: 'Ative com o código que você recebeu ou fale com a gente para adquirir uma licença.'
   }));
 
   const btnsAtivacao = createElementSafe('div', { class: 'btn-row' });
+
   btnsAtivacao.appendChild(createElementSafe('button', {
     type: 'button',
-    class: 'btn btn-secondary',
-    text: '🔑 Ativação',
-    onclick: () => abrirWhatsApp('Olá! Preciso de ajuda para ativar minha licença do Casillas App.')
+    class: 'btn btn-primary',
+    text: '🔑 Ativar com código',
+    onclick: () => showActivationScreen()
   }));
+
   btnsAtivacao.appendChild(createElementSafe('button', {
     type: 'button',
     class: 'btn btn-outline',
     text: '💳 Comprar licença',
     onclick: () => abrirWhatsApp('Olá! Quero comprar uma licença do Casillas App.')
   }));
+
   cardAtivacao.appendChild(btnsAtivacao);
   container.appendChild(cardAtivacao);
 
