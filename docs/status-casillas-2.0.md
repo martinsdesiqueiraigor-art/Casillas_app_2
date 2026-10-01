@@ -1,115 +1,28 @@
-# Casillas 2.0 — Estado do Projeto
+# Status do Casillas 2.0
 
-## Marco: pós-deploy PWA
+## Snapshot de publicação registrado
 
-Data: 29/09/2026
+O registro de 29/09/2026 documentou o workflow GitHub Pages `.github/workflows/static.yml`, publicação no endereço abaixo e reconhecimento do manifest e Service Worker no Chrome:
 
-### Git
+<https://martinsdesiqueiraigor-art.github.io/Casillas_app_2/>
 
-Branch:
+O teste relatou Service Worker ativo (versão observada `#32` naquele momento), manifest com `standalone`, ícones 192/512 e carregamento offline até login. Isso é evidência histórica e não foi repetida nesta revisão. Não confundir versão observada pelo navegador com a constante local `casillas-v10`.
 
-`casillas-2.0`
+## Estado do código local em 29/09/2026
 
-Workflow ativo de GitHub Pages:
+- Branch `casillas-2.0`, HEAD `629ebe3` no início desta atualização.
+- Manifest: `start_url: ./index.html`, `scope: ./`, `display: standalone`, orientação `portrait`; ícones em `icons/icon-192.png` e `icons/icon-512.png`.
+- `service-worker.js` registra `casillas-v10`, pré-cacheia arquivos estáticos e módulos, estratégia network-first para navegação com fallback `offline.html`, cache-first para outros GETs same-origin.
+- `js/app.js` registra o Service Worker e implementa botão de instalação quando o navegador emite `beforeinstallprompt`.
+- O app consulta Auth/RPCs comerciais online. O teste completo de sessão autenticada e cálculos offline segue pendente.
+- Workflow Pages presente: `.github/workflows/static.yml`. A existência local não comprova execução ou configuração remota atual.
 
-`.github/workflows/static.yml`
+## Próximas verificações
 
-Workflow duplicado removido:
+Validar em navegador/origem publicada a instalação, escopo sob `/Casillas_app_2/`, atualização e limpeza de cache antigo, navegação offline, e comportamento após autenticação online. Registrar separadamente o que funciona para recursos/cálculos e o que depende de Auth/entitlement online.
 
-`.github/workflows/pages.yml`
+Nenhuma validação de navegador, publicação ou serviço remoto foi realizada nesta atualização documental.
 
-O workflow `static.yml` executou com sucesso após o commit `4433e6e`.
+## Atualização do estado comercial remoto
 
-A remoção do workflow duplicado foi registrada no commit:
-
-`2082a88` — `ci: remover workflow duplicado do GitHub Pages`
-
-### GitHub Pages
-
-Aplicação publicada em:
-
-`https://martinsdesiqueiraigor-art.github.io/Casillas_app_2/`
-
-O site está acessível.
-
-### PWA / Manifest
-
-O manifest foi reconhecido pelo Chrome.
-
-Nome:
-
-`Casillas App — Calculadora Técnica de Usinagem`
-
-Nome curto:
-
-`Casillas`
-
-Orientação:
-
-`portrait`
-
-Modo de exibição:
-
-`standalone`
-
-Ícones 192×192 e 512×512 reconhecidos.
-
-Os avisos apresentados pelo Chrome sobre `id`, screenshots, ícones maskable e `display-override` são recomendações e não foram tratados neste marco.
-
-### Service Worker
-
-Arquivo:
-
-`service-worker.js`
-
-O Service Worker foi registrado corretamente no GitHub Pages.
-
-Status observado:
-
-`activated and is running`
-
-Versão observada durante o teste:
-
-`#32`
-
-Clientes observados sob controle do Service Worker:
-
-- `/Casillas_app_2/`
-- `/Casillas_app_2/index.html`
-- `/Casillas_app_2/?utm_source=chatgpt.com`
-
-Ciclo observado:
-
-`Install → Wait → Activate`
-
-### Teste offline
-
-O teste offline foi iniciado.
-
-Com o navegador em modo Offline, a aplicação conseguiu carregar até a tela de login.
-
-A persistência/restauração da sessão Supabase em cenário offline ainda não foi validada.
-
-Portanto, o teste de funcionamento completo offline permanece pendente.
-
-### Próximo passo
-
-Retomar os testes a partir da persistência da sessão Supabase:
-
-1. autenticar normalmente enquanto online;
-2. confirmar acesso à Home;
-3. verificar persistência da sessão;
-4. entrar em modo Offline;
-5. recarregar;
-6. verificar se a sessão autenticada é restaurada;
-7. testar navegação e cálculos offline.
-
-Nenhuma alteração de código deve ser feita até esse teste ser concluído.
-
-### Estado de segurança do marco
-
-Nenhuma alteração foi feita no Supabase durante este marco.
-
-Nenhuma alteração foi feita no Service Worker durante este marco.
-
-Nenhuma alteração foi feita no código comercial de autenticação, trial ou entitlement durante este marco.
+A investigação Supabase mais recente confirmou o fluxo comercial funcional no ambiente remoto. As funções privadas/públicas de entitlement e a implementação privada da ativação estão versionadas localmente. `public.activate_casillas_license(text)` também existe no Supabase remoto, mas não está representada nas migrations atuais nem foi encontrada no histórico pesquisável deste repositório; o estado é schema drift conhecido. Isso não significa que a função esteja quebrada ou que exista bypass. Nenhuma migration corretiva será criada nesta etapa. A próxima etapa de desenvolvimento está prevista para `casillas-2.0-hardening`; a branch atual não foi alterada.

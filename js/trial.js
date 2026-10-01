@@ -328,6 +328,16 @@ export async function checkTrialStatus() {
     return { ok: true, activated: true, daysLeft: Infinity };
   }
 
+  if (entitlement.reason) {
+    showActivationScreen('Não foi possível verificar seu acesso. Verifique sua conexão e tente novamente.');
+    return {
+      ok: false,
+      activated: false,
+      reason: entitlement.reason,
+      daysLeft: 0
+    };
+  }
+
   // Para usuários não licenciados, o Supabase é a autoridade do trial.
   const supabaseTrial = await getSupabaseTrial();
 

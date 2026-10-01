@@ -8,7 +8,7 @@ import { initKeyboard, bindInputsToKeyboard, hideKeyboard } from './keyboard.js'
 import {initMenu, setActiveMenuItem, initOptionsMenu, closeOptionsMenu, initShareButton, renderMenuIcons } from './menu.js';
 import { ICONS } from './icons.js';
 import { supabase } from './supabase.bundle.js';
-import { getCurrentUser } from './auth.js';
+import { getCurrentUser, onAuthStateChange } from './auth.js';
 
 // Registro dos módulos (carregamento dinâmico)
 const MODULE_LOADERS = {
@@ -307,6 +307,12 @@ console.log('💡 Digite forcarAtualizacao() no console para limpar cache');
 window.addEventListener('casillas:activated', () => {
   const initial = appState.currentModule || 'trig';
   loadModule(initial);
+});
+
+onAuthStateChange((event) => {
+  if (event === 'SIGNED_OUT') {
+    window.location.href = './auth.html';
+  }
 });
 
 document.addEventListener('DOMContentLoaded', boot);

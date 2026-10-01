@@ -77,3 +77,11 @@ pnpm-debug.log*
 *.tmp
 *.temp
 Desktop.ini
+
+# Backups locais (nunca versionar)
+backups/
+*.backup
+*.dump
+
+# Snippets locais do Supabase Studio
+supabase/snippets/
