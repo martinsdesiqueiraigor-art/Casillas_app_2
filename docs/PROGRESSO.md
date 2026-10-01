@@ -233,3 +233,76 @@ IMPLICAÇÕES PARA G4.2.2b:
 - Teste offline real só é válido para usuário logado
 - Cenário "usuário novo offline" deve ser documentado
   como comportamento esperado, não como falha
+
+## 01/10 â€” ObservaÃ§Ã£o: possÃ­vel contaminaÃ§Ã£o de G2
+
+Durante os testes de G2 (Auth/Trial/AtivaÃ§Ã£o, 12/12 passando),
+um servidor antigo (v10) estava ativo na porta 4175, servindo
+cÃ³digo diferente do repositÃ³rio atual.
+
+Os 12 testes passaram, e o backend local Ã© o mesmo. PorÃ©m, o
+frontend testado pode ter sido v10, nÃ£o o cÃ³digo atual (v12).
+
+IMPACTO:
+- G2 nÃ£o Ã© necessariamente invÃ¡lido â€” a lÃ³gica de auth/trial/
+  ativaÃ§Ã£o provavelmente Ã© idÃªntica entre v10 e v12
+- Mas a evidÃªncia estÃ¡ contaminada
+
+AÃ‡ÃƒO PENDENTE:
+- Revalidar os testes de G2 contra o cÃ³digo atual
+- Pode ser feito como parte de G4.2.2b ou como etapa prÃ³pria
+- NÃ£o corrigir nada agora
+
+## 01/10 — G4.2.1 concluído: instalação e atualização do SW
+
+TESTES EXECUTADOS:
+- Instalação limpa: SW v12 ativo, 50 entradas, 6 assets críticos presentes
+- Atualização simulada v99 ? v12: cache antigo removido corretamente
+- Caches finais: apenas casillas-v12
+
+DESCOBERTAS:
+
+1. Fluxo de redirect para auth.html
+
+Em uma instalação limpa sem sessão autenticada, / redireciona
+para /auth antes de registrar o Service Worker. Isso significa
+que usuários novos (sem login) não têm o SW registrado antes de
+fazer login. O comportamento será considerado no fluxo offline.
+
+2. Servidor antigo na porta 4175
+
+Um servidor antigo (v10) estava rodando antes de G4.2.1.
+Foi substituído pelo servidor atual apontando para
+C:\Projetos\Casillas_app_2.
+
+OBSERVAÇÃO SOBRE CONTAMINAÇÃO POTENCIAL:
+
+Como o servidor antigo servia v10, os testes de G2 (Auth,
+Trial, Ativação) podem ter rodado contra a versão antiga do
+frontend. Os testes foram 12/12 PASS, e o backend local é o
+mesmo — mas o frontend testado pode ter sido v10, não o estado
+atual. Recomendação: revalidar o fluxo de auth em etapa própria.
+
+EVIDÊNCIA:
+- SW hash final: BDDB1E3581A76538C771798FC085CA441776E9BE8669C4D8572055DC6E9469E5
+- git status --short: vazio antes da alteração desta documentação
+
+## 01/10 — G4.2.2b concluído: testes offline funcionais
+
+FLUXO A (usuário novo):
+- Com instalação limpa e sem sessão, / redireciona para /auth antes do registro do SW.
+- Comportamento esperado confirmado.
+
+FLUXO B (usuário logado):
+- Sessão ativa confirmada; app permaneceu em / sem redirecionamento para /auth.
+- SW v12 ativo e controlando a página.
+- Cache casillas-v12 presente com 50 entradas.
+- Offline ativado e app recarregado com sucesso.
+- Trigonometria calculou 3-4-5 offline: hipotenusa 5,00 mm.
+- Roscas calculou M10 × 1,5 offline: diâmetro médio 9,0258 mm e diâmetro interno 8,3763 mm.
+- Guia de Programação carregou offline com 4 de 4 ciclos a partir do guia local.
+- Offline desativado e app retomou normalmente online, mantendo sessão e SW ativo.
+
+OBSERVAÇÃO:
+- A descoberta do servidor v10 permanece registrada como possível contaminação dos testes de G2.
+- Pendência: revalidar os testes de G2 contra o código atual.
