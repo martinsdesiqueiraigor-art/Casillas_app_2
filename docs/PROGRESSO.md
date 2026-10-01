@@ -110,3 +110,34 @@ A branch `casillas-2.0` permanece como base documental. Nenhuma migration corret
 - Permanecem outros achados independentes: leaked password protection desativada (WARN) e quatro tabelas com RLS sem policies (INFO).
 - Aplicação foi manual; não houve `supabase db push`. O histórico remoto de migrations não registra esta aplicação.
 - Rollback disponível em `C:\Backups\Casillas\2026-10-01-g3-rls\rollback.sql`.
+
+
+## 01/10 — G3.2 não aplicável + G3.3 adiado
+
+G3.2 — Leaked Password Protection
+
+AUDITORIA:
+- WARN auth_leaked_password_protection confirmado
+- funcionalidade indisponível no Free Plan (documentação Supabase)
+- configuração no Dashboard: Authentication → Providers → Email
+
+DECISÃO:
+- NÃO APLICÁVEL no plano atual
+- aceitar como risco residual documentado
+- reavaliar se o projeto migrar para Pro
+
+EVIDÊNCIA:
+- Security Advisor: WARN presente e esperado no Free
+- documentação oficial Supabase confirma requisito de plano
+---
+
+G3.3 — Rate Limiting da ativação
+
+DECISÃO:
+- ADIADO para pós-lançamento
+- motivo: exige modelo de ameaça; sem tráfego real, seria especulativo
+
+RISCO RESIDUAL:
+- brute force de códigos sem limitação explícita
+- mitigação: códigos aleatórios tornam brute force inviável na prática
+- reavaliar se houver evidência de tentativa

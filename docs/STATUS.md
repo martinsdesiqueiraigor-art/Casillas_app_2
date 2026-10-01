@@ -62,8 +62,8 @@ Atualizado em 2026-10-01.
 
 ## Próxima ação
 
-- G3.2 — habilitar leaked-password protection
-- G3.3 — modelo de ameaça para rate limiting da ativação
+- G3.2 — leaked-password protection: NÃO APLICÁVEL (Free Plan)
+- G3.3 — rate limiting: ADIADO (pós-lançamento)
 - G3.4 — decidir destino de `gerar-codigo.html`
 
 A divergência histórica de timestamps das migrations remotas permanece registrada como pendência de rastreabilidade.

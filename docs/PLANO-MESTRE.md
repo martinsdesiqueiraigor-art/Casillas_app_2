@@ -14,7 +14,11 @@ Fonte de verdade do plano de desenvolvimento. Etapas concluídas não devem ser 
 - G0 — Arquitetura: CONCLUÍDO
 - G1 — Reprodutibilidade do banco: CONCLUÍDO
 - G2 — Auth e fluxo comercial: CONCLUÍDO
-- G3 — Segurança e hardening: PARCIAL (G3.1 concluído)
+G3 — Segurança e hardening: PARCIAL
+  - G3.1 ✅ concluído
+  - G3.2 ⚪ não aplicável (Free Plan)
+  - G3.3 ⏸ adiado (pós-lançamento)
+  - G3.4 🔄 em andamento
 - G4 — PWA, Service Worker e offline: PARCIAL
 - G5 — UX comercial: PARCIAL
 - G6 — Testes end-to-end: PENDENTE
