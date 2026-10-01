@@ -187,3 +187,49 @@ G4.2.2 ou em etapa prÃ³pria.
 EVIDÃŠNCIA:
 - SW hash final: BDDB1E3581A76538C771798FC085CA441776E9BE8669C4D8572055DC6E9469E5
 - git status --short: vazio
+
+## 01/10 — G4.2.2a concluído: diagnóstico de contexto do PWA
+
+VERIFICAÇÕES EXECUTADAS:
+
+1. Servidor = repositório
+
+   Hashes idênticos entre servidor local e repositório:
+   - js/trial.js    ? 9A843DA3...
+   - js/app.js      ? 7DF573CC...
+   - service-worker.js ? BDDB1E35...
+
+   Contaminação por servidor antigo (v10) resolvida.
+   O servidor atual serve exatamente o estado do repositório.
+
+2. Porta 4175
+
+   Processo único (node.exe serve), diretório
+   C:\Projetos\Casillas_app_2. Nenhum fantasma.
+
+3. Registro do Service Worker depende de auth
+
+   Ordem real em js/app.js:
+   - linha 220: getCurrentUser()
+   - linha 224/229: redirect para /auth.html
+   - linha 241: registerServiceWorker()
+
+   Para usuário não autenticado, o redirect ocorre ANTES
+   de registerServiceWorker(). Portanto:
+   - usuário novo (sem login): SW NÃO registrado
+   - usuário logado (após reload): SW registrado
+
+   Isso NÃO é bug — é comportamento atual do fluxo.
+   Mas é DECISÃO DE ARQUITETURA A VALIDAR:
+
+   - Se intencional: PWA só habilita após autenticação
+   - Se descuido: registrar SW antes do redirect
+
+   Decisão: deixar para G4.2.2b testar os dois fluxos,
+   depois decidir se corrige (G4 ou G5) ou aceita como está.
+
+IMPLICAÇÕES PARA G4.2.2b:
+
+- Teste offline real só é válido para usuário logado
+- Cenário "usuário novo offline" deve ser documentado
+  como comportamento esperado, não como falha
