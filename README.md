@@ -22,7 +22,7 @@ Sirva a pasta por HTTP, por exemplo `python -m http.server 8080`, e abra `http:/
 
 Branch principal de desenvolvimento: `casillas-2.0`. A última referência local examinada é `629ebe3` (29/09/2026); documentação e histórico registram publicação PWA no GitHub Pages. Isso não equivale a uma nova checagem do site ou do Supabase remoto. Validação integrada de Auth/comercial, offline autenticado e cenários de RLS/entitlement seguem pendentes ou dependem de ambiente controlado.
 
-`gerar-codigo.html` é uma página legada independente que gera localmente códigos e hashes para o modelo antigo. Não é a ativação comercial atual e suas instruções internas não representam o fluxo atual.
+Este repositório não inclui mais a ferramenta legada `gerar-codigo.html`. A geração local de códigos/hashes e o antigo modelo de 3 aparelhos não fazem parte da arquitetura comercial atual.
 
 ## Documentação
 

@@ -18,9 +18,19 @@ Os cálculos ficam no cliente e são independentes de servidor. O cache PWA melh
 
 IndexedDB mantém estado local do app, não trial/licença. As chaves declaradas em `KEYS` no `js/trial.js` não têm uso encontrado e não afetam autorização.
 
-## Ferramenta geradora antiga
+## G3.4 — Destino de gerar-codigo.html
 
-`gerar-codigo.html` é mantida como página estática histórica, sem integração com a ativação Supabase atual. As referências a três aparelhos e inserir hashes no `trial.js` são instruções obsoletas da página. Ela permanece no pré-cache até decisão própria.
+A ferramenta legada `gerar-codigo.html` foi removida do repositório e do artefato público.
+
+Motivos:
+- não participava do fluxo comercial atual;
+- gerava códigos e hashes apenas localmente;
+- continha instruções obsoletas de 3 aparelhos e listas locais em `trial.js`;
+- era publicada pelo GitHub Pages porque o workflow utiliza `path: '.'`;
+- permanecia no pré-cache do Service Worker.
+
+A arquitetura comercial atual continua baseada em Supabase Auth, trial, entitlement e `activate_casillas_license`, sem autorização local.
+
 
 ## Banco como código
 

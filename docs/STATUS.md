@@ -64,7 +64,7 @@ Atualizado em 2026-10-01.
 
 - G3.2 — leaked-password protection: NÃO APLICÁVEL (Free Plan)
 - G3.3 — rate limiting: ADIADO (pós-lançamento)
-- G3.4 — decidir destino de `gerar-codigo.html`
+- G3.4 — gerar-codigo.html: CONCLUÍDO localmente (remoção + cache + documentação)
 
 A divergência histórica de timestamps das migrations remotas permanece registrada como pendência de rastreabilidade.
 

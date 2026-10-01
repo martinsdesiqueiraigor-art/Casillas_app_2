@@ -141,3 +141,12 @@ RISCO RESIDUAL:
 - brute force de códigos sem limitação explícita
 - mitigação: códigos aleatórios tornam brute force inviável na prática
 - reavaliar se houver evidência de tentativa
+
+
+## G3.4 — gerar-codigo.html removido
+
+- Ferramenta legada removida do repositório e, por consequência, do artefato publicado pelo GitHub Pages.
+- `./gerar-codigo.html` removido do `CACHE_ASSETS`.
+- Service Worker incrementado de `casillas-v10` para `casillas-v11` para invalidar o cache anterior.
+- README, mapa de dependências e decisões atualizados.
+- G3.4 concluído localmente; publicação depende do próximo push/deploy autorizado.

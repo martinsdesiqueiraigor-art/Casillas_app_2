@@ -18,7 +18,7 @@ G3 — Segurança e hardening: PARCIAL
   - G3.1 ✅ concluído
   - G3.2 ⚪ não aplicável (Free Plan)
   - G3.3 ⏸ adiado (pós-lançamento)
-  - G3.4 🔄 em andamento
+  - G3.4 concluído
 - G4 — PWA, Service Worker e offline: PARCIAL
 - G5 — UX comercial: PARCIAL
 - G6 — Testes end-to-end: PENDENTE

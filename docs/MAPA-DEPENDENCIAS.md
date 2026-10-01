@@ -14,7 +14,6 @@ Mapa derivado da estrutura local na branch `casillas-2.0`; não representa verif
 | `supabase/migrations/` | Schema, policies, funções privadas e wrappers públicos. | Fonte reproduzível local; implantação exige confirmação separada. |
 | `supabase/tests/` | Setup SQL e testes de RLS de profiles. | Cobertura limitada; veja `TESTES.md`. |
 | `manifest.json`, `service-worker.js` | Instalação PWA, pré-cache e fallback offline. | Cache não autentica nem concede entitlement. |
-| `gerar-codigo.html` | Página independente, legado local. | Não chamada por app/RPC; incluída no `CACHE_ASSETS`. |
 
 ## Fluxo comercial resumido
 
