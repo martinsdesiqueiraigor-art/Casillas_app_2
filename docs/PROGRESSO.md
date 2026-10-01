@@ -150,3 +150,40 @@ RISCO RESIDUAL:
 - Service Worker incrementado de `casillas-v10` para `casillas-v11` para invalidar o cache anterior.
 - README, mapa de dependências e decisões atualizados.
 - G3.4 concluído localmente; publicação depende do próximo push/deploy autorizado.
+
+
+## 01/10 — G4.2.1 concluído: instalação e atualização do SW
+
+TESTES EXECUTADOS:
+- Instalação limpa: SW v12 ativo, 50 entradas, 6 assets críticos presentes
+- Atualização simulada v99 → v12: cache antigo removido corretamente
+- Caches finais: apenas casillas-v12
+
+DESCOBERTAS:
+
+1. Fluxo de redirect para auth.html
+
+Em uma instalação limpa sem sessão autenticada, / redireciona
+para /auth antes de registrar o Service Worker. Isso pode
+significar que usuários novos (sem login) não têm o SW
+registrado antes de fazer login. Investigar em G4.2.2 se o
+registro do SW ocorre independentemente do estado de auth.
+
+2. Servidor antigo na porta 4175
+
+Um servidor antigo (v10) estava rodando antes de G4.2.1.
+Foi substituído pelo servidor atual apontando para
+C:\Projetos\Casillas_app_2.
+
+OBSERVAÇÃO SOBRE CONTAMINAÇÃO POTENCIAL:
+
+Como o servidor antigo servia v10, os testes de G2 (Auth,
+Trial, Ativação) podem ter rodado contra a versão antiga do
+frontend. Os testes foram 12/12 PASS, e o backend local é o
+mesmo — mas o frontend testado pode ter sido v10, não o
+estado atual. Recomendação: revalidar o fluxo de auth em
+G4.2.2 ou em etapa própria.
+
+EVIDÊNCIA:
+- SW hash final: BDDB1E3581A76538C771798FC085CA441776E9BE8669C4D8572055DC6E9469E5
+- git status --short: vazio
