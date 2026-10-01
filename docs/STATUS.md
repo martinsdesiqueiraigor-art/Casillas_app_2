@@ -52,9 +52,21 @@ Atualizado em 2026-10-01.
 - Não foi encontrado rate limiting implementado para tentativas de ativação; permanece pendência de desenho/decisão.
 - `gerar-codigo.html` continua público/legado e incluído no artefato, com instruções obsoletas de três aparelhos; nenhuma alteração foi feita.
 
+## G3.1 — hardening de `public.rls_auto_enable()` concluído
+
+- Migration `20261001023219_harden_rls_auto_enable_acl.sql` aplicada remotamente via SQL Editor.
+- ACL pós-aplicação: `PUBLIC/anon/authenticated/service_role=false`; `postgres=true`.
+- `proacl` final: `{postgres=X/postgres}`.
+- Security Advisor não reporta mais os WARNs de `rls_auto_enable()` para `anon` e `authenticated`.
+- Rollback: `C:\Backups\Casillas\2026-10-01-g3-rls\rollback.sql`.
+
 ## Próxima ação
 
-G3 — Segurança e hardening: decidir e, após aprovação, tratar `rls_auto_enable()` e proteção contra senhas vazadas; depois desenhar rate limiting da ativação e decidir o destino de `gerar-codigo.html`. A divergência histórica de timestamps das migrations remotas permanece registrada como pendência de rastreabilidade.
+- G3.2 — habilitar leaked-password protection
+- G3.3 — modelo de ameaça para rate limiting da ativação
+- G3.4 — decidir destino de `gerar-codigo.html`
+
+A divergência histórica de timestamps das migrations remotas permanece registrada como pendência de rastreabilidade.
 
 ## Regra anti-retrabalho
 

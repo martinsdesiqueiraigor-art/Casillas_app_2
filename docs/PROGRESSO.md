@@ -95,4 +95,18 @@ A branch `casillas-2.0` permanece como base documental. Nenhuma migration corret
 - `gerar-codigo.html` permanece legado público, incluído no artefato, com instruções obsoletas de três aparelhos; nenhuma alteração foi feita.
 - Git continua sem arquivos staged. `git diff --check` não apresentou erro de whitespace; somente avisos de conversão LF/CRLF.
 - Hash da migration 60324 permanece `ccdfa87dc050136398511860a45a8458781d4a99`.
-- G3 permanece PARCIAL. Próximas decisões: `rls_auto_enable()`, leaked-password protection, rate limiting e destino de `gerar-codigo.html`.
+- G3 permanece PARCIAL. G3.1 (`rls_auto_enable`) concluído.
+- Pendentes: leaked-password protection, rate limiting da ativação,
+  decisão sobre `gerar-codigo.html`.
+
+## 01/10 — G3.1 concluído: hardening de public.rls_auto_enable()
+
+- Migration `20261001023219_harden_rls_auto_enable_acl.sql` criada e commitada como `73e408c6f8868b1e76560901535293cfccfdecc5`.
+- Aplicação remota executada manualmente via SQL Editor do Supabase.
+- `REVOKE EXECUTE` aplicado para `PUBLIC`, `anon`, `authenticated` e `service_role`.
+- `has_function_privilege`: `PUBLIC=false`, `anon=false`, `authenticated=false`, `service_role=false`, `postgres=true`.
+- `proacl` final: `{postgres=X/postgres}`.
+- Security Advisor: os dois WARNs referentes à execução de `public.rls_auto_enable()` por `anon` e `authenticated` desapareceram.
+- Permanecem outros achados independentes: leaked password protection desativada (WARN) e quatro tabelas com RLS sem policies (INFO).
+- Aplicação foi manual; não houve `supabase db push`. O histórico remoto de migrations não registra esta aplicação.
+- Rollback disponível em `C:\Backups\Casillas\2026-10-01-g3-rls\rollback.sql`.

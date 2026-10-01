@@ -14,7 +14,7 @@ Fonte de verdade do plano de desenvolvimento. Etapas concluídas não devem ser 
 - G0 — Arquitetura: CONCLUÍDO
 - G1 — Reprodutibilidade do banco: CONCLUÍDO
 - G2 — Auth e fluxo comercial: CONCLUÍDO
-- G3 — Segurança e hardening: PARCIAL
+- G3 — Segurança e hardening: PARCIAL (G3.1 concluído)
 - G4 — PWA, Service Worker e offline: PARCIAL
 - G5 — UX comercial: PARCIAL
 - G6 — Testes end-to-end: PENDENTE
@@ -50,6 +50,13 @@ Fonte de verdade do plano de desenvolvimento. Etapas concluídas não devem ser 
 ## Regra de avanço
 
 Uma fase só avança quando possui objetivo, evidência, testes aplicáveis, decisão registrada e gate correspondente aprovado. Se uma tarefa já estiver concluída, ela será apenas verificada contra suas evidências; não será refeita.
+
+## G3.1 — Hardening de `public.rls_auto_enable()` — CONCLUÍDO
+
+- ACL remoto restringido a `postgres` após validação local e aplicação remota controlada.
+- Security Advisor deixou de reportar os WARNs de execução por `anon` e `authenticated`.
+- Migration versionada: `20261001023219_harden_rls_auto_enable_acl.sql`.
+- Commit: `73e408c6f8868b1e76560901535293cfccfdecc5`.
 
 ## Próxima ação oficial
 
