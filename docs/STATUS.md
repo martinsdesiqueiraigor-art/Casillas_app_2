@@ -5,8 +5,8 @@ Atualizado em 2026-10-01.
 ## Estado do projeto
 
 - Branch real: `casillas-2.0-hardening`
-- HEAD: `629ebe3` — relatório de auditoria técnica completa
-- Working tree: alterações locais intencionais; nada staged.
+- HEAD: `2f34f74`
+- Working tree: limpa
 - Supabase remoto: não alterado nesta atualização.
 
 ## Gates
@@ -16,7 +16,7 @@ Atualizado em 2026-10-01.
 | G0 | CONCLUÍDO | Arquitetura comercial definida. |
 | G1 | CONCLUÍDO | Schema comercial local reproduzível; wrapper público de ativação versionado. |
 | G2 | CONCLUÍDO | 12/12 testes unitários de acesso; ativação local; logout; bloqueio por acesso direto sem sessão; nova sessão recuperando licença via entitlement. |
-| G3 | PARCIAL | Hardening local e auditoria realizados; pendências restantes. |
+| G3 | PARCIAL (G3.1 e G3.4 concluídos; G3.2 não aplicável — Free Plan; G3.3 adiado) | Hardening local e auditoria realizados; pendências restantes. |
 | G4 | PARCIAL | PWA/SW existem; offline autenticado ainda precisa validação completa. |
 | G5 | PARCIAL | UX comercial implementada; compra/pagamento ainda externo. |
 | G6 | PENDENTE | E2E integrado. |
@@ -50,7 +50,7 @@ Atualizado em 2026-10-01.
 - Security Advisor remoto mantém RLS sem policies em `licenses`, `entitlements`, `access_events` e `admin_roles` como INFO; o snapshot anterior mostrou ausência de grants diretos para `anon`/`authenticated` nessas tabelas. Não foi classificado como vulnerabilidade confirmada.
 - Não existem Edge Functions no projeto remoto neste momento.
 - Não foi encontrado rate limiting implementado para tentativas de ativação; permanece pendência de desenho/decisão.
-- `gerar-codigo.html` continua público/legado e incluído no artefato, com instruções obsoletas de três aparelhos; nenhuma alteração foi feita.
+- `gerar-codigo.html` removido em G3.4 (commit 3b47078).
 
 ## G3.1 — hardening de `public.rls_auto_enable()` concluído
 
@@ -62,9 +62,11 @@ Atualizado em 2026-10-01.
 
 ## Próxima ação
 
-- G3.2 — leaked-password protection: NÃO APLICÁVEL (Free Plan)
-- G3.3 — rate limiting: ADIADO (pós-lançamento)
-- G3.4 — gerar-codigo.html: CONCLUÍDO localmente (remoção + cache + documentação)
+- G4.3b — corrigir estado operacional
+- G4.3c — consolidar pendências + resolver ambiguidades
+- G4.3d — fechamento de G4
+
+
 
 A divergência histórica de timestamps das migrations remotas permanece registrada como pendência de rastreabilidade.
 
