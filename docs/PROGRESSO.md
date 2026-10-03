@@ -306,3 +306,22 @@ FLUXO B (usu·rio logado):
 OBSERVA«√O:
 - A descoberta do servidor v10 permanece registrada como possÌvel contaminaÁ„o dos testes de G2.
 - PendÍncia: revalidar os testes de G2 contra o cÛdigo atual.
+## 01/10 ‚Äî Observa√ß√£o: instabilidade do servidor local
+
+O servidor em localhost:4175 mudou entre sess√µes durante G4:
+
+- G4.2.2a: servidor antigo (v10) estava ativo
+- G4.2.3: servidor diferente (PID 3756) servindo dist/
+  ‚Üí /service-worker.js retornava 404
+
+Isso indica que o ambiente local n√£o persiste entre sess√µes
+de forma confi√°vel.
+
+A√á√ÉO PREVENTIVA (para blocos futuros):
+
+Antes de qualquer teste que dependa do servidor local,
+validar:
+1. Hash de js/app.js, js/trial.js, service-worker.js
+   contra o reposit√≥rio
+2. /service-worker.js responde 200
+3. Porta 4175 serve a raiz do projeto (n√£o dist/ ou outro)
