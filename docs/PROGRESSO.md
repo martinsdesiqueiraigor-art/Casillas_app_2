@@ -348,3 +348,23 @@ EVIDÊNCIA:
 - Teste 1: validação dinâmica/manual no navegador.
 - Teste 3b: validação dinâmica/manual no navegador com URL nunca acessada online.
 - Testes 2, 3a, 3c e 4: auditoria de código / evidências anteriores, sem execução dinâmica nesta sessão quando aplicável.
+## 03/10 — Push oficial para origin/casillas-2.0
+
+CONTEXTO:
+5 commits locais de G4.3 estavam pendentes de publicação.
+
+COMMITS ENVIADOS:
+- edea92b — docs(g4.2.3-parcial)
+- 2f34f74 — docs(g4.2.3)
+- c1a4851 — docs(g4.3b)
+- 2c9c548 — docs(g4.3c)
+- d11aa96 — docs(g4.3d)
+
+RESULTADO:
+origin/casillas-2.0 atualizado de 0e4e074 → d11aa96.
+Push autorizado explicitamente pelo Igor.
+
+NOTA:
+Este foi o primeiro push coordenado e registrado após a
+descoberta do push não-rastreado de 01/10. Daqui em diante,
+pushes coordenados devem ser registrados neste documento.
