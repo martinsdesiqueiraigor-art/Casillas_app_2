@@ -5,9 +5,11 @@ Atualizado em 2026-10-01.
 ## Estado do projeto
 
 - Branch real: `casillas-2.0-hardening`
-- HEAD: `2f34f74`
-- Working tree: limpa
+- Último commit: consultar `git log -1 --oneline`
+- Working tree: ver `git status --short`
 - Supabase remoto: não alterado nesta atualização.
+- origin/casillas-2.0: `0e4e074` (atualizado por push em 01/10 19:58)
+- casillas-2.0-hardening (local): 3 commits à frente do remote
 
 ## Gates
 
@@ -17,7 +19,7 @@ Atualizado em 2026-10-01.
 | G1 | CONCLUÍDO | Schema comercial local reproduzível; wrapper público de ativação versionado. |
 | G2 | CONCLUÍDO | 12/12 testes unitários de acesso; ativação local; logout; bloqueio por acesso direto sem sessão; nova sessão recuperando licença via entitlement. |
 | G3 | PARCIAL (G3.1 e G3.4 concluídos; G3.2 não aplicável — Free Plan; G3.3 adiado) | Hardening local e auditoria realizados; pendências restantes. |
-| G4 | PARCIAL | PWA/SW existem; offline autenticado ainda precisa validação completa. |
+| G4 | PARCIAL | PWA/SW validados em G4.2.x; segurança e isolamento validados em G4.2.3. G4 em fechamento documental (G4.3b/c/d). |
 | G5 | PARCIAL | UX comercial implementada; compra/pagamento ainda externo. |
 | G6 | PENDENTE | E2E integrado. |
 | G7 | PENDENTE | Auditoria final. |
@@ -60,10 +62,43 @@ Atualizado em 2026-10-01.
 - Security Advisor não reporta mais os WARNs de `rls_auto_enable()` para `anon` e `authenticated`.
 - Rollback: `C:\Backups\Casillas\2026-10-01-g3-rls\rollback.sql`.
 
+## Pendências Abertas
+
+### Revalidação de gates
+- [ ] Revalidar G2 (Auth/Trial/Ativação) contra código atual
+      Motivo: testes de G2 podem ter rodado contra servidor v10
+      Referência: PROGRESSO.md (G4.2.1, G4.2.2a)
+
+### Infraestrutura de teste
+- [ ] Criar docs/TESTE-LOCAL.md
+      - Servidor correto (porta 4175, raiz do projeto)
+      - Usuários de teste local (nome, não senha)
+      - Como recriar
+      - Limitações de automação (login, DevTools Application)
+      - Critérios para considerar um teste válido
+
+### Pendências cosméticas (não bloqueantes)
+- [ ] Adicionar favicon.ico
+- [ ] Atualizar meta tag apple-mobile-web-app-capable
+
+### Decisões arquiteturais a validar
+- [ ] Comportamento do SW vs. auth
+      Estado: SW registra apenas após auth
+      Pendência: decidir se mantém (intencional) ou altera (futuro)
+
+### Achados de G4 (não bloqueantes)
+- [ ] Service Worker cacheia 404 de navegação
+      Impacto: fallback offline.html limitado a URLs nunca acessadas
+      Correção ideal: if (res.ok) antes de c.put
+      Prioridade: baixa
+
+### Cobertura de testes
+- [ ] G4.2.3 — testes 2, 3c, 4 auditados estaticamente, não executados
+      dinamicamente. Não há funcionalidade conhecida quebrada —
+      apenas cobertura de execução incompleta.
+
 ## Próxima ação
 
-- G4.3b — corrigir estado operacional
-- G4.3c — consolidar pendências + resolver ambiguidades
 - G4.3d — fechamento de G4
 
 

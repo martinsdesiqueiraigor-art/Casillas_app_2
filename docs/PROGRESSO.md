@@ -1,10 +1,34 @@
 # Progresso do Casillas 2.0
 
+## 03/10 â€” VerificaÃ§Ã£o: encoding e integridade de G4.2.1
+
+ENCODING:
+- Diff anterior mostrou `ï¿½` em PROGRESSO.md
+- InvestigaÃ§Ã£o com git cat-file nos blobs brutos:
+  `Ã­` = C3 AD (UTF-8 correto) em todos os commits
+- Nenhum par 3F 3F nos blobs Git
+- ConclusÃ£o: `ï¿½` era exibiÃ§Ã£o do terminal remoto
+  (PowerShell), nÃ£o corrupÃ§Ã£o real
+
+INTEGRIDADE DA 1Âª SEÃ‡ÃƒO G4.2.1:
+- PreocupaÃ§Ã£o: itens `AÃ‡ÃƒO PREVENTIVA` e `TESTE-LOCAL.md`
+  ausentes na 1Âª seÃ§Ã£o
+- InvestigaÃ§Ã£o em edea92b (antes da consolidaÃ§Ã£o):
+  - AÃ‡ÃƒO PREVENTIVA estÃ¡ em seÃ§Ã£o prÃ³pria, preservada
+  - TESTE-LOCAL.md nunca esteve em PROGRESSO.md
+- ConclusÃ£o: nenhuma perda na remoÃ§Ã£o da duplicata
+
+OBSERVAÃ‡ÃƒO (baixa prioridade):
+- Alguns `?` literais aparecem onde provavelmente
+  havia `â†’` (seta). Ex.: `v99 ? v12`. DegradaÃ§Ã£o
+  cosmÃ©tica de ediÃ§Ãµes anteriores. Registrar como
+  pendÃªncia, nÃ£o corrigir agora.
+
 ## ReferÃªncia atual
 
-- Branch: `casillas-2.0`; HEAD observado: `629ebe3` (`docs: relatÃ³rio de auditoria tÃ©cnica completa (2026-09-29)`).
+- Branch: `casillas-2.0-hardening`; HEAD atual: `c1a4851` (G4.3b fechado).
 - Remote `origin` aponta para `martinsdesiqueiraigor-art/Casillas_app_2`; estado inicial estava limpo.
-- CÃ³digo e migrations locais foram inspecionados. NÃ£o foi feita consulta remota ao Supabase ou ao site publicado nesta atualizaÃ§Ã£o.
+- Na atualizaÃ§Ã£o de 29/09, cÃ³digo e migrations locais foram inspecionados; nÃ£o foi feita consulta remota ao Supabase ou ao site publicado naquela atualizaÃ§Ã£o.
 
 ## Marcos recentes
 
@@ -25,23 +49,24 @@
 - `KEYS.install`, `lastSeen`, `activated` e `activeCode` estÃ£o apenas declaradas em `js/trial.js`, sem uso encontrado. Sem efeito de autorizaÃ§Ã£o.
 - `gerar-codigo.html` Ã© ferramenta independente legada com instruÃ§Ãµes do antigo sistema local; nÃ£o Ã© fluxo comercial atual.
 
-## ValidaÃ§Ã£o e pendÃªncias
+## ValidaÃ§Ã£o histÃ³rica (29/09)
 
-Os 17 testes SQL/RLS e testes antigos de Auth/trial estÃ£o registrados como histÃ³ricos, nÃ£o reexecutados. O teste de Home foi manual e o offline sÃ³ foi observado atÃ© login. Permanecem pendentes validaÃ§Ã£o integrada Auth/trial/entitlement/licenÃ§a, execuÃ§Ã£o atual dos testes SQL, revalidaÃ§Ã£o de RLS/grants remotos e sessÃ£o/cÃ¡lculos offline autenticados. Veja [Testes](TESTES.md), [SeguranÃ§a](SEGURANCA.md) e [Roadmap](ROADMAP.md).
+Os 17 testes SQL/RLS e os testes antigos de Auth/trial pertencem ao histÃ³rico daquela atualizaÃ§Ã£o e nÃ£o foram reexecutados naquele momento. O teste de Home foi manual e o offline foi observado apenas atÃ© login. O estado atual e as pendÃªncias vigentes estÃ£o em `STATUS.md`; as evidÃªncias tÃ©cnicas permanecem em [Testes](TESTES.md), [SeguranÃ§a](SEGURANCA.md) e [Roadmap](ROADMAP.md).
 
 ## HistÃ³rico preservado
 
 Os documentos de marcos datados sÃ£o snapshots imutÃ¡veis; diferenÃ§as com o estado atual ficam registradas aqui e nos documentos tÃ©cnicos atuais. Backups e conteÃºdo histÃ³rico nÃ£o sÃ£o fonte da arquitetura comercial vigente.
 
-## PrÃ³xima etapa
+## Estado operacional atual
 
-A branch `casillas-2.0` permanece como base documental. Nenhuma migration corretiva serÃ¡ criada nesta etapa. O desenvolvimento tÃ©cnico deverÃ¡ continuar posteriormente a partir da branch `casillas-2.0-hardening`; esta atualizaÃ§Ã£o nÃ£o altera a branch atual.
+Ver `STATUS.md` e `PLANO-MESTRE.md` para o estado operacional, gates, pendÃªncias e prÃ³xima aÃ§Ã£o oficial.
 
 ## 29/09 â€” controle mestre
 
 - Registrados `docs/PLANO-MESTRE.md` e `docs/STATUS.md` como controles operacionais do Plano Mestre.
 - A referÃªncia operacional atual Ã© a branch `casillas-2.0-hardening`, HEAD `629ebe3`.
 - O texto histÃ³rico deste documento que cita `casillas-2.0` nÃ£o deve ser interpretado como estado atual.
+- (referÃªncia histÃ³rica; HEAD atual: ver `STATUS.md`).
 - Regra adotada: antes de cada nova fase, consultar plano, status, progresso e evidÃªncias Git para evitar retrabalho.
 
 ## 30/09 â€” G1 concluÃ­do
@@ -188,23 +213,23 @@ EVIDÃŠNCIA:
 - SW hash final: BDDB1E3581A76538C771798FC085CA441776E9BE8669C4D8572055DC6E9469E5
 - git status --short: vazio
 
-## 01/10 — G4.2.2a concluído: diagnóstico de contexto do PWA
+## 01/10 ï¿½ G4.2.2a concluï¿½do: diagnï¿½stico de contexto do PWA
 
-VERIFICAÇÕES EXECUTADAS:
+VERIFICAï¿½ï¿½ES EXECUTADAS:
 
-1. Servidor = repositório
+1. Servidor = repositï¿½rio
 
-   Hashes idênticos entre servidor local e repositório:
+   Hashes idï¿½nticos entre servidor local e repositï¿½rio:
    - js/trial.js    ? 9A843DA3...
    - js/app.js      ? 7DF573CC...
    - service-worker.js ? BDDB1E35...
 
-   Contaminação por servidor antigo (v10) resolvida.
-   O servidor atual serve exatamente o estado do repositório.
+   Contaminaï¿½ï¿½o por servidor antigo (v10) resolvida.
+   O servidor atual serve exatamente o estado do repositï¿½rio.
 
 2. Porta 4175
 
-   Processo único (node.exe serve), diretório
+   Processo ï¿½nico (node.exe serve), diretï¿½rio
    C:\Projetos\Casillas_app_2. Nenhum fantasma.
 
 3. Registro do Service Worker depende de auth
@@ -214,25 +239,25 @@ VERIFICAÇÕES EXECUTADAS:
    - linha 224/229: redirect para /auth.html
    - linha 241: registerServiceWorker()
 
-   Para usuário não autenticado, o redirect ocorre ANTES
+   Para usuï¿½rio nï¿½o autenticado, o redirect ocorre ANTES
    de registerServiceWorker(). Portanto:
-   - usuário novo (sem login): SW NÃO registrado
-   - usuário logado (após reload): SW registrado
+   - usuï¿½rio novo (sem login): SW Nï¿½O registrado
+   - usuï¿½rio logado (apï¿½s reload): SW registrado
 
-   Isso NÃO é bug — é comportamento atual do fluxo.
-   Mas é DECISÃO DE ARQUITETURA A VALIDAR:
+   Isso Nï¿½O ï¿½ bug ï¿½ ï¿½ comportamento atual do fluxo.
+   Mas ï¿½ DECISï¿½O DE ARQUITETURA A VALIDAR:
 
-   - Se intencional: PWA só habilita após autenticação
+   - Se intencional: PWA sï¿½ habilita apï¿½s autenticaï¿½ï¿½o
    - Se descuido: registrar SW antes do redirect
 
-   Decisão: deixar para G4.2.2b testar os dois fluxos,
-   depois decidir se corrige (G4 ou G5) ou aceita como está.
+   Decisï¿½o: deixar para G4.2.2b testar os dois fluxos,
+   depois decidir se corrige (G4 ou G5) ou aceita como estï¿½.
 
-IMPLICAÇÕES PARA G4.2.2b:
+IMPLICAï¿½ï¿½ES PARA G4.2.2b:
 
-- Teste offline real só é válido para usuário logado
-- Cenário "usuário novo offline" deve ser documentado
-  como comportamento esperado, não como falha
+- Teste offline real sï¿½ ï¿½ vï¿½lido para usuï¿½rio logado
+- Cenï¿½rio "usuï¿½rio novo offline" deve ser documentado
+  como comportamento esperado, nï¿½o como falha
 
 ## 01/10 â€” ObservaÃ§Ã£o: possÃ­vel contaminaÃ§Ã£o de G2
 
@@ -253,59 +278,25 @@ AÃ‡ÃƒO PENDENTE:
 - Pode ser feito como parte de G4.2.2b ou como etapa prÃ³pria
 - NÃ£o corrigir nada agora
 
-## 01/10 — G4.2.1 concluído: instalação e atualização do SW
+## 01/10 ï¿½ G4.2.2b concluï¿½do: testes offline funcionais
 
-TESTES EXECUTADOS:
-- Instalação limpa: SW v12 ativo, 50 entradas, 6 assets críticos presentes
-- Atualização simulada v99 ? v12: cache antigo removido corretamente
-- Caches finais: apenas casillas-v12
-
-DESCOBERTAS:
-
-1. Fluxo de redirect para auth.html
-
-Em uma instalação limpa sem sessão autenticada, / redireciona
-para /auth antes de registrar o Service Worker. Isso significa
-que usuários novos (sem login) não têm o SW registrado antes de
-fazer login. O comportamento será considerado no fluxo offline.
-
-2. Servidor antigo na porta 4175
-
-Um servidor antigo (v10) estava rodando antes de G4.2.1.
-Foi substituído pelo servidor atual apontando para
-C:\Projetos\Casillas_app_2.
-
-OBSERVAÇÃO SOBRE CONTAMINAÇÃO POTENCIAL:
-
-Como o servidor antigo servia v10, os testes de G2 (Auth,
-Trial, Ativação) podem ter rodado contra a versão antiga do
-frontend. Os testes foram 12/12 PASS, e o backend local é o
-mesmo — mas o frontend testado pode ter sido v10, não o estado
-atual. Recomendação: revalidar o fluxo de auth em etapa própria.
-
-EVIDÊNCIA:
-- SW hash final: BDDB1E3581A76538C771798FC085CA441776E9BE8669C4D8572055DC6E9469E5
-- git status --short: vazio antes da alteração desta documentação
-
-## 01/10 — G4.2.2b concluído: testes offline funcionais
-
-FLUXO A (usuário novo):
-- Com instalação limpa e sem sessão, / redireciona para /auth antes do registro do SW.
+FLUXO A (usuï¿½rio novo):
+- Com instalaï¿½ï¿½o limpa e sem sessï¿½o, / redireciona para /auth antes do registro do SW.
 - Comportamento esperado confirmado.
 
-FLUXO B (usuário logado):
-- Sessão ativa confirmada; app permaneceu em / sem redirecionamento para /auth.
-- SW v12 ativo e controlando a página.
+FLUXO B (usuï¿½rio logado):
+- Sessï¿½o ativa confirmada; app permaneceu em / sem redirecionamento para /auth.
+- SW v12 ativo e controlando a pï¿½gina.
 - Cache casillas-v12 presente com 50 entradas.
 - Offline ativado e app recarregado com sucesso.
 - Trigonometria calculou 3-4-5 offline: hipotenusa 5,00 mm.
-- Roscas calculou M10 × 1,5 offline: diâmetro médio 9,0258 mm e diâmetro interno 8,3763 mm.
-- Guia de Programação carregou offline com 4 de 4 ciclos a partir do guia local.
-- Offline desativado e app retomou normalmente online, mantendo sessão e SW ativo.
+- Roscas calculou M10 ï¿½ 1,5 offline: diï¿½metro mï¿½dio 9,0258 mm e diï¿½metro interno 8,3763 mm.
+- Guia de Programaï¿½ï¿½o carregou offline com 4 de 4 ciclos a partir do guia local.
+- Offline desativado e app retomou normalmente online, mantendo sessï¿½o e SW ativo.
 
-OBSERVAÇÃO:
-- A descoberta do servidor v10 permanece registrada como possível contaminação dos testes de G2.
-- Pendência: revalidar os testes de G2 contra o código atual.
+OBSERVAï¿½ï¿½O:
+- A descoberta do servidor v10 permanece registrada como possï¿½vel contaminaï¿½ï¿½o dos testes de G2.
+- Pendï¿½ncia: revalidar os testes de G2 contra o cï¿½digo atual.
 ## 01/10 â€” ObservaÃ§Ã£o: instabilidade do servidor local
 
 O servidor em localhost:4175 mudou entre sessÃµes durante G4:
