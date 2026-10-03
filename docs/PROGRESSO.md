@@ -325,3 +325,35 @@ validar:
    contra o repositório
 2. /service-worker.js responde 200
 3. Porta 4175 serve a raiz do projeto (não dist/ ou outro)
+
+
+## 03/10 — G4.2.3 concluído: segurança e isolamento validados
+
+Teste 1 (crítico) — Supabase fora do cache:
+- requisições de API (auth, rest) não são cacheadas pelo SW
+- apenas arquivos JS do SDK estão no cache, como esperado
+
+Teste 3b — fallback de navegação:
+- URL nunca acessada + offline → offline.html ✅
+
+Testes 2, 3c, 4 — verificados por auditoria de código em G4.1.
+- Teste 2: métodos não-GET são ignorados.
+- Teste 3c: cache dinâmico de GET same-origin.
+- Teste 4: cache de GET same-origin via c.put(req, copy).
+
+Teste 3a — comportamento online de URL inexistente:
+- 404 padrão observado/confirmado.
+
+Teste 5 — hash do Service Worker:
+- hash validado sem alteração durante o bloco de testes.
+
+ACHADO REGISTRADO (baixa prioridade):
+- Service Worker cacheia respostas 404 de navegação.
+- Impacto: fallback offline.html fica limitado a URLs nunca acessadas online.
+- Correção ideal: adicionar if (res.ok) antes do c.put no fetch handler.
+- Pendência para G5 ou posterior.
+
+EVIDÊNCIA:
+- Teste 1: validação dinâmica/manual no navegador.
+- Teste 3b: validação dinâmica/manual no navegador com URL nunca acessada online.
+- Testes 2, 3a, 3c e 4: auditoria de código / evidências anteriores, sem execução dinâmica nesta sessão quando aplicável.
