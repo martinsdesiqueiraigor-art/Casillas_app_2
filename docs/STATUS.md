@@ -19,7 +19,7 @@ Atualizado em 2026-10-01.
 | G1 | CONCLUÍDO | Schema comercial local reproduzível; wrapper público de ativação versionado. |
 | G2 | CONCLUÍDO | 12/12 testes unitários de acesso; ativação local; logout; bloqueio por acesso direto sem sessão; nova sessão recuperando licença via entitlement. |
 | G3 | PARCIAL (G3.1 e G3.4 concluídos; G3.2 não aplicável — Free Plan; G3.3 adiado) | Hardening local e auditoria realizados; pendências restantes. |
-| G4 | PARCIAL | PWA/SW validados em G4.2.x; segurança e isolamento validados em G4.2.3. G4 em fechamento documental (G4.3b/c/d). |
+| G4 | CONCLUÍDO | SW v12, offline funcional validado em G4.2.2b; segurança/isolamento validados em G4.2.3. Pendências não bloqueantes registradas. |
 | G5 | PARCIAL | UX comercial implementada; compra/pagamento ainda externo. |
 | G6 | PENDENTE | E2E integrado. |
 | G7 | PENDENTE | Auditoria final. |
@@ -99,7 +99,7 @@ Atualizado em 2026-10-01.
 
 ## Próxima ação
 
-- G4.3d — fechamento de G4
+- G5 — UX comercial
 
 
 

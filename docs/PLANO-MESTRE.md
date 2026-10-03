@@ -19,16 +19,18 @@ G3 — Segurança e hardening: PARCIAL
   - G3.2 ⚪ não aplicável (Free Plan)
   - G3.3 ⏸ adiado (pós-lançamento)
   - G3.4 concluído
-- G4 — PWA, Service Worker e offline: PARCIAL
+- G4 — PWA, Service Worker e offline: CONCLUÍDO
   ├── G4.1 — Auditoria estática ✅
   ├── G4.1.1 — Correção do pré-cache ✅
   ├── G4.2.1 — Instalação e atualização ✅
   ├── G4.2.2a — Diagnóstico de contexto ✅
   ├── G4.2.2b — Testes offline funcionais ✅
   ├── G4.2.3 — Segurança e isolamento ✅
-  ├── G4.3b — Correção do estado operacional 🔄
-  ├── G4.3c — Consolidação de pendências ⏳
-  └── G4.3d — Fechamento de G4 ⏳
+  ├── G4.3b — Correção do estado operacional ✅
+  ├── G4.3c — Consolidação de pendências ✅
+  └── G4.3d — Fechamento de G4 ✅
+
+  Pendências não bloqueantes registradas em STATUS.md
 - G5 — UX comercial: PARCIAL
 - G6 — Testes end-to-end: PENDENTE
 - G7 — Auditoria final: PENDENTE
@@ -73,7 +75,7 @@ Uma fase só avança quando possui objetivo, evidência, testes aplicáveis, dec
 
 ## Próxima ação oficial
 
-G4.3b — Correção do estado operacional
+G5 — UX comercial
 
 G2 foi concluído com validação integrada de autenticação, trial, entitlement, ativação, logout, bloqueio por acesso direto sem sessão e nova sessão recuperando a licença ativa.
 
