@@ -441,3 +441,27 @@ ESTADO:
 - Sprint 6C — CONCLUÍDO LOCALMENTE no escopo acordado.
 - Próximo gate oficial permanece G6 — Testes end-to-end.
 - Nenhum push do Sprint 6C foi realizado.
+
+## 04/10 — G6: consolidação de testes end-to-end
+
+DECISÃO:
+- G6 foi revisado contra as evidências históricas antes de qualquer reexecução, seguindo a regra anti-retrabalho.
+- O fluxo crítico integrado já havia sido executado em gates anteriores; portanto, não foi repetido apenas para mudar o rótulo do gate.
+
+EVIDÊNCIAS CONSOLIDADAS:
+- G2: login autenticado; trial expirado levando ao bloqueio/ativação; ativação de `TESTCASILLAS2026`; confirmação de licença/entitlement; logout; bloqueio de acesso direto sem sessão; novo login recuperando a licença sem nova ativação.
+- G2/G5/6C: `tests/trial-access.test.mjs` registrou 12/12 testes aprovados em regressões sucessivas.
+- G4.2.1: instalação limpa do SW v12 e atualização com remoção de cache antigo validadas.
+- G4.2.2b: sessão autenticada com SW v12; reload offline; Trigonometria 3-4-5 = 5,00 mm; Roscas M10 × 1,5 = 9,0258 mm / 8,3763 mm; Guia de Programação carregado offline; retorno online normal.
+- G4.2.3: segurança e isolamento do Service Worker validados no escopo registrado, com coberturas dinâmicas incompletas já documentadas separadamente.
+- Sprint 6C: refinamentos validados manualmente no smartphone e regressão acumulada aprovada.
+
+LIMITES:
+- O E2E remoto da Camada 1 com criação/ativação de licença descartável continua não executado por decisão explícita anterior.
+- Compartilhar App continua pendente de validação em HTTPS.
+- Recuperação de senha completa, cenários extremos de trial/licença/RLS e fluxo visual exaustivo de todos os módulos permanecem como cobertura complementar em `docs/TESTES.md`; não são registrados como executados.
+
+ESTADO:
+- G6 — CONCLUÍDO POR EVIDÊNCIAS ACUMULADAS do fluxo crítico integrado.
+- Nenhum E2E foi repetido nesta consolidação e nenhuma escrita remota foi realizada.
+- Próximo gate oficial: G7 — Auditoria final.

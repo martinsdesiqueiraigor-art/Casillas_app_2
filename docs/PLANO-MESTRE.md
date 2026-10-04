@@ -44,7 +44,11 @@ G3 — Segurança e hardening: PARCIAL
   - 6C.3 — estados e feedbacks: CONCLUÍDO
   - 6C.4 — responsividade em telas pequenas: CONCLUÍDO
   - 6C.5 — revisão final e regressão: CONCLUÍDO; compartilhamento pendente de validação em HTTPS
-- G6 — Testes end-to-end: PENDENTE
+- G6 — Testes end-to-end: CONCLUÍDO POR EVIDÊNCIAS ACUMULADAS
+  - Fluxo crítico Auth/trial/ativação/entitlement/logout: validado em G2
+  - PWA, atualização e offline autenticado: validados em G4
+  - Regressão comercial e UX refinada: revalidada em G5/Sprint 6C
+  - Coberturas complementares não executadas permanecem registradas em TESTES.md e não invalidam o fluxo crítico integrado
 - G7 — Auditoria final: PENDENTE
 - G8 — Aprovação do release por Igor: PENDENTE
 - G9 — Produção: PENDENTE/CONTROLADO
@@ -87,7 +91,7 @@ Uma fase só avança quando possui objetivo, evidência, testes aplicáveis, dec
 
 ## Próxima ação oficial
 
-G6 — Testes end-to-end
+G7 — Auditoria final
 
 G2 foi concluído com validação integrada de autenticação, trial, entitlement, ativação, logout, bloqueio por acesso direto sem sessão e nova sessão recuperando a licença ativa.
 

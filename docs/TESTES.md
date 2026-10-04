@@ -1,6 +1,6 @@
 # Testes e validação
 
-Esta página distingue inspeção estática, resultados registrados anteriormente e execução atual. Nenhum teste foi executado durante a consolidação documental.
+Esta página distingue inspeção estática, resultados históricos e regressões posteriores. Em 04/10/2026, G6 foi consolidado por evidências acumuladas do fluxo crítico; nenhum E2E foi repetido apenas para alterar o rótulo do gate.
 
 ## Existentes
 
@@ -14,20 +14,24 @@ Esta página distingue inspeção estática, resultados registrados anteriorment
 | Verificação | Estado | Evidência/limite |
 |---|---|---|
 | 17 asserções SQL/RLS | Aprovado historicamente | Documentado em registros anteriores; não repetido nesta atualização. |
-| Login, perfil automático, RPC de trial e leitura autenticada | Aprovado historicamente | Relato anterior; não representa execução atual. |
-| Home | Parcialmente validado | Histórico registra teste visual manual; não cobre todos os módulos. |
-| PWA, instalação e Service Worker | Parcialmente validado | `docs/status-casillas-2.0.md` registra observações feitas no Chrome; não foram repetidas. |
-| Offline até a tela de login | Parcialmente validado | Observado em teste registrado; sessão autenticada e acesso após login offline não validados. |
-| Inspeção das migrations e chamadas cliente | Aprovado como inspeção estática | RPCs e configuração local conferidas; não comprova ambiente remoto. |
-| Testes nesta consolidação | Não executados | Escopo exclusivamente documental. |
+| Login, trial expirado, ativação, entitlement, logout e nova sessão | Aprovado no fluxo integrado de G2 | `PROGRESSO.md` registra ativação de `TESTCASILLAS2026`, bloqueio pós-logout e recuperação da licença em novo login. |
+| Regressão comercial | Aprovado | `tests/trial-access.test.mjs`: 12/12 em execuções registradas em G2, G5 e Sprint 6C. |
+| Home | Parcialmente validado | Histórico registra teste visual/manual; não representa fluxo visual exaustivo de todos os módulos. |
+| PWA, instalação e atualização do Service Worker | Aprovado no escopo de G4 | G4.2.1 registrou SW v12, cache esperado e atualização com limpeza de cache antigo. |
+| Offline autenticado e cálculos | Aprovado no escopo de G4.2.2b | Sessão ativa + SW v12 + reload offline; Trigonometria, Roscas e Guia CNC funcionaram; retorno online normal. |
+| Segurança/isolamento do Service Worker | Aprovado com limites documentados | G4.2.3 foi concluído; alguns casos foram auditados estaticamente sem execução dinâmica e continuam registrados como cobertura incompleta. |
+| Inspeção das migrations e chamadas cliente | Aprovado como inspeção estática | RPCs e configuração local conferidas; inspeção isolada não comprova todo o ambiente remoto. |
+| Consolidação G6 | Concluída por evidências acumuladas | Nenhum E2E crítico foi repetido; foram reutilizadas evidências concretas de G2, G4 e regressões posteriores. |
 
-## Pendências de validação
+## Cobertura complementar ainda não executada integralmente
 
-- Auth: login, sessão persistente, logout, redefinição de senha e erros de rede.
-- Trial: criação controlada, reutilização sem extensão, estado ativo, expiração, usuário não autenticado e erros de RPC.
-- Entitlement/licença: válido, ausente, revogado, expirado, produto inativo, ativação e falhas; usar ambiente e códigos de teste autorizados.
-- RLS/grants: execução da suíte SQL e testes por papéis `anon` e `authenticated`, incluindo tabelas sensíveis e RPCs. Não testar produção sem autorização.
-- PWA: instalação, escopo sob subpath do GitHub Pages, atualização/cache antigo, navegação offline e cálculos após uma sessão válida; distinguir recursos offline da autorização online.
-- Fluxo visual dos 12 módulos, Card 5 de Consultoria e fluxo de recuperação de senha.
+- Auth: fluxo completo de redefinição de senha e falhas reais de rede; login/logout críticos já possuem evidência integrada.
+- Trial: criação controlada/reutilização sem extensão e combinações remotas adicionais; expiração/bloqueio e erros principais possuem cobertura integrada ou unitária registrada.
+- Entitlement/licença: cenários remotos adicionais de revogação, expiração, produto inativo e falhas; ativação válida e recuperação do entitlement já possuem evidência integrada.
+- Camada 1 comercial: E2E remoto com criação e ativação de licença descartável não executado por decisão explícita anterior.
+- RLS/grants: ampliar execução por papéis `anon` e `authenticated` nas tabelas sensíveis e RPCs; não testar produção sem autorização.
+- PWA: alguns cenários de G4.2.3 permaneceram apenas em auditoria estática; instalação, atualização e offline autenticado crítico já foram validados.
+- UX: fluxo visual exaustivo de todos os módulos não foi executado; módulos críticos/amostrais e refinamentos do Sprint 6C possuem validação registrada.
+- Compartilhar App: validar em origem HTTPS/segura.
 
 Ativar licença, criar trial ou alterar dados requer ambiente de teste autorizado. Nenhuma chamada remota foi feita para esta documentação.

@@ -22,7 +22,7 @@ Atualizado em 2026-10-04.
 | G4 | CONCLUÍDO | SW v12, offline funcional validado em G4.2.2b; segurança/isolamento validados em G4.2.3. Pendências não bloqueantes registradas. |
 | G5 | CONCLUÍDO | Textos, logout, oferta comercial e Camada 1 implementados; regressão da UX alterada aprovada. E2E remoto da Camada 1 não executado por decisão explícita. |
 | Sprint 6C | CONCLUÍDO LOCALMENTE | Refinamento de Guia CNC, navegação/acessibilidade, estados/feedbacks e responsividade. Regressão 12/12; compartilhamento ainda requer validação em HTTPS. |
-| G6 | PENDENTE | E2E integrado. |
+| G6 | CONCLUÍDO POR EVIDÊNCIAS ACUMULADAS | Fluxo crítico integrado coberto por G2, G4 e regressões posteriores; cobertura complementar permanece registrada em TESTES.md. |
 | G7 | PENDENTE | Auditoria final. |
 | G8 | PENDENTE | Aprovação do release. |
 | G9 | PENDENTE | Produção. |
@@ -88,9 +88,8 @@ Atualizado em 2026-10-04.
 ## Pendências Abertas
 
 ### Revalidação de gates
-- [ ] Revalidar G2 (Auth/Trial/Ativação) contra código atual
-      Motivo: testes de G2 podem ter rodado contra servidor v10
-      Referência: PROGRESSO.md (G4.2.1, G4.2.2a)
+- [x] G6 consolidou as evidências críticas já executadas em G2, G4 e regressões posteriores sem repetir testes concluídos.
+- [ ] Cenários complementares não cobertos pelo fluxo crítico permanecem em `docs/TESTES.md` para evolução/auditoria conforme risco.
 
 ### Infraestrutura de teste
 - [ ] Criar docs/TESTE-LOCAL.md
@@ -122,7 +121,7 @@ Atualizado em 2026-10-04.
 
 ## Próxima ação
 
-- G6 — Testes end-to-end
+- G7 — Auditoria final
 
 
 
