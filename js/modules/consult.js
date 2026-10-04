@@ -163,8 +163,20 @@ export function render(container) {
 
   cardAtivacao.appendChild(createElementSafe('p', {
     class: 'result-hint',
-    text: 'Ative com o código que você recebeu ou fale com a gente para adquirir uma licença.'
+    text: 'Casillas — Licença vitalícia'
   }));
+
+  const ofertaLicenca = createElementSafe('p', { class: 'result-hint' }, [
+    'De ',
+    createElementSafe('span', {
+      text: 'R$ 49,90',
+      style: { textDecoration: 'line-through' }
+    }),
+    ' por ',
+    createElementSafe('strong', { text: 'R$ 19,90 — preço promocional' }),
+    '. Pagamento único · Sem mensalidade · Sem limite de aparelhos.'
+  ]);
+  cardAtivacao.appendChild(ofertaLicenca);
 
   const btnsAtivacao = createElementSafe('div', { class: 'btn-row' });
 
@@ -179,7 +191,7 @@ export function render(container) {
     type: 'button',
     class: 'btn btn-outline',
     text: '💳 Comprar licença',
-    onclick: () => abrirWhatsApp('Olá! Quero comprar uma licença do Casillas App.')
+    onclick: () => abrirWhatsApp('Olá! Quero adquirir a licença vitalícia do Casillas App pelo preço promocional de R$ 19,90.')
   }));
 
   cardAtivacao.appendChild(btnsAtivacao);
