@@ -25,7 +25,7 @@ Atualizado em 2026-10-04.
 | G6 | CONCLUÍDO POR EVIDÊNCIAS ACUMULADAS | Fluxo crítico integrado coberto por G2, G4 e regressões posteriores; cobertura complementar permanece registrada em TESTES.md. |
 | G7 | CONCLUÍDO | Dois bloqueadores corrigidos; deploy do commit `e52ff60` aprovado e recuperação de senha validada E2E em HTTPS até novo login. |
 | G8 | CONCLUÍDO/APROVADO | Igor aprovou explicitamente o release candidate Casillas 2.0.0 (`5588402`) após deploy nº 15 e smoke test em produção. |
-| G9 | PENDENTE | Produção. |
+| G9 | CONCLUÍDO | Produção oficial mantida no GitHub Pages; Supabase/Auth e operação comercial auditados; smoke test final HTTPS aprovado com licença ativa no smartphone. |
 | G10 | PENDENTE | Lançamento. |
 
 ## G1 — evidências já existentes
@@ -132,7 +132,7 @@ Atualizado em 2026-10-04.
 
 ## Próxima ação
 
-- G9 — Produção. A aprovação do G8 não autoriza automaticamente ações de produção; executar somente após planejamento, verificações e autorização específica.
+- G10 — Lançamento. Planejar comunicação/distribuição e executar somente após autorização específica.
 
 
 

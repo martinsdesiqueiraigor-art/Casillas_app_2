@@ -55,7 +55,7 @@ G3 — Segurança e hardening: PARCIAL
   - recuperação de senha validada E2E: solicitação → e-mail → link HTTPS → nova senha → login com a nova senha
   - pendências não bloqueantes permanecem registradas em STATUS.md/TESTES.md
 - G8 — Aprovação do release por Igor: CONCLUÍDO — release candidate Casillas 2.0.0 (`5588402`) aprovado explicitamente por Igor em 2026-10-04
-- G9 — Produção: PENDENTE/CONTROLADO
+- G9 — Produção: CONCLUÍDO — GitHub Pages mantido como produção oficial; Supabase/Auth e operação comercial auditados; smoke test final aprovado em HTTPS
 - G10 — Lançamento: PENDENTE
 
 ## Fases técnicas
@@ -95,7 +95,7 @@ Uma fase só avança quando possui objetivo, evidência, testes aplicáveis, dec
 
 ## Próxima ação oficial
 
-G9 — Produção (executar somente após planejamento, verificações e autorização específica; aprovação de G8 não autoriza ações de G9)
+G10 — Lançamento (planejar comunicação/distribuição e executar somente após autorização específica)
 
 G2 foi concluído com validação integrada de autenticação, trial, entitlement, ativação, logout, bloqueio por acesso direto sem sessão e nova sessão recuperando a licença ativa.
 

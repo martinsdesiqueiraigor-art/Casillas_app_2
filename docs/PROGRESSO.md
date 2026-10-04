@@ -514,3 +514,26 @@ ESTADO:
 - G8 — CONCLUÍDO/APROVADO.
 - Próximo gate oficial: G9 — Produção.
 - A aprovação do G8 não autoriza automaticamente ações de G9; produção exige planejamento, verificações e autorização específica.
+
+## 04/10 — G9: produção concluída
+
+DECISÕES E EVIDÊNCIAS:
+- GitHub Pages foi mantido como ambiente oficial desta primeira produção; domínio próprio permanece evolução posterior e não bloqueia o lançamento.
+- O workflow de Pages nº 16 concluiu com sucesso para o commit documental de G8 `fea356d`; o release funcional 2.0.0 permanece baseado no release candidate `5588402`.
+- Supabase `Casillas` (`maayjshlsxvxtrgjpcep`), região `sa-east-1`, foi confirmado como `ACTIVE_HEALTHY` em auditoria somente leitura.
+- Security Advisor não apresentou novo bloqueador: permanecem os achados conhecidos de quatro tabelas com RLS sem policies (INFO) e proteção contra senhas vazadas desativada (WARN/Free Plan).
+- A operação manual de licenças foi reconstruída a partir de `docs/OPERACAO-COMERCIAL.md` e `tools/gerar-codigo.mjs`; o produto remoto `casillas` está ativo. Nenhuma licença real foi criada durante G9.
+- O E2E remoto da Camada 1 com licença descartável continua não executado por decisão anterior; permanece cobertura complementar, não bloqueador do lançamento.
+- Smoke test HTTPS confirmou resposta 200 para `index.html`, `auth.html`, `manifest.json`, `service-worker.js` e `offline.html`.
+- Produção publicou `manifest.version=2.0.0` e a tela Sobre também contém `Versão 2.0.0`.
+- Smoke test manual final no smartphone confirmou a Home com `Licença ativa`.
+
+ROLLBACK/OPERAÇÃO:
+- Código e documentação permanecem versionados no Git; o release funcional aprovado é `5588402`. Em incidente de frontend, restaurar/republicar uma revisão conhecida deve ser tratado como ação de produção separada, com verificação e autorização antes da escrita remota.
+- Em incidente comercial, não expor códigos originais nem credenciais; interromper emissão/entrega de novas licenças até diagnóstico. Alterações no Supabase exigem procedimento separado, evidência e autorização explícita.
+- Não reescrever histórico de migrations para corrigir o drift histórico de timestamps durante o lançamento.
+
+ESTADO:
+- G9 — CONCLUÍDO.
+- Próximo gate oficial: G10 — Lançamento.
+- G10 exige planejamento e autorização própria; o fechamento de G9 não autoriza publicação comercial adicional automaticamente.
