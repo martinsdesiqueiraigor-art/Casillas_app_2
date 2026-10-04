@@ -1,6 +1,6 @@
 // trial.js — Sistema de trial (30 dias) + ativação por código (Modelo 2)
 // Modelo 2: Códigos pré-gerados, NÃO vinculados ao Device ID.
-// Cada código funciona em até 3 aparelhos diferentes.
+
 // Códigos podem ser revogados (lista negra embutida).
 
 import { supabase } from './supabase.bundle.js';
@@ -129,10 +129,10 @@ function showTrialBanner(daysLeft) {
 
   if (daysLeft > 7) {
     cor = 'success';
-    texto = `🎁 Versão gratuita — Teste: ${daysLeft} dias restantes`;
+    texto = `🎁 Período de teste — ${daysLeft} dias restantes`;
   } else if (daysLeft > 3) {
     cor = 'warning';
-    texto = `⏰ Teste: ${daysLeft} dias restantes`;
+    texto = `⏰ Período de teste — ${daysLeft} dias restantes`;
   } else {
     cor = 'danger';
     texto = `⚠️ Últimos ${daysLeft} dias! Ative agora.`;
@@ -348,7 +348,7 @@ export async function checkTrialStatus() {
   }
 
   if (supabaseTrial.reason === 'expired') {
-    showActivationScreen('Seu período de avaliação terminou. Ative o app para continuar.');
+    showActivationScreen('Seu período de teste terminou. Ative o app para continuar.');
     return supabaseTrial;
   }
 

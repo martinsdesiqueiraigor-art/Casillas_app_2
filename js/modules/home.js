@@ -55,8 +55,8 @@ function getAccessPresentation(accessStatus) {
     return {
       kind: 'trial',
       icon: '◷',
-      title: 'Trial ativo',
-      description: 'Seu período de avaliação está em andamento.',
+      title: 'Período de teste',
+      description: 'Seu período de teste está em andamento.',
       daysLeft: accessStatus.daysLeft
     };
   }

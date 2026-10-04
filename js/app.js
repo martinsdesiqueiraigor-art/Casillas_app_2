@@ -262,7 +262,7 @@ async function boot() {
       accountStatus.dataset.access = 'licensed';
     } else {
       const days = trial.daysLeft;
-      accountStatus.textContent = `Trial ativo · ${days}d`;
+      accountStatus.textContent = `Período de teste · ${days}d`;
       accountStatus.dataset.access = 'trial';
     }
   }
