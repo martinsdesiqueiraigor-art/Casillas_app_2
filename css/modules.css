@@ -806,9 +806,27 @@
   color: var(--text-secondary);
 }
 
-/* ─── Botão copiar ─── */
+/* ─── Detalhes e ações do card ─── */
+.guia-detalhes {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.guia-detalhes.hidden {
+  display: none;
+}
+
+.guia-card-acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.guia-btn-detalhes,
 .guia-btn-copiar {
-  align-self: flex-start;
+  min-height: 44px;
   background: var(--bg-input);
   color: var(--text-primary);
   border: 1px solid var(--border-color);
@@ -818,13 +836,41 @@
   font-weight: 600;
   cursor: pointer;
   transition: background var(--t-fast), border-color var(--t-fast);
-  margin-top: 4px;
 }
 
+.guia-btn-detalhes {
+  border-color: var(--accent-secondary);
+  color: var(--accent-secondary);
+}
+
+.guia-btn-detalhes:focus-visible,
+.guia-btn-copiar:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+}
+
+.guia-btn-detalhes:active,
 .guia-btn-copiar:active {
   background: var(--accent-primary);
   color: #1a1108;
   border-color: var(--accent-primary);
+}
+
+@media (max-width: 420px) {
+  .guia-card {
+    padding: 14px;
+  }
+
+  .guia-card-acoes {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .guia-btn-detalhes,
+  .guia-btn-copiar {
+    width: 100%;
+    padding-inline: 10px;
+  }
 }
 
 /* ─── Mensagem "nenhum resultado" ─── */

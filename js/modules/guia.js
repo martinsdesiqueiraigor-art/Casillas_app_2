@@ -1,5 +1,5 @@
 // guia.js (module) — UI do módulo Guia de Programação CNC
-// Consulta rápida de códigos e ciclos (Siemens, Fanuc, Haas)
+// Consulta rápida de códigos e ciclos (Siemens e Fanuc)
 // Funciona 100% offline — carrega dados de ./dados/guia_cnc.json
 
 import { createElementSafe, showToast } from '../utils.js';
@@ -28,7 +28,7 @@ async function carregarDados() {
     return json;
   } catch (err) {
     console.error('Erro ao carregar guia_cnc.json:', err);
-    showToast('Não foi possível carregar o guia. Verifique a conexão.', 'error');
+    showToast('Não foi possível carregar os dados do Guia CNC.', 'error');
     return { itens: [] };
   }
 }
@@ -87,15 +87,21 @@ function renderCard(item) {
   titulo.appendChild(document.createTextNode(' — ' + item.titulo));
   card.appendChild(titulo);
 
-  // Sintaxe
+  // Sintaxe sempre visível para consulta rápida
   card.appendChild(createElementSafe('div', { class: 'guia-label', text: 'Sintaxe' }));
-  const sintaxe = createElementSafe('pre', { class: 'guia-code' });
+  const sintaxe = createElementSafe('pre', { class: 'guia-code guia-code-resumo' });
   sintaxe.textContent = item.sintaxe || '';
   card.appendChild(sintaxe);
 
-  // Parâmetros
+  // Detalhes ficam recolhidos por padrão para reduzir rolagem no celular
+  const detalhesId = `guia-detalhes-${item.id}`;
+  const detalhes = createElementSafe('div', {
+    id: detalhesId,
+    class: 'guia-detalhes hidden'
+  });
+
   if (item.parametros && item.parametros.length > 0) {
-    card.appendChild(createElementSafe('div', { class: 'guia-label', text: 'Parâmetros principais' }));
+    detalhes.appendChild(createElementSafe('div', { class: 'guia-label', text: 'Parâmetros principais' }));
     const params = createElementSafe('ul', { class: 'guia-params' });
     item.parametros.forEach((p) => {
       const li = createElementSafe('li', {});
@@ -103,22 +109,37 @@ function renderCard(item) {
       li.appendChild(createElementSafe('span', { class: 'guia-param-desc', text: ' — ' + p.desc }));
       params.appendChild(li);
     });
-    card.appendChild(params);
+    detalhes.appendChild(params);
   }
 
-  // Exemplo
   if (item.exemplo) {
-    card.appendChild(createElementSafe('div', { class: 'guia-label', text: 'Exemplo prático' }));
+    detalhes.appendChild(createElementSafe('div', { class: 'guia-label', text: 'Exemplo prático' }));
     const exemplo = createElementSafe('pre', { class: 'guia-code guia-code-exemplo' });
     exemplo.textContent = item.exemplo;
-    card.appendChild(exemplo);
+    detalhes.appendChild(exemplo);
   }
+  card.appendChild(detalhes);
 
-  // Botão copiar
+  const acoes = createElementSafe('div', { class: 'guia-card-acoes' });
+  const btnDetalhes = createElementSafe('button', {
+    type: 'button',
+    class: 'guia-btn-detalhes',
+    text: 'Ver detalhes',
+    'aria-expanded': 'false',
+    'aria-controls': detalhesId,
+    onclick: () => {
+      const expandido = btnDetalhes.getAttribute('aria-expanded') === 'true';
+      detalhes.classList.toggle('hidden', expandido);
+      btnDetalhes.setAttribute('aria-expanded', String(!expandido));
+      btnDetalhes.textContent = expandido ? 'Ver detalhes' : 'Recolher';
+    }
+  });
+  acoes.appendChild(btnDetalhes);
+
   const btnCopiar = createElementSafe('button', {
     type: 'button',
     class: 'guia-btn-copiar',
-    text: '📋 Copiar código',
+    text: '📋 Copiar',
     onclick: async () => {
       try {
         const texto = `${item.codigo} — ${item.titulo}\n\n${item.sintaxe}\n\nExemplo:\n${item.exemplo || ''}`;
@@ -129,7 +150,8 @@ function renderCard(item) {
       }
     }
   });
-  card.appendChild(btnCopiar);
+  acoes.appendChild(btnCopiar);
+  card.appendChild(acoes);
 
   return card;
 }
@@ -287,7 +309,7 @@ export function render(container) {
   const cmdGroup = createElementSafe('div', { class: 'guia-filtro-group' });
   cmdGroup.appendChild(createElementSafe('label', { for: 'guia-comando', text: '⚙️ Comando' }));
   const selCmd = createElementSafe('select', { id: 'guia-comando', class: 'input' });
-  ['Todos', 'Siemens', 'Fanuc', 'Haas'].forEach((opt) => {
+  ['Todos', 'Siemens', 'Fanuc'].forEach((opt) => {
     const value = opt === 'Todos' ? '' : opt;
     selCmd.appendChild(createElementSafe('option', { value, text: opt }));
   });
