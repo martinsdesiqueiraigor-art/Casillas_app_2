@@ -49,7 +49,11 @@ G3 — Segurança e hardening: PARCIAL
   - PWA, atualização e offline autenticado: validados em G4
   - Regressão comercial e UX refinada: revalidada em G5/Sprint 6C
   - Coberturas complementares não executadas permanecem registradas em TESTES.md e não invalidam o fluxo crítico integrado
-- G7 — Auditoria final: PENDENTE
+- G7 — Auditoria final: CONCLUÍDO
+  - dois bloqueadores encontrados e corrigidos: recuperação de senha e superfície do artefato público do GitHub Pages
+  - deploy HTTPS do commit `e52ff60` concluído com sucesso
+  - recuperação de senha validada E2E: solicitação → e-mail → link HTTPS → nova senha → login com a nova senha
+  - pendências não bloqueantes permanecem registradas em STATUS.md/TESTES.md
 - G8 — Aprovação do release por Igor: PENDENTE
 - G9 — Produção: PENDENTE/CONTROLADO
 - G10 — Lançamento: PENDENTE
@@ -91,7 +95,7 @@ Uma fase só avança quando possui objetivo, evidência, testes aplicáveis, dec
 
 ## Próxima ação oficial
 
-G7 — Auditoria final
+G8 — Aprovação do release por Igor
 
 G2 foi concluído com validação integrada de autenticação, trial, entitlement, ativação, logout, bloqueio por acesso direto sem sessão e nova sessão recuperando a licença ativa.
 

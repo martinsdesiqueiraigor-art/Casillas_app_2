@@ -486,12 +486,15 @@ EVIDÊNCIAS:
 - `tests/trial-access.test.mjs`: 12/12 aprovados.
 - Todos os caminhos declarados para o novo artefato `_site` existem localmente.
 
-PENDÊNCIA BLOQUEANTE PARA FECHAR G7:
-- Executar E2E real da recuperação de senha pelo link enviado por e-mail em contexto HTTPS, confirmando também a Redirect URL permitida no Supabase.
+PUBLICAÇÃO E E2E:
+- Commit `e52ff60` publicado em `origin/casillas-2.0`; pós-push confirmou divergência local/remoto `0 0`.
+- GitHub Actions `Deploy static content to Pages`, execução nº 13, concluiu com sucesso para o SHA `e52ff601ff378f1494fc08cb2561781c0c99f43f`.
+- Recuperação de senha validada E2E em HTTPS com conta de teste: solicitação exibiu confirmação; e-mail de recuperação foi recebido; link abriu o Casillas em modo `Nova senha`; nova senha foi definida; login subsequente com a nova senha foi bem-sucedido.
+- O E2E confirma na prática que o redirecionamento usado pelo fluxo de recuperação é aceito no ambiente publicado.
 
 PENDÊNCIA CONTROLADA SEPARADA:
 - Compartilhar App continua aguardando validação em HTTPS.
 
 ESTADO:
-- G7 permanece EM ANDAMENTO.
-- Nenhum push e nenhuma escrita no Supabase remoto foram realizados.
+- G7 CONCLUÍDO.
+- Próximo gate oficial: G8 — Aprovação do release por Igor.

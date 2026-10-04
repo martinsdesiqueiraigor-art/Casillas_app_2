@@ -25,7 +25,7 @@ Esta página distingue inspeção estática, resultados históricos e regressõe
 
 ## Cobertura complementar ainda não executada integralmente
 
-- Auth: fluxo completo de redefinição de senha e falhas reais de rede; login/logout críticos já possuem evidência integrada.
+- Auth: recuperação de senha completa foi validada em G7 (solicitação → e-mail → link HTTPS → nova senha → login com a nova senha). Permanecem sem cobertura integral apenas falhas reais de rede e outros cenários complementares.
 - Trial: criação controlada/reutilização sem extensão e combinações remotas adicionais; expiração/bloqueio e erros principais possuem cobertura integrada ou unitária registrada.
 - Entitlement/licença: cenários remotos adicionais de revogação, expiração, produto inativo e falhas; ativação válida e recuperação do entitlement já possuem evidência integrada.
 - Camada 1 comercial: E2E remoto com criação e ativação de licença descartável não executado por decisão explícita anterior.
