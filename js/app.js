@@ -8,7 +8,7 @@ import { initKeyboard, bindInputsToKeyboard, hideKeyboard } from './keyboard.js'
 import {initMenu, setActiveMenuItem, initOptionsMenu, closeOptionsMenu, initShareButton, renderMenuIcons } from './menu.js';
 import { ICONS } from './icons.js';
 import { supabase } from './supabase.bundle.js';
-import { getCurrentUser, onAuthStateChange } from './auth.js';
+import { getCurrentUser, onAuthStateChange, signOut } from './auth.js';
 
 // Registro dos módulos (carregamento dinâmico)
 const MODULE_LOADERS = {
@@ -143,6 +143,7 @@ function registerServiceWorker() {
 function wireOptionsButtons() {
   const optKeyboard = document.getElementById('opt-keyboard');
   const optClear = document.getElementById('opt-clear');
+  const optSignOut = document.getElementById('opt-signout');
 
   if (optKeyboard && optKeyboard.dataset.wired !== '1') {
     optKeyboard.dataset.wired = '1';
@@ -212,6 +213,22 @@ function wireOptionsButtons() {
       });
 
       showToast(`${count} campo(s) zerado(s).`, 'success');
+    });
+  }
+
+  if (optSignOut && optSignOut.dataset.wired !== '1') {
+    optSignOut.dataset.wired = '1';
+    optSignOut.addEventListener('click', async () => {
+      closeOptionsMenu();
+      const { error } = await signOut();
+
+      if (error) {
+        console.error('[AUTH] Erro ao sair da conta:', error);
+        showToast('Não foi possível sair da conta.', 'error');
+        return;
+      }
+
+      window.location.href = './auth.html';
     });
   }
 }
