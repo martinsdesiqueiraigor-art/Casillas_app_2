@@ -265,6 +265,33 @@ body {
   box-shadow: var(--shadow-strong);
 }
 
+@media (max-width: 420px) {
+  .app-header {
+    gap: var(--sp-2);
+    padding-inline: var(--sp-2);
+  }
+
+  .header-indicator {
+    max-width: 72px;
+  }
+
+  .icon-btn {
+    width: 44px;
+    height: 44px;
+    flex: 0 0 44px;
+  }
+
+  .menu-item {
+    min-height: 44px;
+  }
+}
+
+@media (max-width: 350px) {
+  .header-indicator {
+    display: none;
+  }
+}
+
 @media (min-width: 720px) {
   .app-content {
     max-width: 720px;
