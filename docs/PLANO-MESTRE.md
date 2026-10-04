@@ -31,7 +31,10 @@ G3 — Segurança e hardening: PARCIAL
   └── G4.3d — Fechamento de G4 ✅
 
   Pendências não bloqueantes registradas em STATUS.md
-- G5 — UX comercial: PARCIAL
+- G5 — UX comercial: EM PLANEJAMENTO
+  - Lote 1 — padronização de textos da UI: PLANEJADO
+  - Lote 2 — logout visível: PLANEJADO
+  - Operação manual de licenças (Camada 1): PENDENTE — criar `tools/gerar-codigo.mjs` e `docs/OPERACAO-COMERCIAL.md`
 - G6 — Testes end-to-end: PENDENTE
 - G7 — Auditoria final: PENDENTE
 - G8 — Aprovação do release por Igor: PENDENTE

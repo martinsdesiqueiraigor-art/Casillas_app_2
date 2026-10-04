@@ -46,3 +46,41 @@ A investigação remota mais recente confirmou `public.activate_casillas_license
 - [Banco de dados](BANCO-DADOS.md)
 - [Segurança](SEGURANCA.md)
 - [Roadmap](ROADMAP.md)
+
+## 03/10/2026 — Decisões comerciais (G5)
+
+### 1. Geração e entrega de código de licença
+
+Camada 1 — operação manual/local (a criar em G5):
+- Criar o script local `tools/gerar-codigo.mjs` (não deployado, não público)
+- Executar apenas no PC do Igor
+- Gerar código, calcular hash e inserir em `licenses` com status AVAILABLE
+- Entregar o código ao cliente via WhatsApp
+
+Evolução futura (não escopo de G5):
+- Camada 2: Edge Function `generate-license`
+- Camada 3: automação via gateway de pagamento
+
+Pendências de G5:
+- Criar `tools/gerar-codigo.mjs`
+- Criar e documentar o procedimento em `docs/OPERACAO-COMERCIAL.md`
+
+### 2. Preço
+
+- R$ 19,90 — preço real de lançamento (promocional)
+- R$ 49,90 — preço cheio (âncora de marketing; referência futura)
+- Sem prazo explícito para a promoção
+- Sem contagem regressiva, "só hoje" ou falsa urgência
+- Revisão a cada trimestre
+
+### 3. Logout visível
+
+- Entra em G5 como feature nova (Lote 2)
+- `signOut()` existe no código; falta CTA visível
+- Impacto: adicionar botão + mensagem de confirmação
+
+### 4. Padronização terminológica
+
+- "Trial" → "Período de teste" (apenas em UI visível ao usuário)
+- "3 aparelhos" → remover todas as referências
+- Código interno, chaves e nomes de função: não alterar em G5

@@ -368,3 +368,23 @@ NOTA:
 Este foi o primeiro push coordenado e registrado após a
 descoberta do push não-rastreado de 01/10. Daqui em diante,
 pushes coordenados devem ser registrados neste documento.
+
+## 04/10 — G5: decisões comerciais e lotes de execução definidos
+
+DECISÕES REGISTRADAS:
+- Preço de lançamento: R$ 19,90; preço cheio de referência: R$ 49,90.
+- Licença: pagamento único, vitalícia, vinculada à conta e sem limite de aparelhos.
+- Compra inicial via WhatsApp; sem gateway de pagamento no escopo de G5.
+- Terminologia visível: padronizar "Trial"/"Versão gratuita"/"período de avaliação" para "Período de teste", conforme contexto.
+- Lote 1: padronização de textos da UI.
+- Lote 2: CTA visível de logout usando o `signOut()` existente.
+
+VERIFICAÇÃO DE ARTEFATOS:
+- `tools/gerar-codigo.mjs`: não existe no repositório neste marco.
+- `docs/OPERACAO-COMERCIAL.md`: não existe no repositório neste marco.
+- Ambos ficam registrados como pendências da Camada 1 da operação manual de licenças em G5.
+
+ESTADO:
+- Planejamento/documentação apenas.
+- Nenhuma implementação de G5 iniciada neste marco.
+- Sem alteração remota, commit ou push nesta etapa.

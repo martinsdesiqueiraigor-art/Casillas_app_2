@@ -1,6 +1,6 @@
 # STATUS — CASILLAS 2.0
 
-Atualizado em 2026-10-01.
+Atualizado em 2026-10-04.
 
 ## Estado do projeto
 
@@ -20,7 +20,7 @@ Atualizado em 2026-10-01.
 | G2 | CONCLUÍDO | 12/12 testes unitários de acesso; ativação local; logout; bloqueio por acesso direto sem sessão; nova sessão recuperando licença via entitlement. |
 | G3 | PARCIAL (G3.1 e G3.4 concluídos; G3.2 não aplicável — Free Plan; G3.3 adiado) | Hardening local e auditoria realizados; pendências restantes. |
 | G4 | CONCLUÍDO | SW v12, offline funcional validado em G4.2.2b; segurança/isolamento validados em G4.2.3. Pendências não bloqueantes registradas. |
-| G5 | PARCIAL | UX comercial implementada; compra/pagamento ainda externo. |
+| G5 | EM PLANEJAMENTO | Decisões comerciais registradas; Lote 1 (textos) e Lote 2 (logout visível) definidos; implementação ainda não iniciada. |
 | G6 | PENDENTE | E2E integrado. |
 | G7 | PENDENTE | Auditoria final. |
 | G8 | PENDENTE | Aprovação do release. |
@@ -61,6 +61,16 @@ Atualizado em 2026-10-01.
 - `proacl` final: `{postgres=X/postgres}`.
 - Security Advisor não reporta mais os WARNs de `rls_auto_enable()` para `anon` e `authenticated`.
 - Rollback: `C:\Backups\Casillas\2026-10-01-g3-rls\rollback.sql`.
+
+## G5 — planejamento atual
+
+- Decisões comerciais registradas em `docs/DECISOES.md`.
+- Lote 1: padronização de textos da UI, sem alterar lógica comercial.
+- Lote 2: adicionar CTA visível de logout usando o `signOut()` existente.
+- Camada 1 da operação de licenças ainda não existe no repositório:
+  - [ ] criar `tools/gerar-codigo.mjs`;
+  - [ ] criar `docs/OPERACAO-COMERCIAL.md`.
+- Nenhuma implementação de G5 foi iniciada neste marco documental.
 
 ## Pendências Abertas
 
