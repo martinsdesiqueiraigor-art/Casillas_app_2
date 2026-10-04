@@ -56,7 +56,12 @@ G3 — Segurança e hardening: PARCIAL
   - pendências não bloqueantes permanecem registradas em STATUS.md/TESTES.md
 - G8 — Aprovação do release por Igor: CONCLUÍDO — release candidate Casillas 2.0.0 (`5588402`) aprovado explicitamente por Igor em 2026-10-04
 - G9 — Produção: CONCLUÍDO — GitHub Pages mantido como produção oficial; Supabase/Auth e operação comercial auditados; smoke test final aprovado em HTTPS
-- G10 — Lançamento: PENDENTE
+- G10 — Lançamento: EM ANDAMENTO
+  - G10.1 — oferta e preço: DEFINIDOS (R$ 49,90 → oferta de lançamento R$ 19,90)
+  - G10.2 — pagamento inicial: DEFINIDO (PIX manual, dados enviados apenas em contato privado)
+  - G10.3 — entrega/ativação: PROCEDIMENTO PREPARADO; nenhuma licença real criada nesta etapa
+  - G10.4 — landing e divulgação: EM ANDAMENTO; versão estável publicada e redesign V2 permanece separado, sem publicação
+  - G10.5 — primeira venda assistida e checklist pós-venda: PENDENTE
 
 ## Fases técnicas
 
@@ -95,7 +100,7 @@ Uma fase só avança quando possui objetivo, evidência, testes aplicáveis, dec
 
 ## Próxima ação oficial
 
-G10 — Lançamento (planejar comunicação/distribuição e executar somente após autorização específica)
+G10 — Lançamento em andamento. Próxima frente operacional: G10.5 — preparar a primeira venda assistida e o checklist pós-venda. Nenhuma licença real, escrita no Supabase ou publicação adicional deve ocorrer sem autorização específica.
 
 G2 foi concluído com validação integrada de autenticação, trial, entitlement, ativação, logout, bloqueio por acesso direto sem sessão e nova sessão recuperando a licença ativa.
 

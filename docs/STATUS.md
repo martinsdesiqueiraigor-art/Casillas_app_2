@@ -8,8 +8,8 @@ Atualizado em 2026-10-04.
 - Último commit: consultar `git log -1 --oneline`
 - Working tree: ver `git status --short`
 - Supabase remoto: não alterado nesta atualização.
-- origin/casillas-2.0: `5588402` — release candidate Casillas 2.0.0 publicado
-- casillas-2.0-hardening (local): sincronizada com `origin/casillas-2.0` após a publicação do release candidate (`0 0`)
+- origin/casillas-2.0: `68da79a` — documentação de conclusão de G9 publicada; release funcional Casillas 2.0.0 permanece baseado em `5588402`
+- casillas-2.0-hardening (local): sincronizada com `origin/casillas-2.0` (`0 0`)
 
 ## Gates
 
@@ -26,7 +26,7 @@ Atualizado em 2026-10-04.
 | G7 | CONCLUÍDO | Dois bloqueadores corrigidos; deploy do commit `e52ff60` aprovado e recuperação de senha validada E2E em HTTPS até novo login. |
 | G8 | CONCLUÍDO/APROVADO | Igor aprovou explicitamente o release candidate Casillas 2.0.0 (`5588402`) após deploy nº 15 e smoke test em produção. |
 | G9 | CONCLUÍDO | Produção oficial mantida no GitHub Pages; Supabase/Auth e operação comercial auditados; smoke test final HTTPS aprovado com licença ativa no smartphone. |
-| G10 | PENDENTE | Lançamento. |
+| G10 | EM ANDAMENTO | G10.1 oferta/preço, G10.2 PIX manual e G10.3 procedimento de licença definidos; G10.4 landing em andamento; G10.5 primeira venda assistida pendente. |
 
 ## G1 — evidências já existentes
 
@@ -130,9 +130,17 @@ Atualizado em 2026-10-04.
 - Validações locais anteriores: `git diff --check`, sintaxe de `js/auth.js` e `js/auth-page.js`, suíte `tests/trial-access.test.mjs` 12/12 e conferência dos caminhos do artefato.
 - Compartilhar App foi posteriormente validado no ambiente HTTPS publicado e deixou de ser pendência.
 
+## G10 — lançamento em andamento
+
+- G10.1: oferta definida em R$ 49,90, com preço promocional de lançamento de R$ 19,90.
+- G10.2: pagamento inicial definido como PIX manual; dados de pagamento não devem ser publicados no Git/app e são enviados apenas em contato privado.
+- G10.3: procedimento manual de emissão/entrega/ativação preparado com `tools/gerar-codigo.mjs --sql`; nenhuma licença real foi criada durante a preparação de G10.
+- G10.4: landing comercial estável permanece publicada; redesign V2 é uma frente separada em revisão e não está autorizado para publicação enquanto houver bloqueadores de auditoria.
+- G10.5: primeira venda assistida e checklist pós-venda ainda não executados.
+
 ## Próxima ação
 
-- G10 — Lançamento. Planejar comunicação/distribuição e executar somente após autorização específica.
+- G10.5 — preparar a primeira venda assistida e o checklist operacional pós-venda. Preparação não autoriza geração de licença real, escrita no Supabase, envio de PIX, compra ou publicação.
 
 
 
