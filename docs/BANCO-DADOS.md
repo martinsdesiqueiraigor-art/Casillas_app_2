@@ -43,8 +43,8 @@ O estado remoto abaixo reflete a investigação Supabase mais recente fornecida 
 | `private.get_casillas_entitlement()` | Sim | Sim | Versionada em `20260929042401_add_get_casillas_entitlement.sql`. |
 | `public.get_casillas_entitlement()` | Sim | Sim | Wrapper versionado na mesma migration. |
 | `private.activate_casillas_license(text)` | Sim | Sim | Implementação privada em `20260928160324_fix_activate_casillas_license_entitlement_check.sql`. |
-| `public.activate_casillas_license(text)` | Sim | Não | Schema drift conhecido: wrapper remoto sem definição correspondente nas migrations atuais. Não foi encontrada evidência do wrapper no histórico pesquisável deste repositório; isso não prova ausência em todo repositório ou histórico externo. |
+| `public.activate_casillas_license(text)` | Sim | Sim | Wrapper versionado em `20260930213346_add_public_activate_casillas_license_wrapper.sql`; chama a implementação privada. |
 
-A investigação remota informou que o wrapper público de ativação é `SECURITY INVOKER`, `VOLATILE`, executável por `authenticated` e `service_role`, sem execução concedida a `anon` ou `PUBLIC`. A migration local versiona apenas a função privada; o cliente chama `supabase.rpc('activate_casillas_license')`, nome público. A sequência remota documentada é wrapper público → implementação privada → entitlement; após a resposta, o cliente consulta entitlement novamente.
+O wrapper público de ativação está versionado localmente com `search_path = ''`, execução revogada de `public`/`anon` e concedida a `authenticated` e `service_role`. O cliente chama `supabase.rpc('activate_casillas_license')`; a sequência documentada é wrapper público → implementação privada → entitlement, seguida de nova consulta do entitlement pelo cliente.
 
-Esta divergência de rastreabilidade, por si só, não significa que a função remota esteja quebrada, que a autorização seja local ou que exista bypass. Ela não é classificada aqui como vulnerabilidade confirmada. Nenhuma migration será criada nesta etapa; eventual versionamento do wrapper é uma decisão técnica futura e trabalho separado.
+A antiga lacuna de rastreabilidade do wrapper foi encerrada pela migration `20260930213346_add_public_activate_casillas_license_wrapper.sql`. O drift histórico de timestamp permanece apenas como registro, não como divergência funcional atual.

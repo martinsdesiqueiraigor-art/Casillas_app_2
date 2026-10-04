@@ -32,6 +32,10 @@ export async function resetPassword(email) {
   });
 }
 
+export async function updatePassword(password) {
+  return supabase.auth.updateUser({ password });
+}
+
 export async function signOut() {
   return supabase.auth.signOut({
     scope: 'local'

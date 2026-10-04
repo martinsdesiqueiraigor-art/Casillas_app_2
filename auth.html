@@ -58,7 +58,7 @@
         </div>
 
         <div class="input-group">
-          <label class="input-label" for="auth-password">Senha</label>
+          <label id="auth-password-label" class="input-label" for="auth-password">Senha</label>
           <input
             id="auth-password"
             class="input"
@@ -67,6 +67,17 @@
             placeholder="Sua senha"
             minlength="6"
             required>
+        </div>
+
+        <div id="auth-password-confirm-group" class="input-group" hidden>
+          <label class="input-label" for="auth-password-confirm">Confirmar nova senha</label>
+          <input
+            id="auth-password-confirm"
+            class="input"
+            type="password"
+            autocomplete="new-password"
+            placeholder="Repita a nova senha"
+            minlength="6">
         </div>
 
         <button

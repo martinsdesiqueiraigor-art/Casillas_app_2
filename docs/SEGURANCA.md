@@ -32,8 +32,8 @@ Esses itens são ações futuras, não controles concluídos. Não foi feita alt
 
 ### Pendência documentada: wrapper público de ativação
 
-`public.activate_casillas_license(text)` existe no Supabase remoto, mas não está representado nas migrations versionadas. A função privada de implementação está versionada. A investigação remota informou wrapper `SECURITY INVOKER`, `VOLATILE`, com execução concedida a `authenticated` e `service_role`, e não a `anon` ou `PUBLIC`. Esta lacuna é schema drift conhecido, não vulnerabilidade confirmada; não implica por si só falha, autorização local ou bypass. Nenhuma migration ou alteração remota será feita nesta etapa. A matriz e o contexto estão em [Banco de dados](BANCO-DADOS.md#matriz-de-funcoes-remoto-e-migrations-locais).
+`public.activate_casillas_license(text)` está representado na migration `20260930213346_add_public_activate_casillas_license_wrapper.sql`. O wrapper chama a implementação privada, define `search_path = ''`, revoga execução de `public`/`anon` e concede execução a `authenticated` e `service_role`. A antiga lacuna de versionamento está encerrada; permanece apenas o registro histórico de drift de timestamp. Veja [Banco de dados](BANCO-DADOS.md#matriz-de-funcoes-remoto-e-migrations-locais).
 
 ## Legado
 
-`gerar-codigo.html` implementa localmente gerador/hash do modelo antigo, menciona limite de três aparelhos e instrui editar `trial.js`. Não é parte do fluxo atual, não ativa licença no Supabase e não constitui segurança. Continua incluído no pré-cache. A informação de três aparelhos é obsoleta para o produto atual e só deve aparecer como contexto legado.
+`gerar-codigo.html` foi removido em G3.4 e também retirado do pré-cache. O gerador operacional atual é `tools/gerar-codigo.mjs`, usado localmente e fora do artefato público do PWA.

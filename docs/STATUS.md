@@ -23,7 +23,7 @@ Atualizado em 2026-10-04.
 | G5 | CONCLUÍDO | Textos, logout, oferta comercial e Camada 1 implementados; regressão da UX alterada aprovada. E2E remoto da Camada 1 não executado por decisão explícita. |
 | Sprint 6C | CONCLUÍDO LOCALMENTE | Refinamento de Guia CNC, navegação/acessibilidade, estados/feedbacks e responsividade. Regressão 12/12; compartilhamento ainda requer validação em HTTPS. |
 | G6 | CONCLUÍDO POR EVIDÊNCIAS ACUMULADAS | Fluxo crítico integrado coberto por G2, G4 e regressões posteriores; cobertura complementar permanece registrada em TESTES.md. |
-| G7 | PENDENTE | Auditoria final. |
+| G7 | EM ANDAMENTO | Auditoria encontrou dois bloqueadores; ambos corrigidos localmente. Recuperação de senha aguarda E2E real via e-mail/HTTPS antes do fechamento. |
 | G8 | PENDENTE | Aprovação do release. |
 | G9 | PENDENTE | Produção. |
 | G10 | PENDENTE | Lançamento. |
@@ -119,9 +119,19 @@ Atualizado em 2026-10-04.
       dinamicamente. Não há funcionalidade conhecida quebrada —
       apenas cobertura de execução incompleta.
 
+## G7 — Auditoria final
+
+- Auditoria final identificou dois bloqueadores concretos: recuperação de senha incompleta e publicação de todo o repositório no artefato do GitHub Pages.
+- Recuperação de senha foi completada localmente com tratamento de `PASSWORD_RECOVERY`, confirmação de nova senha e `updateUser({ password })`.
+- Workflow do GitHub Pages agora monta `_site` apenas com os arquivos necessários ao PWA; documentação, migrations, testes e ferramentas locais ficam fora do artefato.
+- Validações locais: `git diff --check`, sintaxe de `js/auth.js` e `js/auth-page.js`, suíte `tests/trial-access.test.mjs` 12/12 e conferência dos caminhos do artefato.
+- Pendente para fechar G7: E2E real do link de recuperação de senha via e-mail/HTTPS.
+- Pendência controlada separada: Compartilhar App ainda requer validação em HTTPS.
+- Nenhuma escrita no Supabase remoto e nenhum push realizados nesta correção.
+
 ## Próxima ação
 
-- G7 — Auditoria final
+- Validar E2E real da recuperação de senha em HTTPS antes de concluir G7.
 
 
 

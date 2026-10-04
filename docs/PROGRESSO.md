@@ -465,3 +465,33 @@ ESTADO:
 - G6 — CONCLUÍDO POR EVIDÊNCIAS ACUMULADAS do fluxo crítico integrado.
 - Nenhum E2E foi repetido nesta consolidação e nenhuma escrita remota foi realizada.
 - Próximo gate oficial: G7 — Auditoria final.
+
+## 04/10 — G7: auditoria final em andamento
+
+ACHADOS:
+- Recuperação de senha enviava o e-mail, mas não tratava o retorno `PASSWORD_RECOVERY` nem permitia definir a nova senha.
+- Workflow do GitHub Pages publicava `path: '.'`, incluindo documentação, migrations, testes e ferramentas locais no artefato público.
+- Não foi encontrada chave administrativa/segredo no scan dos arquivos versionados, mas a superfície publicada era desnecessariamente ampla.
+- Documentos técnicos ainda continham referências obsoletas ao wrapper de ativação não versionado, SW v10, offline autenticado não validado e `gerar-codigo.html` ainda presente.
+
+CORREÇÕES LOCAIS:
+- Recuperação de senha agora trata `PASSWORD_RECOVERY`, exige nova senha + confirmação e usa `supabase.auth.updateUser({ password })`; após sucesso encerra a sessão de recuperação e retorna ao login.
+- Workflow do Pages passou a montar `_site` com somente os arquivos necessários ao PWA antes do upload do artefato.
+- Documentação técnica atualizada para wrapper versionado, SW v12, offline autenticado validado em G4.2.2b e remoção de `gerar-codigo.html` em G3.4.
+
+EVIDÊNCIAS:
+- Implementação de recuperação conferida contra documentação atual do Supabase Auth.
+- `git diff --check` aprovado.
+- `node --check js/auth.js` e `node --check js/auth-page.js` aprovados.
+- `tests/trial-access.test.mjs`: 12/12 aprovados.
+- Todos os caminhos declarados para o novo artefato `_site` existem localmente.
+
+PENDÊNCIA BLOQUEANTE PARA FECHAR G7:
+- Executar E2E real da recuperação de senha pelo link enviado por e-mail em contexto HTTPS, confirmando também a Redirect URL permitida no Supabase.
+
+PENDÊNCIA CONTROLADA SEPARADA:
+- Compartilhar App continua aguardando validação em HTTPS.
+
+ESTADO:
+- G7 permanece EM ANDAMENTO.
+- Nenhum push e nenhuma escrita no Supabase remoto foram realizados.
