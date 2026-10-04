@@ -5,6 +5,7 @@ let overlayEl = null;
 let menuEl = null;
 let listEl = null;
 let onSelectCb = null;
+let lastFocusedEl = null;
 
 function ensureRefs() {
   overlayEl = overlayEl || document.getElementById('menu-overlay');
@@ -34,36 +35,65 @@ export function initMenu(onModuleSelect) {
 
   if (listEl && listEl.dataset.wired !== '1') {
     listEl.dataset.wired = '1';
-    listEl.addEventListener('click', (ev) => {
-      const li = ev.target.closest('li[data-module]');
+
+    const activateMenuItem = (li) => {
       if (!li) return;
       const key = li.dataset.module;
       if (!key) return;
       setActiveMenuItem(key);
       closeMenu();
       if (onSelectCb) onSelectCb(key);
+    };
+
+    listEl.querySelectorAll('li[data-module], li[data-action]').forEach((li) => {
+      li.setAttribute('role', 'button');
+      li.setAttribute('tabindex', '0');
+    });
+
+    listEl.addEventListener('click', (ev) => {
+      activateMenuItem(ev.target.closest('li[data-module]'));
+    });
+
+    listEl.addEventListener('keydown', (ev) => {
+      if (ev.key !== 'Enter' && ev.key !== ' ') return;
+      const li = ev.target.closest('li[data-module], li[data-action]');
+      if (!li) return;
+      ev.preventDefault();
+      if (li.dataset.module) activateMenuItem(li);
+      else li.click();
     });
   }
+
+  document.addEventListener('keydown', (ev) => {
+    if (ev.key === 'Escape' && menuEl?.classList.contains('open')) closeMenu();
+  });
 }
 
 export function openMenu() {
   ensureRefs();
+  lastFocusedEl = document.activeElement;
   if (overlayEl) overlayEl.classList.remove('hidden');
   if (menuEl) {
     menuEl.classList.add('open');
     menuEl.setAttribute('aria-hidden', 'false');
   }
+  document.getElementById('open-menu-btn')?.setAttribute('aria-expanded', 'true');
   document.body.classList.add('menu-open');
+  document.getElementById('close-menu-btn')?.focus();
 }
 
 export function closeMenu() {
   ensureRefs();
+  const wasOpen = menuEl?.classList.contains('open');
   if (overlayEl) overlayEl.classList.add('hidden');
   if (menuEl) {
     menuEl.classList.remove('open');
     menuEl.setAttribute('aria-hidden', 'true');
   }
+  document.getElementById('open-menu-btn')?.setAttribute('aria-expanded', 'false');
   document.body.classList.remove('menu-open');
+  if (wasOpen && lastFocusedEl instanceof HTMLElement) lastFocusedEl.focus();
+  lastFocusedEl = null;
 }
 
 export function setActiveMenuItem(moduleKey) {
@@ -71,8 +101,10 @@ export function setActiveMenuItem(moduleKey) {
   if (!listEl) return;
   const items = listEl.querySelectorAll('li[data-module]');
   items.forEach((li) => {
-    if (li.dataset.module === moduleKey) li.classList.add('active');
-    else li.classList.remove('active');
+    const isActive = li.dataset.module === moduleKey;
+    li.classList.toggle('active', isActive);
+    if (isActive) li.setAttribute('aria-current', 'page');
+    else li.removeAttribute('aria-current');
   });
 }
 
@@ -94,29 +126,28 @@ export function initOptionsMenu() {
   optionsBtnEl.addEventListener('click', (ev) => {
     ev.stopPropagation();
     const isHidden = optionsMenuEl.classList.contains('hidden');
-    if (isHidden) {
-      optionsMenuEl.classList.remove('hidden');
-    } else {
-      optionsMenuEl.classList.add('hidden');
-    }
+    optionsMenuEl.classList.toggle('hidden', !isHidden);
+    optionsBtnEl.setAttribute('aria-expanded', String(isHidden));
   });
 
   document.addEventListener('click', (ev) => {
     if (optionsMenuEl.classList.contains('hidden')) return;
     if (optionsMenuEl.contains(ev.target)) return;
     if (optionsBtnEl.contains(ev.target)) return;
-    optionsMenuEl.classList.add('hidden');
+    closeOptionsMenu();
   });
 
   document.addEventListener('keydown', (ev) => {
-    if (ev.key === 'Escape') {
-      optionsMenuEl.classList.add('hidden');
+    if (ev.key === 'Escape' && !optionsMenuEl.classList.contains('hidden')) {
+      closeOptionsMenu();
+      optionsBtnEl.focus();
     }
   });
 }
 
 export function closeOptionsMenu() {
   if (optionsMenuEl) optionsMenuEl.classList.add('hidden');
+  if (optionsBtnEl) optionsBtnEl.setAttribute('aria-expanded', 'false');
 }
 
 // ═══════════════════════════════════════════════════════════

@@ -37,7 +37,7 @@
 
   <!-- Cabeçalho -->
   <header class="app-header" id="app-header">
-    <button id="open-menu-btn" class="icon-btn" type="button" aria-label="Abrir menu">
+    <button id="open-menu-btn" class="icon-btn" type="button" aria-label="Abrir menu" aria-controls="side-menu" aria-expanded="false">
       <span aria-hidden="true">☰</span>
     </button>
     <div class="header-main">
@@ -49,7 +49,7 @@
       <span id="module-indicator-icon" class="module-icon" aria-hidden="true"></span>
       <span id="module-indicator-name" class="module-name">Trigonometria</span>
     </div>
-    <button id="open-options-btn" class="icon-btn" type="button" aria-label="Opções">
+    <button id="open-options-btn" class="icon-btn" type="button" aria-label="Opções" aria-controls="options-menu" aria-expanded="false">
       <span aria-hidden="true">⋮</span>
     </button>
   </header>
@@ -99,8 +99,7 @@
         <span aria-hidden="true">✕</span>
       </button>
     </div>
-    <nav class="side-menu-nav">
-      <nav id="menu-list" class="menu-list">
+    <nav id="menu-list" class="side-menu-nav menu-list" aria-label="Módulos do Casillas">
 
         <div class="menu-category">
           <span class="menu-category-title" data-icon="cat-calculos">INÍCIO</span>
@@ -188,7 +187,6 @@
           </ul>
         </div>
 
-      </nav>
     </nav>
   </aside>
 
