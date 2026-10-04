@@ -8,8 +8,8 @@ Atualizado em 2026-10-04.
 - Último commit: consultar `git log -1 --oneline`
 - Working tree: ver `git status --short`
 - Supabase remoto: não alterado nesta atualização.
-- origin/casillas-2.0: `0e4e074` (atualizado por push em 01/10 19:58)
-- casillas-2.0-hardening (local): 3 commits à frente do remote
+- origin/casillas-2.0: consultar Git antes de qualquer publicação
+- casillas-2.0-hardening (local): commits de G5 ainda não publicados; verificar divergência no Git antes do push
 
 ## Gates
 
@@ -20,7 +20,7 @@ Atualizado em 2026-10-04.
 | G2 | CONCLUÍDO | 12/12 testes unitários de acesso; ativação local; logout; bloqueio por acesso direto sem sessão; nova sessão recuperando licença via entitlement. |
 | G3 | PARCIAL (G3.1 e G3.4 concluídos; G3.2 não aplicável — Free Plan; G3.3 adiado) | Hardening local e auditoria realizados; pendências restantes. |
 | G4 | CONCLUÍDO | SW v12, offline funcional validado em G4.2.2b; segurança/isolamento validados em G4.2.3. Pendências não bloqueantes registradas. |
-| G5 | EM PLANEJAMENTO | Decisões comerciais registradas; Lote 1 (textos) e Lote 2 (logout visível) definidos; implementação ainda não iniciada. |
+| G5 | CONCLUÍDO | Textos, logout, oferta comercial e Camada 1 implementados; regressão da UX alterada aprovada. E2E remoto da Camada 1 não executado por decisão explícita. |
 | G6 | PENDENTE | E2E integrado. |
 | G7 | PENDENTE | Auditoria final. |
 | G8 | PENDENTE | Aprovação do release. |
@@ -62,15 +62,16 @@ Atualizado em 2026-10-04.
 - Security Advisor não reporta mais os WARNs de `rls_auto_enable()` para `anon` e `authenticated`.
 - Rollback: `C:\Backups\Casillas\2026-10-01-g3-rls\rollback.sql`.
 
-## G5 — planejamento atual
+## G5 — concluído
 
-- Decisões comerciais registradas em `docs/DECISOES.md`.
-- Lote 1: padronização de textos da UI, sem alterar lógica comercial.
-- Lote 2: adicionar CTA visível de logout usando o `signOut()` existente.
-- Camada 1 da operação de licenças ainda não existe no repositório:
-  - [ ] criar `tools/gerar-codigo.mjs`;
-  - [ ] criar `docs/OPERACAO-COMERCIAL.md`.
-- Nenhuma implementação de G5 foi iniciada neste marco documental.
+- G5.4.1: textos visíveis padronizados para "Período de teste"; validação manual aprovada.
+- G5.4.2: logout visível implementado; validação manual aprovada.
+- G5.4.3: oferta vitalícia com preço promocional e compra via WhatsApp implementada; validação manual aprovada.
+- Suite `tests/trial-access.test.mjs`: 12/12 passando na regressão de G5.
+- Camada 1: `tools/gerar-codigo.mjs` e `docs/OPERACAO-COMERCIAL.md` implementados e versionados.
+- Gerador validado localmente: sintaxe, geração, normalização e SHA-256 conferidos por vetor independente; modo `--sql` apenas prepara o INSERT.
+- O teste E2E remoto da Camada 1 (cadastrar licença descartável e ativá-la) não foi executado por decisão explícita do Igor; nenhuma escrita remota foi feita nessa validação.
+- Commits de implementação: `97c8cc4`, `4cb7f7c`, `7d4ca09`, `53a00ef`.
 
 ## Pendências Abertas
 
@@ -109,7 +110,7 @@ Atualizado em 2026-10-04.
 
 ## Próxima ação
 
-- G5 — UX comercial
+- G6 — Testes end-to-end
 
 
 

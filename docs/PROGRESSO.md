@@ -388,3 +388,31 @@ ESTADO:
 - Planejamento/documentação apenas.
 - Nenhuma implementação de G5 iniciada neste marco.
 - Sem alteração remota, commit ou push nesta etapa.
+
+
+## 04/10 — G5.6: fechamento documental
+
+IMPLEMENTAÇÃO CONCLUÍDA:
+- G5.4.1 — padronização dos textos visíveis de período de teste; commit `97c8cc4`.
+- G5.4.2 — logout visível; commit `4cb7f7c`.
+- G5.4.3 — oferta comercial de licença vitalícia e compra via WhatsApp; commit `7d4ca09`.
+- Camada 1 — gerador local e procedimento operacional; commit `53a00ef`.
+
+EVIDÊNCIAS:
+- G5.4.1 validado manualmente pelo Igor: textos corretos.
+- G5.4.2 validado manualmente pelo Igor: logout correto.
+- G5.4.3 validado manualmente pelo Igor: oferta e WhatsApp corretos.
+- `node --test tests/trial-access.test.mjs`: 12/12 passando na regressão executada após as alterações.
+- Gerador local: `node --check` aprovado; geração e modo `--sql` executados; normalização e SHA-256 conferidos contra cálculo independente.
+- Nenhuma credencial administrativa foi incluída no gerador; arquivos da Camada 1 não são referenciados pelo Service Worker.
+
+DECISÃO DE COBERTURA:
+- O teste E2E remoto da Camada 1, que cadastraria uma licença descartável `AVAILABLE` no Supabase e a ativaria com conta de teste, NÃO foi executado.
+- Igor decidiu explicitamente pular essa validação.
+- Portanto, o fechamento de G5 não declara esse cenário como validado remotamente.
+- Nenhuma escrita no Supabase foi realizada durante a implementação/validação da Camada 1.
+
+ESTADO:
+- G5 — UX comercial: CONCLUÍDO no escopo acordado.
+- Próximo gate: G6 — Testes end-to-end.
+- Os commits locais de G5 permanecem sem push até autorização explícita.

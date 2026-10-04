@@ -51,19 +51,21 @@ A investigação remota mais recente confirmou `public.activate_casillas_license
 
 ### 1. Geração e entrega de código de licença
 
-Camada 1 — operação manual/local (a criar em G5):
-- Criar o script local `tools/gerar-codigo.mjs` (não deployado, não público)
-- Executar apenas no PC do Igor
-- Gerar código, calcular hash e inserir em `licenses` com status AVAILABLE
-- Entregar o código ao cliente via WhatsApp
+Camada 1 — operação manual/local (implementada em G5):
+- `tools/gerar-codigo.mjs` gera localmente código aleatório e SHA-256 compatível com a ativação
+- `docs/OPERACAO-COMERCIAL.md` documenta o procedimento operacional
+- O script não contém credencial administrativa e não escreve automaticamente no Supabase
+- O modo `--sql` apenas prepara o INSERT para revisão e execução administrativa manual
+- Executar apenas no PC do Igor e entregar o código ao cliente via WhatsApp
 
 Evolução futura (não escopo de G5):
 - Camada 2: Edge Function `generate-license`
 - Camada 3: automação via gateway de pagamento
 
-Pendências de G5:
-- Criar `tools/gerar-codigo.mjs`
-- Criar e documentar o procedimento em `docs/OPERACAO-COMERCIAL.md`
+Validação da Camada 1:
+- geração, normalização, SHA-256 e SQL foram validados localmente;
+- E2E remoto com licença descartável não foi executado por decisão explícita no fechamento de G5;
+- essa ausência de teste não deve ser registrada como validação remota concluída.
 
 ### 2. Preço
 
@@ -75,9 +77,8 @@ Pendências de G5:
 
 ### 3. Logout visível
 
-- Entra em G5 como feature nova (Lote 2)
-- `signOut()` existe no código; falta CTA visível
-- Impacto: adicionar botão + mensagem de confirmação
+- Implementado em G5.4.2 reutilizando o `signOut()` existente.
+- CTA visível validado manualmente: encerra a sessão e retorna ao fluxo de autenticação.
 
 ### 4. Padronização terminológica
 

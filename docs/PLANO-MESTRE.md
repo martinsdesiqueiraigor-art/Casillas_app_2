@@ -31,10 +31,13 @@ G3 — Segurança e hardening: PARCIAL
   └── G4.3d — Fechamento de G4 ✅
 
   Pendências não bloqueantes registradas em STATUS.md
-- G5 — UX comercial: EM PLANEJAMENTO
-  - Lote 1 — padronização de textos da UI: PLANEJADO
-  - Lote 2 — logout visível: PLANEJADO
-  - Operação manual de licenças (Camada 1): PENDENTE — criar `tools/gerar-codigo.mjs` e `docs/OPERACAO-COMERCIAL.md`
+- G5 — UX comercial: CONCLUÍDO
+  - G5.4.1 — padronização de textos da UI: CONCLUÍDO
+  - G5.4.2 — logout visível: CONCLUÍDO
+  - G5.4.3 — oferta comercial e WhatsApp: CONCLUÍDO
+  - Camada 1 — operação manual de licenças: IMPLEMENTADA
+  - G5.5 — regressão da UX alterada: CONCLUÍDA; E2E remoto da Camada 1 não executado por decisão explícita
+  - G5.6 — fechamento documental: CONCLUÍDO
 - G6 — Testes end-to-end: PENDENTE
 - G7 — Auditoria final: PENDENTE
 - G8 — Aprovação do release por Igor: PENDENTE
@@ -78,7 +81,7 @@ Uma fase só avança quando possui objetivo, evidência, testes aplicáveis, dec
 
 ## Próxima ação oficial
 
-G5 — UX comercial
+G6 — Testes end-to-end
 
 G2 foi concluído com validação integrada de autenticação, trial, entitlement, ativação, logout, bloqueio por acesso direto sem sessão e nova sessão recuperando a licença ativa.
 
