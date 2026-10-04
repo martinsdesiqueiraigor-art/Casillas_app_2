@@ -1,7 +1,7 @@
 {
   "name": "Casillas App — Calculadora Técnica de Usinagem",
   "short_name": "Casillas",
-  "version": "1.3.0",
+  "version": "2.0.0",
   "description": "Calculadora técnica de usinagem offline para torneiros, fresadores e ferramenteiros.",
   "start_url": "./index.html",
   "scope": "./",

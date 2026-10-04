@@ -8,8 +8,8 @@ Atualizado em 2026-10-04.
 - Último commit: consultar `git log -1 --oneline`
 - Working tree: ver `git status --short`
 - Supabase remoto: não alterado nesta atualização.
-- origin/casillas-2.0: consultar Git antes de qualquer publicação
-- casillas-2.0-hardening (local): Sprint 6C concluído localmente e ainda não publicado; verificar divergência no Git antes do push
+- origin/casillas-2.0: `1cf0dc4` no início do G8; confirmar novamente antes de qualquer publicação
+- casillas-2.0-hardening (local): sincronizada com `origin/casillas-2.0` no início do G8 (`0 0`)
 
 ## Gates
 
@@ -21,7 +21,7 @@ Atualizado em 2026-10-04.
 | G3 | PARCIAL (G3.1 e G3.4 concluídos; G3.2 não aplicável — Free Plan; G3.3 adiado) | Hardening local e auditoria realizados; pendências restantes. |
 | G4 | CONCLUÍDO | SW v12, offline funcional validado em G4.2.2b; segurança/isolamento validados em G4.2.3. Pendências não bloqueantes registradas. |
 | G5 | CONCLUÍDO | Textos, logout, oferta comercial e Camada 1 implementados; regressão da UX alterada aprovada. E2E remoto da Camada 1 não executado por decisão explícita. |
-| Sprint 6C | CONCLUÍDO LOCALMENTE | Refinamento de Guia CNC, navegação/acessibilidade, estados/feedbacks e responsividade. Regressão 12/12; compartilhamento ainda requer validação em HTTPS. |
+| Sprint 6C | CONCLUÍDO E PUBLICADO | Refinamento de Guia CNC, navegação/acessibilidade, estados/feedbacks e responsividade. Regressão 12/12; Compartilhar App validado no ambiente HTTPS publicado. |
 | G6 | CONCLUÍDO POR EVIDÊNCIAS ACUMULADAS | Fluxo crítico integrado coberto por G2, G4 e regressões posteriores; cobertura complementar permanece registrada em TESTES.md. |
 | G7 | CONCLUÍDO | Dois bloqueadores corrigidos; deploy do commit `e52ff60` aprovado e recuperação de senha validada E2E em HTTPS até novo login. |
 | G8 | PENDENTE | Aprovação do release. |
@@ -74,16 +74,16 @@ Atualizado em 2026-10-04.
 - O teste E2E remoto da Camada 1 (cadastrar licença descartável e ativá-la) não foi executado por decisão explícita do Igor; nenhuma escrita remota foi feita nessa validação.
 - Commits de implementação: `97c8cc4`, `4cb7f7c`, `7d4ca09`, `53a00ef`.
 
-## Sprint 6C — refinamento concluído localmente
+## Sprint 6C — refinamento concluído e publicado
 
 - 6C.1: Guia CNC refinado para consulta compacta; escopo oficial do Guia restrito a FANUC e Siemens; validação manual aprovada. Commit `b00bdfe`.
 - 6C.2: navegação por teclado, foco e estados ARIA melhorados; validação manual aprovada. Commit `90449c9`.
 - 6C.3: terminologia de período de teste e estados semânticos do Guia padronizados; validação manual aprovada. Commit `d5aaabc`.
 - 6C.4: zoom do navegador liberado e responsividade/áreas de toque refinadas para telas pequenas; validação manual aprovada. Commit `fd58c25`.
 - 6C.5: revisão acumulada sem regressão encontrada; `git diff --check`, sintaxe dos JavaScript alterados e `tests/trial-access.test.mjs` aprovados (12/12).
-- Compartilhar App: não foi validado no teste por smartphone em `http://192.168.24.7:4175`; permanece pendente de validação em contexto HTTPS/seguro. Não é registrado como aprovado nem como falha funcional confirmada.
+- Compartilhar App: validado manualmente no smartphone no ambiente HTTPS publicado; a ação gerou corretamente a mensagem de compartilhamento do Casillas com o link da landing page.
 - Supabase remoto não foi alterado pelo Sprint 6C.
-- Os commits do Sprint 6C permanecem locais até autorização explícita de publicação.
+- Os commits do Sprint 6C foram publicados em `origin/casillas-2.0` junto com a evolução que culminou no G7; no início do G8, Git confirmou divergência local/remoto `0 0`.
 
 ## Pendências Abertas
 
@@ -128,7 +128,7 @@ Atualizado em 2026-10-04.
 - Commit `e52ff60` foi publicado e o workflow GitHub Pages nº 13 concluiu com sucesso para esse SHA.
 - E2E real de recuperação aprovado em HTTPS com conta de teste: solicitação aceita → e-mail recebido → link abriu modo Nova senha → senha redefinida → login bem-sucedido com a nova senha.
 - Validações locais anteriores: `git diff --check`, sintaxe de `js/auth.js` e `js/auth-page.js`, suíte `tests/trial-access.test.mjs` 12/12 e conferência dos caminhos do artefato.
-- Pendência controlada separada: Compartilhar App ainda requer validação em HTTPS.
+- Compartilhar App foi posteriormente validado no ambiente HTTPS publicado e deixou de ser pendência.
 
 ## Próxima ação
 

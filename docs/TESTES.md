@@ -32,6 +32,6 @@ Esta página distingue inspeção estática, resultados históricos e regressõe
 - RLS/grants: ampliar execução por papéis `anon` e `authenticated` nas tabelas sensíveis e RPCs; não testar produção sem autorização.
 - PWA: alguns cenários de G4.2.3 permaneceram apenas em auditoria estática; instalação, atualização e offline autenticado crítico já foram validados.
 - UX: fluxo visual exaustivo de todos os módulos não foi executado; módulos críticos/amostrais e refinamentos do Sprint 6C possuem validação registrada.
-- Compartilhar App: validar em origem HTTPS/segura.
+- Compartilhar App: aprovado manualmente em origem HTTPS publicada; a ação gerou corretamente a mensagem de compartilhamento com o link da landing page.
 
 Ativar licença, criar trial ou alterar dados requer ambiente de teste autorizado. Nenhuma chamada remota foi feita para esta documentação.
