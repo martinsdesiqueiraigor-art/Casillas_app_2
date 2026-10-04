@@ -27,7 +27,7 @@ Princípio do produto:
 |---|---|---|---|---|
 | EV0 | Coordenação | Escopo, decisões, gates, integração e evidências | Chat coordenador, Git, Codelit | Central |
 | EV1 | QA e Testes | Encontrar e reproduzir falhas; validar cálculos, UX, PWA e fluxos | ChatGPT/Work, TinyFish, Superpowers, testes, Desktop Commander | Pode iniciar |
-| EV2 | Segurança | Auditar Auth, RLS, RPC, trial, entitlement, licenças e exposição | ChatGPT/Work, Codex Security, Supabase, revisão técnica | Pode iniciar |
+| EV2 | Segurança | Auditar Auth, RLS, RPC, trial, entitlement, licenças e exposição | ChatGPT/Work, Supabase, GitHub, Superpowers, Context7; Codex Security opcional se disponível | Pode iniciar |
 | EV3 | Guia CNC 2.0 | Estruturar e validar a nova base de conhecimento CNC | ChatGPT/Work, pesquisa técnica, Context7 quando aplicável | Pode iniciar |
 | EV4 | Biblioteca Técnica | Definir catálogo, PDFs, direitos, acesso e armazenamento | ChatGPT/Work, Supabase em fase de desenho | Pode iniciar |
 | EV5 | Integração e UX | Conectar calculadoras, Guia, Biblioteca e vídeos | Desenvolvimento coordenado | EV3/EV4 definidos |
@@ -89,7 +89,7 @@ Nenhum bloqueador aberto; falhas não bloqueantes classificadas e aceitas ou pla
 - exposição de secrets e superfície do Pages;
 - Service Worker;
 - abuso/rate limiting;
-- dependências e achados do Codex Security.
+- dependências e, opcionalmente, achados do Codex Security se a ferramenta estiver disponível. O Codex Security não é requisito para executar ou concluir o EV2.
 
 ### Pergunta de controle
 **Um usuário consegue obter ou manter acesso comercial sem autorização válida do servidor?**

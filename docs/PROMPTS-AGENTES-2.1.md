@@ -75,8 +75,8 @@ Objetivo: avaliar se um usuário consegue obter, prolongar ou manter acesso come
 Modo inicial: auditoria somente leitura. NÃO corrigir automaticamente.
 
 Ferramentas preferidas:
-- Codex Security quando operacional;
 - Supabase para inspeção autorizada;
+- Codex Security apenas como ferramenta opcional se estiver disponível; sua ausência não bloqueia o EV2;
 - GitHub para código/histórico;
 - Superpowers para investigação e verificação;
 - Context7 para comportamento/documentação atual de tecnologias quando necessário.
