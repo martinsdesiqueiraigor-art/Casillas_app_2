@@ -544,12 +544,12 @@ DECISÕES JÁ TOMADAS:
 - G10.1 — oferta: preço normal R$ 49,90; oferta promocional de lançamento R$ 19,90; pagamento único e licença vitalícia vinculada à conta, sem limite de aparelhos.
 - G10.2 — pagamento inicial: PIX manual. Dados de pagamento são enviados apenas em contato privado e não devem ser publicados no Git, app ou landing.
 - G10.3 — entrega/ativação: procedimento manual preparado. Após confirmação real do pagamento, gerar código com `node tools/gerar-codigo.mjs --sql`, revisar o SQL e somente executar a escrita no Supabase mediante autorização explícita. Nenhuma licença real foi criada durante esta preparação.
-- G10.4 — landing: versão comercial estável permanece publicada. O redesign V2 é uma frente separada, local e em revisão; não está autorizado para publicação enquanto houver bloqueadores de auditoria.
+- G10.4 — landing: CONCLUÍDO E PUBLICADO. Landing V2 integrada e publicada no repositório `Casillas-landing` no commit `7a9b12d`; deploy do GitHub Pages concluído com sucesso para o SHA correspondente e produção HTTPS verificada.
 
 ESTADO:
 - G10 — EM ANDAMENTO.
 - G10.1, G10.2 e preparação de G10.3: definidos.
-- G10.4: em andamento.
+- G10.4: CONCLUÍDO E PUBLICADO.
 - G10.5 — primeira venda assistida e checklist pós-venda: PENDENTE.
 
 PRÓXIMA AÇÃO:

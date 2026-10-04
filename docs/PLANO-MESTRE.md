@@ -60,7 +60,7 @@ G3 — Segurança e hardening: PARCIAL
   - G10.1 — oferta e preço: DEFINIDOS (R$ 49,90 → oferta de lançamento R$ 19,90)
   - G10.2 — pagamento inicial: DEFINIDO (PIX manual, dados enviados apenas em contato privado)
   - G10.3 — entrega/ativação: PROCEDIMENTO PREPARADO; nenhuma licença real criada nesta etapa
-  - G10.4 — landing e divulgação: EM ANDAMENTO; versão estável publicada e redesign V2 permanece separado, sem publicação
+  - G10.4 — landing e divulgação: CONCLUÍDO E PUBLICADO; Landing V2 publicada em produção no commit `7a9b12d` e validada em HTTPS
   - G10.5 — primeira venda assistida e checklist pós-venda: PENDENTE
 
 ## Fases técnicas
