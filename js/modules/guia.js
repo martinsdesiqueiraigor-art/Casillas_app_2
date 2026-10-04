@@ -165,7 +165,11 @@ function renderResultados(container, itens) {
 
   if (itens.length === 0) {
     // Mensagem "nenhum resultado"
-    const vazio = createElementSafe('div', { class: 'guia-vazio' });
+    const vazio = createElementSafe('div', {
+      class: 'guia-vazio',
+      role: 'status',
+      'aria-live': 'polite'
+    });
     vazio.appendChild(createElementSafe('div', { class: 'guia-vazio-icon', text: '😕' }));
     vazio.appendChild(createElementSafe('h3', { text: 'Nenhum resultado encontrado' }));
     vazio.appendChild(createElementSafe('p', {
@@ -327,6 +331,8 @@ export function render(container) {
   contador.appendChild(createElementSafe('span', {
     id: 'guia-contador',
     class: 'guia-contador',
+    role: 'status',
+    'aria-live': 'polite',
     text: 'Carregando...'
   }));
   card.appendChild(contador);
