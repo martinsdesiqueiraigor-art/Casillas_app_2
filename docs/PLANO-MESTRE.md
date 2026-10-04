@@ -38,12 +38,12 @@ G3 — Segurança e hardening: PARCIAL
   - Camada 1 — operação manual de licenças: IMPLEMENTADA
   - G5.5 — regressão da UX alterada: CONCLUÍDA; E2E remoto da Camada 1 não executado por decisão explícita
   - G5.6 — fechamento documental: CONCLUÍDO
-- Sprint 6C — Refinamento pré-G6: CONCLUÍDO LOCALMENTE
+- Sprint 6C — Refinamento pré-G6: CONCLUÍDO E PUBLICADO
   - 6C.1 — Guia CNC refinado para FANUC e Siemens: CONCLUÍDO
   - 6C.2 — navegação e acessibilidade: CONCLUÍDO
   - 6C.3 — estados e feedbacks: CONCLUÍDO
   - 6C.4 — responsividade em telas pequenas: CONCLUÍDO
-  - 6C.5 — revisão final e regressão: CONCLUÍDO; compartilhamento pendente de validação em HTTPS
+  - 6C.5 — revisão final e regressão: CONCLUÍDO; Compartilhar App posteriormente validado em HTTPS
 - G6 — Testes end-to-end: CONCLUÍDO POR EVIDÊNCIAS ACUMULADAS
   - Fluxo crítico Auth/trial/ativação/entitlement/logout: validado em G2
   - PWA, atualização e offline autenticado: validados em G4
@@ -54,7 +54,7 @@ G3 — Segurança e hardening: PARCIAL
   - deploy HTTPS do commit `e52ff60` concluído com sucesso
   - recuperação de senha validada E2E: solicitação → e-mail → link HTTPS → nova senha → login com a nova senha
   - pendências não bloqueantes permanecem registradas em STATUS.md/TESTES.md
-- G8 — Aprovação do release por Igor: PENDENTE
+- G8 — Aprovação do release por Igor: CONCLUÍDO — release candidate Casillas 2.0.0 (`5588402`) aprovado explicitamente por Igor em 2026-10-04
 - G9 — Produção: PENDENTE/CONTROLADO
 - G10 — Lançamento: PENDENTE
 
@@ -95,7 +95,7 @@ Uma fase só avança quando possui objetivo, evidência, testes aplicáveis, dec
 
 ## Próxima ação oficial
 
-G8 — Aprovação do release por Igor
+G9 — Produção (executar somente após planejamento, verificações e autorização específica; aprovação de G8 não autoriza ações de G9)
 
 G2 foi concluído com validação integrada de autenticação, trial, entitlement, ativação, logout, bloqueio por acesso direto sem sessão e nova sessão recuperando a licença ativa.
 

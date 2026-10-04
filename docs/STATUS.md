@@ -8,8 +8,8 @@ Atualizado em 2026-10-04.
 - Último commit: consultar `git log -1 --oneline`
 - Working tree: ver `git status --short`
 - Supabase remoto: não alterado nesta atualização.
-- origin/casillas-2.0: `1cf0dc4` no início do G8; confirmar novamente antes de qualquer publicação
-- casillas-2.0-hardening (local): sincronizada com `origin/casillas-2.0` no início do G8 (`0 0`)
+- origin/casillas-2.0: `5588402` — release candidate Casillas 2.0.0 publicado
+- casillas-2.0-hardening (local): sincronizada com `origin/casillas-2.0` após a publicação do release candidate (`0 0`)
 
 ## Gates
 
@@ -24,7 +24,7 @@ Atualizado em 2026-10-04.
 | Sprint 6C | CONCLUÍDO E PUBLICADO | Refinamento de Guia CNC, navegação/acessibilidade, estados/feedbacks e responsividade. Regressão 12/12; Compartilhar App validado no ambiente HTTPS publicado. |
 | G6 | CONCLUÍDO POR EVIDÊNCIAS ACUMULADAS | Fluxo crítico integrado coberto por G2, G4 e regressões posteriores; cobertura complementar permanece registrada em TESTES.md. |
 | G7 | CONCLUÍDO | Dois bloqueadores corrigidos; deploy do commit `e52ff60` aprovado e recuperação de senha validada E2E em HTTPS até novo login. |
-| G8 | PENDENTE | Aprovação do release. |
+| G8 | CONCLUÍDO/APROVADO | Igor aprovou explicitamente o release candidate Casillas 2.0.0 (`5588402`) após deploy nº 15 e smoke test em produção. |
 | G9 | PENDENTE | Produção. |
 | G10 | PENDENTE | Lançamento. |
 
@@ -132,7 +132,7 @@ Atualizado em 2026-10-04.
 
 ## Próxima ação
 
-- G8 — Aprovação do release por Igor.
+- G9 — Produção. A aprovação do G8 não autoriza automaticamente ações de produção; executar somente após planejamento, verificações e autorização específica.
 
 
 

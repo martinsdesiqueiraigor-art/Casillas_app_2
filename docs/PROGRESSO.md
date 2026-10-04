@@ -498,3 +498,19 @@ PENDÊNCIA CONTROLADA SEPARADA:
 ESTADO:
 - G7 CONCLUÍDO.
 - Próximo gate oficial: G8 — Aprovação do release por Igor.
+
+## 04/10 — G8: release Casillas 2.0.0 aprovado
+
+EVIDÊNCIAS:
+- Release candidate `5588402` alinhou a versão do produto para `2.0.0` no manifest e na tela Sobre.
+- `git diff --check` e validações de sintaxe foram aprovados; `tests/trial-access.test.mjs` permaneceu 12/12.
+- Commit `5588402` publicado em `origin/casillas-2.0`; pós-push confirmou divergência local/remoto `0 0`.
+- GitHub Actions `Deploy static content to Pages`, execução nº 15, concluiu com sucesso para o SHA `55884020bb7d692b3f5312d722bf4ec6b586f655`.
+- Smoke test manual no smartphone confirmou que o ambiente HTTPS publicado exibe `Versão 2.0.0`.
+- Compartilhar App também foi validado manualmente em HTTPS, gerando corretamente a mensagem e o link da landing page.
+- Igor aprovou explicitamente o G8 em 2026-10-04.
+
+ESTADO:
+- G8 — CONCLUÍDO/APROVADO.
+- Próximo gate oficial: G9 — Produção.
+- A aprovação do G8 não autoriza automaticamente ações de G9; produção exige planejamento, verificações e autorização específica.
