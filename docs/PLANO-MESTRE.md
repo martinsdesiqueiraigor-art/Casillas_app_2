@@ -38,6 +38,12 @@ G3 — Segurança e hardening: PARCIAL
   - Camada 1 — operação manual de licenças: IMPLEMENTADA
   - G5.5 — regressão da UX alterada: CONCLUÍDA; E2E remoto da Camada 1 não executado por decisão explícita
   - G5.6 — fechamento documental: CONCLUÍDO
+- Sprint 6C — Refinamento pré-G6: CONCLUÍDO LOCALMENTE
+  - 6C.1 — Guia CNC refinado para FANUC e Siemens: CONCLUÍDO
+  - 6C.2 — navegação e acessibilidade: CONCLUÍDO
+  - 6C.3 — estados e feedbacks: CONCLUÍDO
+  - 6C.4 — responsividade em telas pequenas: CONCLUÍDO
+  - 6C.5 — revisão final e regressão: CONCLUÍDO; compartilhamento pendente de validação em HTTPS
 - G6 — Testes end-to-end: PENDENTE
 - G7 — Auditoria final: PENDENTE
 - G8 — Aprovação do release por Igor: PENDENTE

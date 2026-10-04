@@ -416,3 +416,28 @@ ESTADO:
 - G5 — UX comercial: CONCLUÍDO no escopo acordado.
 - Próximo gate: G6 — Testes end-to-end.
 - Os commits locais de G5 permanecem sem push até autorização explícita.
+
+## 04/10 — Sprint 6C: refinamento pré-G6
+
+IMPLEMENTAÇÃO CONCLUÍDA:
+- 6C.1 — Guia CNC: cartões compactos, detalhes expansíveis com ARIA, busca/filtros preservados e escopo FANUC + Siemens; commit `b00bdfe`.
+- 6C.2 — navegação/acessibilidade: teclado, Escape, foco, `aria-expanded` e `aria-current`; commit `90449c9`.
+- 6C.3 — estados/feedbacks: terminologia "Período de teste" e estados semânticos de carregamento/vazio no Guia; commit `d5aaabc`.
+- 6C.4 — responsividade: zoom permitido, cabeçalho refinado e áreas de toque maiores em telas pequenas; commit `fd58c25`.
+
+EVIDÊNCIAS:
+- Igor aprovou manualmente 6C.1, 6C.2 (exceto compartilhamento no ambiente HTTP), 6C.3 e 6C.4 no smartphone.
+- Revisão acumulada 6C.5: working tree limpa antes do fechamento documental; quatro commits locais à frente de `origin/casillas-2.0`.
+- `git diff --check b65601b..HEAD`: aprovado.
+- `node --check` nos JavaScript alterados no Sprint: aprovado.
+- `node --test tests/trial-access.test.mjs`: 12/12 passando.
+- Nenhum resíduo encontrado no escopo verificado para `Haas`, `user-scalable=no` ou "período de avaliação".
+- Nenhuma alteração remota no Supabase foi realizada no Sprint 6C.
+
+PENDÊNCIA CONTROLADA:
+- Compartilhar App não pôde ser validado no smartphone usando `http://192.168.24.7:4175` porque Web Share/Clipboard dependem de contexto seguro. Deve ser revalidado em HTTPS; não é considerado aprovado nem falha confirmada.
+
+ESTADO:
+- Sprint 6C — CONCLUÍDO LOCALMENTE no escopo acordado.
+- Próximo gate oficial permanece G6 — Testes end-to-end.
+- Nenhum push do Sprint 6C foi realizado.

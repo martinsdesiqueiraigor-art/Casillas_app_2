@@ -9,7 +9,7 @@ Atualizado em 2026-10-04.
 - Working tree: ver `git status --short`
 - Supabase remoto: não alterado nesta atualização.
 - origin/casillas-2.0: consultar Git antes de qualquer publicação
-- casillas-2.0-hardening (local): commits de G5 ainda não publicados; verificar divergência no Git antes do push
+- casillas-2.0-hardening (local): Sprint 6C concluído localmente e ainda não publicado; verificar divergência no Git antes do push
 
 ## Gates
 
@@ -21,6 +21,7 @@ Atualizado em 2026-10-04.
 | G3 | PARCIAL (G3.1 e G3.4 concluídos; G3.2 não aplicável — Free Plan; G3.3 adiado) | Hardening local e auditoria realizados; pendências restantes. |
 | G4 | CONCLUÍDO | SW v12, offline funcional validado em G4.2.2b; segurança/isolamento validados em G4.2.3. Pendências não bloqueantes registradas. |
 | G5 | CONCLUÍDO | Textos, logout, oferta comercial e Camada 1 implementados; regressão da UX alterada aprovada. E2E remoto da Camada 1 não executado por decisão explícita. |
+| Sprint 6C | CONCLUÍDO LOCALMENTE | Refinamento de Guia CNC, navegação/acessibilidade, estados/feedbacks e responsividade. Regressão 12/12; compartilhamento ainda requer validação em HTTPS. |
 | G6 | PENDENTE | E2E integrado. |
 | G7 | PENDENTE | Auditoria final. |
 | G8 | PENDENTE | Aprovação do release. |
@@ -72,6 +73,17 @@ Atualizado em 2026-10-04.
 - Gerador validado localmente: sintaxe, geração, normalização e SHA-256 conferidos por vetor independente; modo `--sql` apenas prepara o INSERT.
 - O teste E2E remoto da Camada 1 (cadastrar licença descartável e ativá-la) não foi executado por decisão explícita do Igor; nenhuma escrita remota foi feita nessa validação.
 - Commits de implementação: `97c8cc4`, `4cb7f7c`, `7d4ca09`, `53a00ef`.
+
+## Sprint 6C — refinamento concluído localmente
+
+- 6C.1: Guia CNC refinado para consulta compacta; escopo oficial do Guia restrito a FANUC e Siemens; validação manual aprovada. Commit `b00bdfe`.
+- 6C.2: navegação por teclado, foco e estados ARIA melhorados; validação manual aprovada. Commit `90449c9`.
+- 6C.3: terminologia de período de teste e estados semânticos do Guia padronizados; validação manual aprovada. Commit `d5aaabc`.
+- 6C.4: zoom do navegador liberado e responsividade/áreas de toque refinadas para telas pequenas; validação manual aprovada. Commit `fd58c25`.
+- 6C.5: revisão acumulada sem regressão encontrada; `git diff --check`, sintaxe dos JavaScript alterados e `tests/trial-access.test.mjs` aprovados (12/12).
+- Compartilhar App: não foi validado no teste por smartphone em `http://192.168.24.7:4175`; permanece pendente de validação em contexto HTTPS/seguro. Não é registrado como aprovado nem como falha funcional confirmada.
+- Supabase remoto não foi alterado pelo Sprint 6C.
+- Os commits do Sprint 6C permanecem locais até autorização explícita de publicação.
 
 ## Pendências Abertas
 

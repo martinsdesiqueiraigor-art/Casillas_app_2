@@ -85,3 +85,12 @@ Validação da Camada 1:
 - "Trial" → "Período de teste" (apenas em UI visível ao usuário)
 - "3 aparelhos" → remover todas as referências
 - Código interno, chaves e nomes de função: não alterar em G5
+
+## 04/10/2026 — Sprint 6C: decisões de refinamento
+
+- O Guia de Programação CNC desta etapa fica oficialmente restrito a FANUC e Siemens; novos comandos ficam para evolução futura com validação técnica própria.
+- O refinamento prioriza evolução incremental da interface existente, sem reconstrução visual ampla.
+- Acessibilidade inclui operação por teclado, estados ARIA, foco previsível e zoom do navegador permitido.
+- Em telas de até 420 px, controles críticos recebem área de toque ampliada; em telas extremamente estreitas, informações secundárias podem ser ocultadas para preservar os controles principais.
+- Compartilhamento não deve ser classificado como validado a partir do servidor HTTP em rede local; a validação funcional fica pendente para contexto HTTPS/seguro.
+- Sprint 6C não altera arquitetura comercial, regras de trial/licença, Supabase remoto ou Service Worker.
