@@ -619,3 +619,73 @@ ESTADO PARA REVISÃO:
 - BL-02: FECHADO NO ESCOPO LOCAL por decisão da Coordenação recebida nesta missão. Registro histórico anterior preservado.
 - BL-01: resolvido tecnicamente, fechamento sujeito à revisão. BASELINE LOCAL REPRODUZÍVEL — APROVÁVEL para HEAD + working tree atual; não equivale a aprovação remota/produção.
 - Nenhuma alteração de produto, assertions de profiles, RLS comercial, migrations de produto ou EV2. Nenhuma escrita remota, commit, push ou deploy.
+
+## 05/10/2026 — Implementação do Gate de Produção: checkpoint pré-commit
+
+PRÉ-FLIGHT E ESTADO PRESERVADO:
+- C:\Projetos\Casillas_app_2; casillas-2.0-hardening; HEAD f7fd1e2340b7d95f405c2c6f00e41ae4176d3cef; working tree inicialmente limpa; tracking 0 0 e SHA remoto confirmado por ls-remote, sem fetch.
+- Antes: static.yml disparava por push em casillas-2.0 e workflow_dispatch; contents:read/pages:write/id-token:write globais; job deploy em github-pages; concurrency pages/cancel-in-progress=false; artefato _site.
+- Branch sem proteção/checks/rulesets; environment somente branch policy casillas-2.0, can_admins_bypass=true.
+- Consulta administrativa confirmou Pages build_type=workflow, source casillas-2.0/path=/, HTTPS, URL https://martinsdesiqueiraigor-art.github.io/Casillas_app_2/; nenhuma configuração de Pages foi modificada.
+- Último deployment funcional conhecido: run #20, job 111620115006, deployment 6851574848, success no SHA f7fd1e2. Aplicativo e produção preservados.
+
+IMPLEMENTAÇÃO LOCAL:
+- .github/workflows/ci.yml: push nas duas branches conhecidas, PR para release e workflow_call; job Casillas baseline; somente contents:read.
+- .github/workflows/static.yml: somente dispatch; expected_sha completo, approval_record e smoke_record; preflight → validation (CI reutilizado) → build → deploy; Pages/OIDC restritos ao deploy e environment obrigatório.
+- .github/scripts/production-gate.mjs: guard de evento/ref/SHA/checkout/HEAD remoto/evidências; sintaxe; testes existentes; montagem e smoke estático do artefato com digest; nenhuma alteração do conteúdo funcional.
+- .github/tests/production-gate.test.mjs: oito testes de identidade, rejeições, propagação de falha e artefato reproduzível. Nenhuma assertion de produto/pgTAP alterada.
+- Configurado ubuntu-24.04, Node 24.19.0, Supabase CLI 2.118.0. O stack de testes inicia somente PostgreSQL usando --exclude para os demais serviços; não usa Supabase remoto.
+
+VALIDAÇÃO EXECUTADA:
+- node .github/scripts/production-gate.mjs validate: 42 arquivos rastreados verificados por node --check, frontend 12/12 e gate 8/8, exit 0.
+- actionlint 1.7.12, binário verificado pelo checksum publicado; ci.yml/static.yml PASS, exit 0. Shellcheck/pyflakes não executados.
+- Instância LOCAL descartável Casillas_gate_2ef1313cec9c, porta 55422, cópia das migrations/tests e config em TEMP com somente project_id/portas isolados; nenhum SQL manual.
+- supabase start --exclude gotrue,realtime,storage-api,imgproxy,kong,mailpit,postgrest,postgres-meta,studio,edge-runtime,logflare,vector,supavisor: exit 0.
+- supabase db reset --local --no-seed: 10/10 migrations, exit 0.
+- supabase test db --local: setup 12 + profiles 16, Files=2 / Tests=28 / PASS, exit 0.
+- supabase stop --no-backup: exit 0; ausência de containers/volumes dessa instância conferida. Instância habitual do projeto preservada.
+- CLI release-check com contexto simulado LOCAL e consulta real ao HEAD remoto: exit 0. CLI build rejeitou push, hardening e SHA incorreto com exit 1 esperado, antes de criar artefato.
+- CLI build positivo em TEMP: exit 0, nome github-pages-f7fd1e2340b7d95f405c2c6f00e41ae4176d3cef, digest e5fc7851cca488cb056a31313e6bb87a5fa805d4f61716d5a79cdc1bc1701ace; artefato removido, nenhum upload/deploy.
+- Avisos: Node MODULE_TYPELESS_PACKAGE_JSON existente; seed.sql ausente no start; extensões existentes e atualização da CLI disponível. Nenhuma alteração funcional foi feita para eliminá-los.
+
+CONFIGURAÇÕES GITHUB APLICADAS:
+- PUT environment github-pages: required reviewer martinsdesiqueiraigor-art (Igor, user 264403270), prevent_self_review=false, wait_timer=0, custom branch policy preservada. GET posterior confirmou.
+- PUT protection casillas-2.0: check Casillas baseline vinculado ao app GitHub Actions 15368, strict=true, PR obrigatório com required_approving_review_count=0, enforce_admins=true, force push/deletion=false, conversas resolvidas. GET posterior confirmou.
+- can_admins_bypass do environment permanece true: controle não exposto no schema do PUT REST documentado; não foi inventado parâmetro nem enfraquecido o gate para compensar. Pendente ajuste pela interface.
+- Nenhum secret/credencial foi escrito em arquivo ou log. Credencial GitHub existente usada em memória para as operações administrativas autorizadas; nenhum acesso Supabase remoto.
+
+LIMITES DA PROVA:
+- T1/T2/T3: guard real exercitado via CLI em contexto simulado; definição de triggers validada. Push/dispatch reais não executados.
+- T4: comando deliberadamente falho interrompeu a operação seguinte; dependências dos jobs validadas por actionlint. Falha real em Actions ainda não provocada.
+- T5: required reviewer confirmado por API; não foi criada execução pendente para demonstrar bloqueio sem aprovação. Bypass continua pendente.
+- T6: identidade correta e artefato passaram localmente; não houve deployment de prova. O workflow novo ainda não está no remoto, e o guard não permite dispatch de SHA histórico após avanço da branch.
+- Runner hospedado, PR/check efetivo, aprovação pendente e deployment somente após confirmação: provas futuras após revisão/autorização de publicação. Smoke estático não representa E2E de navegador/Auth/cache.
+- Status PARCIAL: implementação local revisável e proteções aplicadas, sem declarar Gate/EV2-08 fechado. Check obrigatório ainda não emitido; integração futura deve aguardar CI PASS, sem bypass.
+- Sem commit, push, merge, deploy adicional, alteração de aplicação/SW/migration, execução CNC, licença real ou Supabase remoto.
+
+## 05/10/2026 — Gate: checkpoint versionado, CI remota e transição segura
+
+EVIDÊNCIA POSTERIOR AO PRÉ-COMMIT:
+- e38eed73aa5f87f7664532ecf5eb3c8f6a603e28: feat(release): implementa gate de producao.
+- 582716ca90fb23fc04c1f1d7bcb9e19eeb039c35: fix(ci): corrige contexto git e cleanup.
+- Casillas CI run #1 (37384037690) falhou: checkout depth 1 expôs whitespace histórico ao git show; cleanup tentou CLI não instalada. Não foram alterados os arquivos históricos.
+- Correção restrita a ci.yml: fetch-depth=2, git diff --check HEAD^1 HEAD e cleanup condicionado ao sucesso da instalação da CLI, sem suprimir falha real de stop.
+- Casillas CI run #2 (37385454509), push na hardening, SHA 582716c, SUCCESS: sintaxe de 44 executáveis, frontend 12/12, production gate 8/8, dez migrations e pgTAP 28/28 (setup 12 + profiles 16), cleanup PASS.
+- Logs de permissões: Contents:read e Metadata:read; sem Pages/OIDC. Nenhum deployment criado pelo push da hardening. Nenhuma assertion funcional ou pgTAP alterada.
+
+PRÉ-FLIGHT DESTA PREPARAÇÃO:
+- C:\Projetos\Casillas_app_2; casillas-2.0-hardening; HEAD 582716ca90fb23fc04c1f1d7bcb9e19eeb039c35; working tree limpa; hardening local/remota 0/0 e dois commits à frente da release.
+- Release reconfirmada em f7fd1e2340b7d95f405c2c6f00e41ae4176d3cef; último Pages run #20 (37265095679), push, SUCCESS, deployment 6851574848. Integração ainda não realizada.
+- Branch com PR, required check Casillas baseline/app 15368/strict, enforce_admins e force push/deletion bloqueados. Igor permanece required reviewer do github-pages, self-review permitido, branch policy casillas-2.0, can_admins_bypass=true.
+
+DESATIVAÇÃO TEMPORÁRIA AUTORIZADA:
+- Pages ID 369795219, nome Deploy static content to Pages, arquivo .github/workflows/static.yml: antigo trigger push em casillas-2.0 confirmado no arquivo remoto.
+- Casillas CI ID 375870461, arquivo .github/workflows/ci.yml: workflow distinto. Não havia execução Pages pendente entre as dez execuções mais recentes consultadas.
+- PUT /repos/martinsdesiqueiraigor-art/Casillas_app_2/actions/workflows/369795219/disable retornou HTTP 204; GET em 2026-10-05T23:23:09Z confirmou disabled_manually. GET da CI confirmou active.
+- A operação não edita/exclui o arquivo nem altera Pages source. Reversão documentada: PUT no mesmo ID com /enable, ou Actions → workflow → Enable workflow; NÃO executada e NÃO autorizada nesta missão.
+- CI da hardening e do PR deve concluir antes de decisão de integração. Evidências dos novos runs e do PR serão entregues no handoff desta missão.
+
+PENDÊNCIAS PRESERVADAS:
+- can_admins_bypass=true não foi alterado. Interface: Settings → Environments → github-pages → desmarcar Allow administrators to bypass configured protection rules → salvar → reler GET. Schema REST PUT consultado não expõe esse controle.
+- B-03/B-04/B-05 permanecem sem correção. EV2-08 aberto; Gate não homologado. Estratégia e limites operacionais estão em POLITICA.md/DECISOES.md.
+- Sem merge, push na release, dispatch, reabilitação, deploy, mudança de aplicação/SW/migrations ou Supabase remoto.

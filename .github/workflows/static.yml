@@ -1,50 +1,104 @@
-# Simple workflow for deploying static content to GitHub Pages
 name: Deploy static content to Pages
 
+# PUSH != DEPLOY. Dispatch identifies the exact current release-branch HEAD.
 on:
-  # Runs on pushes targeting the default branch
-  push:
-    branches: ["casillas-2.0"]
-
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
+    inputs:
+      expected_sha:
+        description: Full 40-character SHA approved for release (current casillas-2.0 HEAD)
+        required: true
+        type: string
+      approval_record:
+        description: Reference to Igor's explicit approval of this SHA and rollback plan
+        required: true
+        type: string
+      smoke_record:
+        description: Reference to candidate smoke/Auth/PWA/cache evidence for this SHA
+        required: true
+        type: string
 
-# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
-# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
-# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
 concurrency:
-  group: "pages"
+  group: pages
   cancel-in-progress: false
 
+env:
+  EXPECTED_SHA: ${{ inputs.expected_sha }}
+  APPROVAL_RECORD: ${{ inputs.approval_record }}
+  SMOKE_RECORD: ${{ inputs.smoke_record }}
+
 jobs:
-  # Single deploy job since we're just deploying
+  preflight:
+    runs-on: ubuntu-24.04
+    outputs:
+      sha: ${{ steps.guard.outputs.sha }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.19.0'
+      - name: Reject wrong event, ref, SHA or release-branch HEAD
+        id: guard
+        run: node .github/scripts/production-gate.mjs release-check
+
+  validation:
+    needs: preflight
+    permissions:
+      contents: read
+    uses: ./.github/workflows/ci.yml
+
+  build:
+    needs: [preflight, validation]
+    runs-on: ubuntu-24.04
+    outputs:
+      sha: ${{ steps.artifact.outputs.sha }}
+      artifact_name: ${{ steps.artifact.outputs.artifact_name }}
+      digest: ${{ steps.artifact.outputs.digest }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.preflight.outputs.sha }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.19.0'
+      - name: Build and smoke-check the artifact from the validated SHA
+        id: artifact
+        run: node .github/scripts/production-gate.mjs build
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          name: ${{ steps.artifact.outputs.artifact_name }}
+          path: ./_site
+          retention-days: 7
+
   deploy:
+    needs: build
+    if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/casillas-2.0' && needs.build.outputs.sha == github.sha
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.build.outputs.sha }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.19.0'
+      - name: Recheck approved SHA after environment approval
+        run: node .github/scripts/production-gate.mjs release-check
       - name: Setup Pages
         uses: actions/configure-pages@v5
-      - name: Build public artifact
-        shell: bash
-        run: |
-          set -euo pipefail
-          mkdir -p _site
-          cp index.html auth.html offline.html manifest.json service-worker.js _site/
-          cp -R css js dados icons manuais _site/
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: './_site'
-      - name: Deploy to GitHub Pages
+      - name: Deploy only this run's validated artifact
         id: deployment
         uses: actions/deploy-pages@v5
+        with:
+          artifact_name: ${{ needs.build.outputs.artifact_name }}

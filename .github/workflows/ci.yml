@@ -1,0 +1,44 @@
+name: Casillas CI
+
+on:
+  pull_request:
+    branches: [casillas-2.0]
+  push:
+    branches: [casillas-2.0, casillas-2.0-hardening]
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  baseline:
+    name: Casillas baseline
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.19.0'
+      - name: Whitespace, executable syntax and existing frontend tests
+        run: |
+          # First-parent delta: published/candidate commit for push/release;
+          # base to synthetic merge for pull_request. Historical whitespace is unchanged.
+          git diff --check HEAD^1 HEAD
+          node .github/scripts/production-gate.mjs validate
+      - uses: supabase/setup-cli@v1
+        id: supabase_cli
+        with:
+          version: 2.118.0
+      - name: Reconstruct disposable LOCAL database and run pgTAP
+        run: |
+          supabase start --exclude gotrue,realtime,storage-api,imgproxy,kong,mailpit,postgrest,postgres-meta,studio,edge-runtime,logflare,vector,supavisor
+          supabase db reset --local --no-seed
+          supabase test db --local
+      - name: Remove runner LOCAL database
+        # No stack can start before CLI installation succeeds; keep real stop failures.
+        if: always() && steps.supabase_cli.outcome == 'success'
+        run: supabase stop --no-backup
