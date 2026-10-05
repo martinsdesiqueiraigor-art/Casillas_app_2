@@ -19,14 +19,18 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.sha }}
+          fetch-depth: 2
       - uses: actions/setup-node@v4
         with:
           node-version: '24.19.0'
       - name: Whitespace, executable syntax and existing frontend tests
         run: |
-          git show --format= --check HEAD
+          # First-parent delta: published/candidate commit for push/release;
+          # base to synthetic merge for pull_request. Historical whitespace is unchanged.
+          git diff --check HEAD^1 HEAD
           node .github/scripts/production-gate.mjs validate
       - uses: supabase/setup-cli@v1
+        id: supabase_cli
         with:
           version: 2.118.0
       - name: Reconstruct disposable LOCAL database and run pgTAP
@@ -35,5 +39,6 @@ jobs:
           supabase db reset --local --no-seed
           supabase test db --local
       - name: Remove runner LOCAL database
-        if: always()
+        # No stack can start before CLI installation succeeds; keep real stop failures.
+        if: always() && steps.supabase_cli.outcome == 'success'
         run: supabase stop --no-backup
