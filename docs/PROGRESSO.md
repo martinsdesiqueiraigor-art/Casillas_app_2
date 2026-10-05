@@ -662,3 +662,30 @@ LIMITES DA PROVA:
 - Runner hospedado, PR/check efetivo, aprovação pendente e deployment somente após confirmação: provas futuras após revisão/autorização de publicação. Smoke estático não representa E2E de navegador/Auth/cache.
 - Status PARCIAL: implementação local revisável e proteções aplicadas, sem declarar Gate/EV2-08 fechado. Check obrigatório ainda não emitido; integração futura deve aguardar CI PASS, sem bypass.
 - Sem commit, push, merge, deploy adicional, alteração de aplicação/SW/migration, execução CNC, licença real ou Supabase remoto.
+
+## 05/10/2026 — Gate: checkpoint versionado, CI remota e transição segura
+
+EVIDÊNCIA POSTERIOR AO PRÉ-COMMIT:
+- e38eed73aa5f87f7664532ecf5eb3c8f6a603e28: feat(release): implementa gate de producao.
+- 582716ca90fb23fc04c1f1d7bcb9e19eeb039c35: fix(ci): corrige contexto git e cleanup.
+- Casillas CI run #1 (37384037690) falhou: checkout depth 1 expôs whitespace histórico ao git show; cleanup tentou CLI não instalada. Não foram alterados os arquivos históricos.
+- Correção restrita a ci.yml: fetch-depth=2, git diff --check HEAD^1 HEAD e cleanup condicionado ao sucesso da instalação da CLI, sem suprimir falha real de stop.
+- Casillas CI run #2 (37385454509), push na hardening, SHA 582716c, SUCCESS: sintaxe de 44 executáveis, frontend 12/12, production gate 8/8, dez migrations e pgTAP 28/28 (setup 12 + profiles 16), cleanup PASS.
+- Logs de permissões: Contents:read e Metadata:read; sem Pages/OIDC. Nenhum deployment criado pelo push da hardening. Nenhuma assertion funcional ou pgTAP alterada.
+
+PRÉ-FLIGHT DESTA PREPARAÇÃO:
+- C:\Projetos\Casillas_app_2; casillas-2.0-hardening; HEAD 582716ca90fb23fc04c1f1d7bcb9e19eeb039c35; working tree limpa; hardening local/remota 0/0 e dois commits à frente da release.
+- Release reconfirmada em f7fd1e2340b7d95f405c2c6f00e41ae4176d3cef; último Pages run #20 (37265095679), push, SUCCESS, deployment 6851574848. Integração ainda não realizada.
+- Branch com PR, required check Casillas baseline/app 15368/strict, enforce_admins e force push/deletion bloqueados. Igor permanece required reviewer do github-pages, self-review permitido, branch policy casillas-2.0, can_admins_bypass=true.
+
+DESATIVAÇÃO TEMPORÁRIA AUTORIZADA:
+- Pages ID 369795219, nome Deploy static content to Pages, arquivo .github/workflows/static.yml: antigo trigger push em casillas-2.0 confirmado no arquivo remoto.
+- Casillas CI ID 375870461, arquivo .github/workflows/ci.yml: workflow distinto. Não havia execução Pages pendente entre as dez execuções mais recentes consultadas.
+- PUT /repos/martinsdesiqueiraigor-art/Casillas_app_2/actions/workflows/369795219/disable retornou HTTP 204; GET em 2026-10-05T23:23:09Z confirmou disabled_manually. GET da CI confirmou active.
+- A operação não edita/exclui o arquivo nem altera Pages source. Reversão documentada: PUT no mesmo ID com /enable, ou Actions → workflow → Enable workflow; NÃO executada e NÃO autorizada nesta missão.
+- CI da hardening e do PR deve concluir antes de decisão de integração. Evidências dos novos runs e do PR serão entregues no handoff desta missão.
+
+PENDÊNCIAS PRESERVADAS:
+- can_admins_bypass=true não foi alterado. Interface: Settings → Environments → github-pages → desmarcar Allow administrators to bypass configured protection rules → salvar → reler GET. Schema REST PUT consultado não expõe esse controle.
+- B-03/B-04/B-05 permanecem sem correção. EV2-08 aberto; Gate não homologado. Estratégia e limites operacionais estão em POLITICA.md/DECISOES.md.
+- Sem merge, push na release, dispatch, reabilitação, deploy, mudança de aplicação/SW/migrations ou Supabase remoto.

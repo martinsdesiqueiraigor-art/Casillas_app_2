@@ -84,3 +84,22 @@ Rollback:
 - PWA: considerar uma nova versão de cache e provar atualização com cache existente, inclusive em rollback. service-worker.js não foi alterado nesta missão.
 
 Ativação pendente: arquivos locais ainda não publicados. O workflow remoto antigo ainda contém push; a proteção de branch e o reviewer já estão ativos. O check obrigatório ainda precisa ser produzido pelo novo CI. Após aprovação do diff e autorização de commit/push da branch hardening, verificar CI/PR antes da integração; não desabilitar proteções para contornar check pendente. Testes reais em Actions e de aprovação permanecem pendentes; nenhuma release adicional foi executada.
+
+## 05/10/2026 — Procedimento posterior: preparação com Pages temporariamente suspenso
+
+O candidato técnico já está publicado na hardening (e38eed7/582716c) e a CI run #2 (37385454509) passou, sem deployment. O parágrafo anterior descreve o checkpoint pré-commit; não representa mais o estado atual da hardening. A release permanece em f7fd1e2 e EV2-08 aberto.
+
+Sequência escolhida pela Coordenação:
+
+1. Identificar e suspender somente Pages ID 369795219 via PUT /actions/workflows/369795219/disable; reler disabled_manually e confirmar CI ID 375870461 active.
+2. Publicar somente o registro documental na hardening, exigir CI verde e criar PR para casillas-2.0; observar Casillas baseline no contexto pull_request e ausência de deployment.
+3. Parar antes do merge. Integração exige nova autorização; não contornar proteção de branch.
+4. Em missão posterior, manter Pages suspenso durante a integração, confirmar o YAML manual no commit resultante e comprovar ausência de deployment.
+5. Somente com autorização separada, reabilitar o MESMO workflow por PUT /actions/workflows/369795219/enable ou Actions → Deploy static content to Pages → Enable workflow; reler active.
+6. Testar/homologar release manual em missão posterior. Reabilitar não equivale a autorizar dispatch.
+
+Desativação confirmada em 2026-10-05T23:23:09Z. Esse controle suspende novas execuções de Pages sem editar o arquivo ou alterar o site existente; a CI permanece ativa. Antes de transições futuras, conferir também execuções antigas pendentes.
+
+Bypass administrativo continua true. Ajuste a decidir pelo owner: Settings → Environments → github-pages → desmarcar Allow administrators to bypass configured protection rules → salvar → conferir GET. A API REST PUT documentada consultada não expõe esse campo; não enviar parâmetro inventado.
+
+B-03/B-04/B-05 e as provas do fluxo manual permanecem pendentes. A suspensão reduz o risco da transição, mas não fecha EV2-08 nem homologa o Gate.
