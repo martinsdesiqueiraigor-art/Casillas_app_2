@@ -106,3 +106,13 @@ Fonte da função: C:\Backups\Casillas\2026-10-01-g3-rls\01-rls_auto_enable-def.
 O corpo foi preservado: erros ao habilitar RLS são registrados por RAISE LOG, sem repropagação. Não foi adotado o RAISE do exemplo atual do Supabase. CREATE FUNCTION e CREATE EVENT TRIGGER, sem substituição ou remoção, falham diante de objetos existentes. A execução local como postgres reproduz os owners observados; aplicação remota exige plano separado.
 
 BL-02 é CANDIDATO A FECHADO após reset local completo e verificação do mecanismo. BL-01 permanece aberto. Sem escrita remota, commit ou push; baseline integral não aprovada.
+
+## 05/10/2026 — Gate de Produção aprovado: Alternativa B
+
+A Coordenação aprovou PUSH ≠ DEPLOY: CI separada, integração controlada em casillas-2.0 e publicação somente por workflow_dispatch com identificação do SHA e confirmação de Igor no environment. A implementação deste checkpoint é LOCAL e ainda não commitada/publicada.
+
+ci.yml é reutilizado por static.yml via workflow_call: preflight → validation → build → deploy. Assim, falha de validação impede construir/publicar o artefato; somente deploy tem Pages/OIDC. Checkout e artefato vinculam-se ao SHA explícito, que deve ser o HEAD da branch de release; há nova conferência após a aprovação. Evidências manuais de aprovação/smoke são obrigatórias e seu conteúdo precisa ser revisado pelo owner.
+
+Configurações GitHub efetivamente aplicadas: environment github-pages com Igor como required reviewer, self-review permitido e branch policy casillas-2.0 preservada; branch com PR, check Casillas baseline do app GitHub Actions, strict checks, enforce_admins e bloqueio de force push/deletion. Aprovações independentes de PR não são impostas ao projeto solo.
+
+Pendência explícita: bypass administrativo do environment continua permitido, pois o parâmetro não é exposto pelo PUT REST documentado; requer configuração pela interface. Não foi enviado parâmetro não documentado. Ainda faltam publicação controlada dos workflows e T1–T6 em Actions. EV2-08 não é declarado fechado neste checkpoint. Aplicativo, Service Worker, migrations e Supabase remoto não foram alterados.

@@ -169,3 +169,13 @@ Antes de qualquer tarefa: consultar este arquivo, `PLANO-MESTRE.md`, `PROGRESSO.
 - BASELINE LOCAL REPRODUZÍVEL — APROVÁVEL, referente ao HEAD f3019fc4c6a22baef2b96985665f62f79fa7bedf mais diffs locais BL-02/BL-01 ainda não commitados. Aprovação formal aguarda revisão da Coordenação.
 - Causa histórica, fonte dos helpers, versões e resultados registrados em PROGRESSO.md e BANCO-DADOS.md. As pendências históricas acima permanecem como registros do estado anterior.
 - Não houve escrita remota, mudança comercial, correção EV2, commit, push ou deploy. Reconciliação/validação do histórico remoto continua fora desta comprovação.
+
+## 05/10/2026 — Gate de Produção: implementação pré-commit
+
+- Baseline BL-01/BL-02 aprovada e publicada em f7fd1e2340b7d95f405c2c6f00e41ae4176d3cef; último deployment conhecido permanece run #20, success, nesse SHA.
+- Gate implementado LOCALMENTE: CI sem deploy; release manual com ref/SHA/evidências; validação reutilizada antes de artefato/Pages.
+- Local: sintaxe de 42 executáveis rastreados, frontend 12/12, gate 8/8, actionlint 1.7.12 PASS; banco descartável database-only aplicou 10 migrations e pgTAP 28/28 PASS, removido com seus volumes.
+- Proteções remotas de branch e required reviewer Igor no github-pages configuradas e relidas com sucesso. Self-review é confirmação operacional, não revisão técnica independente.
+- Limitação aberta: environment can_admins_bypass=true; desativação requer interface GitHub. Check Casillas baseline exigido na branch ainda aguarda primeira execução do novo workflow.
+- EV2-08/Gate de Produção: PARCIAL, aguardando revisão pré-commit, publicação autorizada e provas reais T1–T6 em Actions. O YAML novo não está ativo remotamente.
+- Sem commit, push, deploy adicional, alteração funcional, EV2-02/03/04/06 ou Supabase remoto. Procedimento de release/cache/rollback: POLITICA.md.
