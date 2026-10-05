@@ -149,3 +149,23 @@ A divergência histórica de timestamps das migrations remotas permanece registr
 ## Regra anti-retrabalho
 
 Antes de qualquer tarefa: consultar este arquivo, `PLANO-MESTRE.md`, `PROGRESSO.md` e evidências Git. Tarefas concluídas somente são revalidadas quando necessário.
+
+## 05/10/2026 — BL-02: candidato a fechado, revisão pendente
+
+- Pré-requisito local: 20261001023218_reconcile_rls_auto_enable_prerequisite.sql; hardening existente preservado.
+- Reset npx --no-install supabase db reset --local --no-seed: dez migrations aplicadas, exit 0, sem SQLSTATE 42883.
+- Função, owner, corpo histórico, trigger, dependência e ACL verificados localmente; provas transacionais de RLS concluídas com rollback.
+- BL-02: CANDIDATO A FECHADO, sujeito à revisão da Coordenação.
+- BL-01: ABERTO. supabase test db --local falha na preparação de profiles por schema tests ausente (exit 1; plano 16, executados 8).
+- Os gates históricos não equivalem à aprovação da baseline 2.1. Baseline integral e reprodutibilidade dos testes ainda pendentes.
+- Sem escrita remota, correção EV2, commit, push ou deploy. Alterações locais aguardam revisão.
+
+## 05/10/2026 — BL-01: baseline local reproduzível, revisão pendente
+
+- BL-02: FECHADO NO ESCOPO LOCAL pela Coordenação; migration de pré-requisito e hardening preservados.
+- BL-01: RESOLVIDO TECNICAMENTE. Setup autocontido com quatro helpers Basejump 0.0.6 fixados no repositório, somente em supabase/tests; sem dependência HTTP/dbdev/pg_tle durante os testes.
+- Profiles inalterado: 16/16 PASS. Setup: 12/12 PASS. Suíte completa: Files=2 / Tests=28 / PASS, exit 0.
+- Duas reconstruções independentes LOCAL: reset 10/10 migrations, exit 0, seguido de suíte completa PASS, exit 0, em cada ciclo. Antes de cada suíte, ausência de schema/helpers/fixtures confirmou que o harness foi reconstruído automaticamente.
+- BASELINE LOCAL REPRODUZÍVEL — APROVÁVEL, referente ao HEAD f3019fc4c6a22baef2b96985665f62f79fa7bedf mais diffs locais BL-02/BL-01 ainda não commitados. Aprovação formal aguarda revisão da Coordenação.
+- Causa histórica, fonte dos helpers, versões e resultados registrados em PROGRESSO.md e BANCO-DADOS.md. As pendências históricas acima permanecem como registros do estado anterior.
+- Não houve escrita remota, mudança comercial, correção EV2, commit, push ou deploy. Reconciliação/validação do histórico remoto continua fora desta comprovação.

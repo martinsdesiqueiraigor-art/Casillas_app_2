@@ -104,4 +104,4 @@ G10 — Lançamento em andamento. Próxima frente operacional: G10.5 — prepara
 
 G2 foi concluído com validação integrada de autenticação, trial, entitlement, ativação, logout, bloqueio por acesso direto sem sessão e nova sessão recuperando a licença ativa.
 
-G1 foi concluído para reprodutibilidade do schema: o wrapper público de ativação foi versionado localmente sem duplicar a implementação privada. A divergência histórica de timestamps das migrations remotas permanece como pendência de rastreabilidade e não impede a reconstrução do schema.
+G1 foi registrado como concluído no escopo histórico do wrapper público de ativação. Na revisão da baseline 2.1, BL-02 revelou um pré-requisito ausente: a reconciliação local aprovada adiciona 20261001023218 antes do hardening existente, com dez migrations aplicadas em reset local (exit 0), sendo CANDIDATO A FECHADO. A ordem é lógica, não prova da data original. BL-01 e a rastreabilidade remota permanecem pendentes; baseline integral não aprovada. Ver DECISOES.md, STATUS.md e PROGRESSO.md. Nenhuma escrita remota nesta missão.

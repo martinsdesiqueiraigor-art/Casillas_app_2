@@ -94,3 +94,15 @@ Validação da Camada 1:
 - Em telas de até 420 px, controles críticos recebem área de toque ampliada; em telas extremamente estreitas, informações secundárias podem ser ocultadas para preservar os controles principais.
 - Compartilhamento não deve ser classificado como validado a partir do servidor HTTP em rede local; a validação funcional fica pendente para contexto HTTPS/seguro.
 - Sprint 6C não altera arquitetura comercial, regras de trial/licença, Supabase remoto ou Service Worker.
+
+## 05/10/2026 — BL-02: pré-requisito de RLS automático
+
+A Coordenação 2.1 aprovou a Opção A somente para implementação e validação local: incluir public.rls_auto_enable() e ensure_rls no schema reconstruível, sem editar a migration existente de hardening.
+
+A nova migration 20261001023218_reconcile_rls_auto_enable_prerequisite.sql precede 20261001023219 por dependência lógica. Seu timestamp NÃO comprova a data original de instalação. Os objetos já existiam no remoto no snapshot G3.1; autoria, data e canal da instalação original não foram comprovados no histórico versionado.
+
+Fonte da função: C:\Backups\Casillas\2026-10-01-g3-rls\01-rls_auto_enable-def.sql, SHA-256 verificado 11C789A01A2BF5A975F4795EB919A71B6C0ABFC47FF5C9EAE17013AFC32438DF. O trigger foi reconstruído de 03-ensure_rls-trigger.txt e 05-dependencias.txt; seu comando original de criação não foi encontrado. OIDs históricos não são transportáveis.
+
+O corpo foi preservado: erros ao habilitar RLS são registrados por RAISE LOG, sem repropagação. Não foi adotado o RAISE do exemplo atual do Supabase. CREATE FUNCTION e CREATE EVENT TRIGGER, sem substituição ou remoção, falham diante de objetos existentes. A execução local como postgres reproduz os owners observados; aplicação remota exige plano separado.
+
+BL-02 é CANDIDATO A FECHADO após reset local completo e verificação do mecanismo. BL-01 permanece aberto. Sem escrita remota, commit ou push; baseline integral não aprovada.

@@ -555,3 +555,67 @@ ESTADO:
 PRÓXIMA AÇÃO:
 - Preparar G10.5 sem gerar licença real, sem escrever no Supabase, sem enviar dados PIX e sem publicar alterações.
 - A primeira venda real exigirá autorização específica antes de qualquer escrita remota.
+
+## 05/10/2026 — BL-02: implementação local da reconciliação
+
+DECISÃO E FONTE:
+- Opção A aprovada: função e trigger integram a cadeia local; preservar exceções históricas sem repropagação.
+- Snapshot C:\Backups\Casillas\2026-10-01-g3-rls\01-rls_auto_enable-def.sql, SHA-256 conferido: 11C789A01A2BF5A975F4795EB919A71B6C0ABFC47FF5C9EAE17013AFC32438DF.
+- Trigger reconstruído dos metadados 03-ensure_rls-trigger.txt e 05-dependencias.txt. Comando original e autoria/data/canal da instalação não comprovados; OIDs não reproduzidos.
+- Nova migration 20261001023218_reconcile_rls_auto_enable_prerequisite.sql: posição lógica antes do hardening, não prova da data histórica. Arquivo vazio gerado pela CLI e renomeado para a ordem aprovada.
+- CREATE FUNCTION e CREATE EVENT TRIGGER, sem OR REPLACE/DROP, não sobrescrevem objetos existentes.
+
+PRÉ-FLIGHT:
+- C:\Projetos\Casillas_app_2, branch casillas-2.0-hardening, HEAD f3019fc4c6a22baef2b96985665f62f79fa7bedf.
+- Working tree limpa, diff vazio, diff --check exit 0; origin oficial, divergência disponível 0 0 (sem fetch).
+- Supabase CLI 2.118.0, PostgreSQL 17.6; Docker local supabase_db_Casillas_app, porta 54322.
+
+VALIDAÇÃO:
+- Comparação estática do corpo com o snapshot: PASS.
+- npx --no-install supabase db reset --local --no-seed: PASS, exit 0; oito migrations anteriores, pré-requisito novo e hardening existente aplicados (10/10), sem preparação manual.
+- Verificações via docker exec -i supabase_db_Casillas_app psql -U postgres -d postgres -X -v ON_ERROR_STOP=1: exit 0.
+- Função: owner postgres, retorno event_trigger, plpgsql, VOLATILE, SECURITY DEFINER, search_path pg_catalog, ACL {postgres=X/postgres}.
+- Trigger: ensure_rls, ddl_command_end, habilitado O, owner postgres, três tags históricas, dependência normal para a função.
+- CREATE TABLE, CREATE TABLE AS e SELECT INTO em public habilitaram RLS; CREATE TABLE em private não habilitou. Transação revertida; ausência das quatro tabelas de prova confirmada.
+- Corpo instalado no PostgreSQL comparado ao snapshot: PASS, exit 0.
+- npx --no-install supabase test db --local: FAIL conhecido BL-01, exit 1. Setup 1/1 PASS; profiles executou 8 asserções sem falhas e abortou na linha 117 por schema tests ausente. Plano 16 incompleto, processo SQL exit 3, Files=2 / Tests=9 / FAIL.
+- Harness não alterado; nenhum helper restaurado.
+- Hardening existente mantido; SHA-256 BD3024EFF12C0885B67EF8B471C87BB138330EA23C05019E7CC3C08F885BA8F7.
+
+ESTADO:
+- BL-02 CANDIDATO A FECHADO, aguardando revisão. BL-01 aberto; baseline integral não aprovada.
+- Sem escrita remota, reparação de histórico, alteração comercial, commit, push ou deploy.
+
+## 05/10/2026 — BL-01: restauração do harness e duas reconstruções limpas
+
+HISTÓRICO CONFIRMADO:
+- `1983e7c6671aee42b2f374b03ec4c71050bea618` introduziu setup de 67 linhas e profiles de 226 linhas, plano 16.
+- `f0768348bd6ad8f0aee380ae66d33ab4280440d4` removeu 58 linhas e adicionou uma no setup: saiu a instalação HTTP/pg_tle/dbdev/Basejump 0.0.6, restando setup de 10 linhas com ok(true). Profiles não foi alterado e continuou chamando os helpers. Não se encontrou evidência da intenção dessa remoção, nem arquivo de helpers excluído/renomeado que a compensasse.
+- Antes da correção, reprodução local: setup 1/1 PASS; profiles abortou por schema tests ausente, oito asserções executadas sem falha, plano 16 incompleto; Files=2 / Tests=9 / FAIL, CLI exit 1 e processo SQL exit 3. Causa: regressão da infraestrutura, não evidência de vulnerabilidade em produção.
+
+RESTAURAÇÃO:
+- Único arquivo de código alterado nesta missão: `supabase/tests/000-setup-tests-hooks.sql`.
+- Quatro funções Basejump 0.0.6 preservadas da fonte fixada indicada em BANCO-DADOS.md, com licença MIT e ACL restrita ao teste. get_supabase_user é dependência transitiva de authenticate_as.
+- Schema tests, pgTAP e uuid-ossp são preparados automaticamente pelo setup. Plano 12 verifica dependências e uma fixture de autenticação; rollback remove a fixture e restaura contexto. Sem instalação de dependência de produção ou preparação SQL manual.
+- Profiles não foi editado; SHA-256 preservado: B44BF4CC6A4D934008CF8EA47C6A499BB483FA32831EC5D4A4D6D37918B83756. Nenhuma assertion removida ou enfraquecida.
+
+AMBIENTE E COMANDOS:
+- Repositório C:\Projetos\Casillas_app_2; branch casillas-2.0-hardening; HEAD f3019fc4c6a22baef2b96985665f62f79fa7bedf, mais alterações locais BL-02 esperadas e preservadas. Divergência disponível 0 0, sem fetch.
+- Supabase CLI 2.118.0; PostgreSQL 17.6; imagem public.ecr.aws/supabase/postgres:17.6.1.171; destino LOCAL supabase_db_Casillas_app, porta 54322. pgTAP 1.3.3; uuid-ossp 1.1; helpers Basejump 0.0.6 (subconjunto versionado).
+- Validação focada: `npx --no-install supabase test db supabase/tests/000-setup-tests-hooks.sql supabase/tests/profiles_rls.test.sql --local`: Files=2 / Tests=28 / PASS, exit 0.
+- Suíte completa: `npx --no-install supabase test db --local`: Files=2 / Tests=28 / PASS, exit 0.
+- Profiles isolado após setup: `npx --no-install supabase test db supabase/tests/profiles_rls.test.sql --local`: Files=1 / Tests=16 / PASS, exit 0.
+
+RECONSTRUÇÕES INDEPENDENTES:
+- Em ambos os ciclos: `npx --no-install supabase db reset --local --no-seed` destruiu/recriou o banco local; exit 0, 10/10 migrations aplicadas. Em seguida, verificações somente leitura confirmaram schema tests ausente, quatro helpers ausentes e zero fixtures, antes de executar a suíte completa.
+- Ciclo #1: reset exit 0 (42,68 s); verificação de estado limpo exit 0; suíte completa exit 0, Files=2 / Tests=28 / PASS.
+- Ciclo #2: novo reset exit 0 (40,48 s); verificação de estado limpo exit 0; suíte completa exit 0, Files=2 / Tests=28 / PASS.
+- Ordem aplicada em ambos: 20260925180000, 20260926024137, 20260926024716, 20260926025046, 20260926185518, 20260928160324, 20260929042401, 20260930213346, 20261001023218, 20261001023219.
+- A suíte recriou os helpers automaticamente após cada reset. Nenhum estado residual nem preparação manual foi necessário; planos TAP completos (setup 12 + profiles 16).
+- Verificação final somente leitura exit 0: quatro helpers presentes, owner postgres; zero usuários de fixture remanescentes; rls_auto_enable owner postgres, search_path pg_catalog, ACL {postgres=X/postgres}; ensure_rls habilitado em ddl_command_end, tags CREATE TABLE / CREATE TABLE AS / SELECT INTO, dependência normal para a função.
+- Hashes de ambas as migrations BL-02 preservados; definições dos quatro helpers conferidas contra a fonte fixada. Avisos: extensões existentes (NOTICE) e nova versão de CLI disponível; nenhum erro novo.
+
+ESTADO PARA REVISÃO:
+- BL-02: FECHADO NO ESCOPO LOCAL por decisão da Coordenação recebida nesta missão. Registro histórico anterior preservado.
+- BL-01: resolvido tecnicamente, fechamento sujeito à revisão. BASELINE LOCAL REPRODUZÍVEL — APROVÁVEL para HEAD + working tree atual; não equivale a aprovação remota/produção.
+- Nenhuma alteração de produto, assertions de profiles, RLS comercial, migrations de produto ou EV2. Nenhuma escrita remota, commit, push ou deploy.
