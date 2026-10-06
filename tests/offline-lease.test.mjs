@@ -171,3 +171,16 @@ test('clock rollback cannot suppress lifecycle online revalidation for days',asy
   refresh:async()=>{calls++;return {ok:true,remainingMs:1000};},setTimer:()=>1,clearTimer:()=>{}});
  await events.emit('online');t-=86400000;await events.emit('focus');assert.equal(calls,2);stop();
 });
+
+test('lease expiry guard runs even while an earlier online refresh is pending',async()=>{
+ const events=target(),doc=target();let blocked=0,resolve,next=0;const timers=new Map();
+ const response=new Promise(r=>resolve=r);
+ const stop=api.startAccessLifecycle({events,document:doc,now:()=>START,
+  initialResult:{ok:true,remainingMs:1000000},onExpiry:()=>blocked++,
+  refresh:()=>response,setTimer:(fn,ms)=>{timers.set(++next,{fn,ms});return next;},clearTimer:id=>timers.delete(id)});
+ const scheduled=[...timers.values()];
+ assert.equal(scheduled.length,2);
+ const pending=scheduled.find(v=>v.ms===900000).fn();await Promise.resolve();
+ const expiryPending=scheduled.find(v=>v.ms===1000000).fn();assert.equal(blocked,1);
+ resolve({ok:false});await Promise.all([pending,expiryPending]);stop();assert.equal(timers.size,0);
+});

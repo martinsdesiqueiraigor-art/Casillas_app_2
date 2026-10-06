@@ -140,11 +140,19 @@ export function createLeaseController({ storage, now = Date.now, online, identit
   } };
 }
 export function startAccessLifecycle({ events, document, refresh, now = Date.now,
-  setTimer = setTimeout, clearTimer = clearTimeout, initialResult }) {
-  let stopped = false, paused = false, timer, last = -Infinity, pending;
+  setTimer = setTimeout, clearTimer = clearTimeout, initialResult, onExpiry }) {
+  let stopped = false, paused = false, timer, expiryTimer, last = -Infinity, pending;
   function schedule(result) {
     clearTimer(timer);
-    if (!stopped) timer = setTimer(() => run(true), Math.max(1, Math.min(900000, result?.ok ? result.remainingMs : 900000)));
+    clearTimer(expiryTimer);
+    if (stopped) return;
+    const remaining = result?.ok ? result.remainingMs : Infinity;
+    const expire = () => { onExpiry?.(); return run(true); };
+    timer = setTimer(remaining <= 900000 ? expire : () => run(true),
+      Math.max(1, Math.min(900000, remaining)));
+    if (Number.isFinite(remaining) && remaining > 900000) {
+      expiryTimer = setTimer(expire, remaining);
+    }
   }
   async function run(force = false) {
     if (stopped) return;
@@ -165,7 +173,7 @@ export function startAccessLifecycle({ events, document, refresh, now = Date.now
   document.addEventListener('visibilitychange', event);
   if (initialResult) schedule(initialResult);
   return () => {
-    stopped = true; clearTimer(timer);
+    stopped = true; clearTimer(timer); clearTimer(expiryTimer);
     events.removeEventListener('online', connectivity); events.removeEventListener('offline', connectivity);
     events.removeEventListener('focus', event);
     document.removeEventListener('visibilitychange', event);

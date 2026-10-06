@@ -50,6 +50,7 @@ let stopAccessLifecycle;
 let hasMountedModule = false;
 
 async function refreshAccess() {
+  guardAccess();
   accessStatus = await checkTrialStatus();
   const status = document.getElementById('header-access-status');
   if (status) {
@@ -295,7 +296,7 @@ async function boot() {
   const result = await refreshAccess();
   stopAccessLifecycle?.();
   stopAccessLifecycle = startAccessLifecycle({
-    events: window, document, refresh: refreshAccess, initialResult: result
+    events: window, document, refresh: refreshAccess, initialResult: result, onExpiry: guardAccess
   });
 }
 

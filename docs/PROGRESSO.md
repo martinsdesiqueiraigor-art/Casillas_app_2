@@ -781,3 +781,4 @@ Sem commit/push/PR/merge/deploy/dispatch, Supabase remoto, licença real, EV2-06
 - Checkpoint para commit/hardening/CI/PR, sem merge/deploy/aplicação remota. Handoff final contém SHAs, runs e resultados efetivamente observados.
 
 - Frontend final 61/61 PASS (38 lease, 5 shell, 18 acesso/ativação); syntax/diff checks PASS. Lease/lifecycle residem em auth.js já precacheado, sem asset executável novo obrigatório nem mudança no Service Worker.
+- Complemento de vencimento: bloqueio local do shell antes de aguardar validação e timer de expiração independente de RPC pendente. Dois testes reproduziram a lacuna e a regressão frontend passou 63/63 (39 lease, 6 shell, 18 acesso/ativação). Banco/migration inalterados; evidência local 35/35 reutilizada, sem reset adicional.

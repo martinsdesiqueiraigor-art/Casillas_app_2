@@ -6,15 +6,15 @@ const source = readFileSync(new URL('../js/app.js', import.meta.url), 'utf8')
   .replace("home:      () => import('./modules/home.js')", 'home: testLoader')
   .replaceAll('import.meta.url', JSON.stringify(new URL('../js/app.js', import.meta.url).href));
 function fixture({ allowed = true, identity = true, loader } = {}) {
-  let permit = allowed, renders = 0, cleared = 0, refresh;
+  let permit = allowed, renders = 0, cleared = 0, refresh, waiting, blocked = 0;
   const winEvents = new Map(), docEvents = new Map();
   const content = { firstChild: null, classList: { add(){}, remove(){} }, removeChild(){} };
   const header = {textContent:'',dataset:{}};
   const deps = {
     initDB: async()=>{}, showToast:()=>{}, loadInitialState:async()=>{}, persistCurrentModule:async()=>{},
-    appState:{currentModule:'home'}, checkTrialStatus:async()=>({ok:permit,remainingMs:1000,daysLeft:Infinity,activated:true}),
+    appState:{currentModule:'home'}, checkTrialStatus:()=>waiting || Promise.resolve({ok:permit,remainingMs:1000,daysLeft:Infinity,activated:true}),
     invalidateAccessLease:()=>{cleared++;permit=false;}, inspectAccessLease:()=>({ok:permit}),
-    showActivationScreen:()=>{}, startAccessLifecycle: options=>{refresh=options.refresh;return()=>{};},
+    showActivationScreen:()=>{blocked++;}, startAccessLifecycle: options=>{refresh=options.refresh;return()=>{};},
     LEASE_KEY:'lease', initKeyboard:()=>{}, bindInputsToKeyboard:()=>{}, hideKeyboard:()=>{},
     initMenu:()=>{}, setActiveMenuItem:()=>{}, initOptionsMenu:()=>{}, closeOptionsMenu:()=>{},
     initShareButton:()=>{}, renderMenuIcons:()=>{}, ICONS:{},
@@ -26,7 +26,7 @@ function fixture({ allowed = true, identity = true, loader } = {}) {
     testLoader:loader || (async()=>({render:()=>{renders++;}}))
   };
   const app=Function(...Object.keys(deps),source+'; return {boot,loadModule,refreshAccess};')(...Object.values(deps));
-  return {app,header,winEvents,setAllowed:v=>permit=v,renders:()=>renders,cleared:()=>cleared,refresh:()=>refresh()};
+  return {app,header,winEvents,setAllowed:v=>permit=v,renders:()=>renders,cleared:()=>cleared,refresh:()=>refresh(),setPending:v=>waiting=v,blocked:()=>blocked};
 }
 test('app boot without identity fails closed before module render', async()=> {
   const f=fixture({identity:false});await f.app.boot();assert.equal(f.renders(),0);
@@ -50,4 +50,10 @@ test('signed out and different signed in user invalidate commercial lease',async
   const f=fixture();await f.app.boot();f.winEvents.get('auth')('SIGNED_IN',{user:{id:'B'}});
   assert.equal(f.cleared(),1);assert.equal(f.renders(),1);
   f.winEvents.get('auth')('SIGNED_OUT');assert.equal(f.cleared(),2);
+});
+
+test('expired mounted shell is blocked before awaiting delayed server validation',async()=>{
+ const f=fixture();await f.app.boot();const before=f.blocked();f.setAllowed(false);
+ let resolve;f.setPending(new Promise(r=>resolve=r));const pending=f.app.refreshAccess();
+ assert.ok(f.blocked()>before);resolve({ok:false});await pending;assert.equal(f.renders(),1);
 });
