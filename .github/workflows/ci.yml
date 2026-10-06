@@ -23,6 +23,10 @@ jobs:
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: '24.19.0'
+      - name: Install locked development dependencies
+        run: npm ci
+      - name: Consultor + Guia 2.0 static/tests
+        run: npm run test:ev3
       - name: Whitespace, executable syntax and existing frontend tests
         run: |
           # First-parent delta: published/candidate commit for push/release;
