@@ -1,7 +1,7 @@
 // @ts-check
 // guia.js (module) — UI do módulo Guia de Programação CNC
 // Consulta rápida de códigos e ciclos (Siemens e Fanuc)
-// Funciona 100% offline — carrega dados de ./dados/guia_cnc.json
+// Conteúdo local canônico, migrado estruturalmente de dados/guia_cnc.json.
 
 import { bancoCiclosCNC } from './guia/bancoCiclosCNC.js';
 import { toLegacy } from './guia/adapter.js';

@@ -33,11 +33,14 @@ test('interação independente de feedback e feedback local idempotente',async()
 });
 test('retry só aceita unicidade quando registro equivalente é comprovado',async()=>{
  const {createTransport}=await import('../../js/core/supabaseClient.js');
- const event=item('interaction');event.payload={id:'interaction',user_id:'A',slots:{},outcome:'resolved'};
+ const event=item('interaction');event.payload={id:'interaction',user_id:'A',slots:{},outcome:'resolved',client_created_at:'2026-10-06T00:00:00.000Z'};
  let code='23505',stored=structuredClone(event.payload);
  const client={from:()=>({insert:async()=>({error:{code}}),select:()=>({eq(){return this;},maybeSingle:async()=>({data:stored,error:null})})})};
  const transport=createTransport(client);
- assert.equal(await transport.send(event),true);stored={...stored,outcome:'no_match'};assert.equal(await transport.send(event),false);
+ assert.equal(await transport.send(event),true);
+ stored={...stored,client_created_at:'2026-10-06T00:00:00+00:00'};assert.equal(await transport.send(event),true);
+ stored={...stored,client_created_at:'2026-10-06T00:00:01+00:00'};assert.equal(await transport.send(event),false);
+ stored={...stored,outcome:'no_match'};assert.equal(await transport.send(event),false);
  code='23503';assert.equal(await transport.send(event),false);
  code='42501';assert.equal(await transport.send(event),false);
 });

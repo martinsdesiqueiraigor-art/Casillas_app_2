@@ -22,7 +22,13 @@ export function createTransport(client=supabase){
    /** @param {any} value @returns {string} */
    const stable=value=>JSON.stringify(value&&typeof value==='object'&&!Array.isArray(value)
     ?Object.fromEntries(Object.keys(value).sort().map(k=>[k,JSON.parse(stable(value[k]))])):value);
-   return Object.entries(item.payload).every(([key,value])=>stable(data[key])===stable(value));
+   return Object.entries(item.payload).every(([key,value])=>{
+    if(key==='client_created_at'){
+     const expected=Date.parse(value),persisted=Date.parse(data[key]);
+     return Number.isFinite(expected)&&Number.isFinite(persisted)&&expected===persisted;
+    }
+    return stable(data[key])===stable(value);
+   });
   }
  };
 }
