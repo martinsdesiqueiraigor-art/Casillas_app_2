@@ -126,3 +126,27 @@ A Coordenação escolheu desabilitar temporariamente somente Pages, criar PR con
 Pages ID 369795219 está disabled_manually, confirmado em 2026-10-05T23:23:09Z; CI ID 375870461 continua active. Release permanece em f7fd1e2 e EV2-08 aberto. A suspensão é reversível por /enable no mesmo workflow, sem exclusão de arquivo, mas não será revertida nesta preparação.
 
 can_admins_bypass=true e B-03/B-04/B-05 permanecem pendentes; a Coordenação decidirá seu tratamento antes da homologação integral. Self-review continua confirmação operacional, não revisão técnica independente.
+
+## 06/10/2026 - EV2-03/04: contrato aplicado somente no candidato local
+
+A Coordenação autorizou implementação local de vigência `[valid_from, valid_until)` e revogação atômica da licença com seus entitlements diretamente dependentes. Sem autorização de commit, push, aplicação remota ou release.
+
+O modelo existente foi reutilizado: source LICENSE + license_id identifica dependência; GRANT/PROMOTION/ADMIN permanecem independentes. Licenses não possui colunas valid_from/valid_until; a vigência do direito originado da licença está no entitlement, além do estado da licença. NULL valid_until significa fim ilimitado, nunca início antecipado.
+
+Revogação é enforced por trigger no banco, sem nova RPC pública: atualiza dependentes e registra auditoria na mesma transação. Escritas posteriores não podem reativar dependente de licença revogada. A migration também reconcilia dependências antigas já incoerentes, se existirem no banco ao qual vier a ser aplicada.
+
+O índice único ACTIVE foi preservado. Entitlement futuro/expirado não concede acesso; se ainda reservar esse índice, a ativação é rejeitada explicitamente ANTES de consumir o código, preservando o entitlement. Não se revogam grants nem se inventa política de coexistência para liberar a ativação.
+
+Revogação não cria novo trial. Trial anterior independente não é apagado, estendido ou reiniciado; mantém as regras existentes. Frontend, rate limit, revalidação de sessão/offline e Production Gate não foram alterados.
+
+Implementação e evidências locais estão em BANCO-DADOS.md/PROGRESSO.md. Fechamento formal e qualquer publicação dependem da revisão da Coordenação.
+
+## 06/10/2026 - Decisões finais D1-D3 aplicadas no diff local
+
+A Coordenação definiu REVOKED como estado terminal da licença, com revoked_at imutável. Nenhuma reativação administrativa ou RPC de unrevoke foi criada. Novo acesso futuro exige nova licença ou entitlement independente autorizado.
+
+Revogação bloqueia trial como fallback, inclusive trial preexistente válido. O registro antigo é preservado, mas o RPC normal não o devolve como acesso após licença revogada da mesma conta/produto. Getter comercial continua aceitando direitos independentes válidos e nova licença. Esta decisão substitui a interpretação anterior de preservação do trial com acesso independente.
+
+A origem LICENSE equivale à presença de license_id; outras origens devem ter vínculo NULL. Migration aborta diante de combinações legadas inconsistentes, sem escolher intenção. FK e lista de origens existentes preservadas.
+
+Alterada somente a migration EV2 ainda local/não commitada, seus testes e documentação. Nenhuma aplicação Supabase remota, commit, push ou release.
