@@ -1,96 +1,22 @@
 // trial.js — Sistema de trial (30 dias) + ativação por código (Modelo 2)
 // Modelo 2: Códigos pré-gerados, NÃO vinculados ao Device ID.
 
-// Códigos podem ser revogados (lista negra embutida).
+// Validação/revogação são autoritativas no Supabase; lease só continua acesso validado.
 
 import { supabase } from './supabase.bundle.js';
+import { getCurrentUser, getCachedUser } from './auth.js';
+import { createLeaseController } from './auth.js';
 
 const TRIAL_DAYS = 30;
 const WHATSAPP = '5519996816755';
-const DAY_MS = 86400000;
-
-async function getSupabaseEntitlement() {
-  const { data: { user }, error: userError } = await supabase.auth.getUser();
-
-  if (userError || !user) {
-    return { ok: false, reason: userError ? 'auth-error' : 'not-authenticated' };
-  }
-
-  const { data, error } = await supabase.rpc('get_casillas_entitlement');
-
-  if (error) {
-    console.error('[TRIAL] Erro ao consultar entitlement:', error);
-    return { ok: false, reason: 'entitlement-error', error };
-  }
-
-  const entitlement = Array.isArray(data) ? data[0] : data;
-  const validUntil = entitlement?.valid_until;
-  const isWithinValidity = !validUntil || new Date(validUntil) > new Date();
-
-  return {
-    ok: entitlement?.has_access === true && isWithinValidity,
-    entitlement
-  };
-}
-
-async function getSupabaseTrial() {
-  const { data: { user }, error: userError } = await supabase.auth.getUser();
-
-  if (userError) {
-    console.error('[TRIAL] Erro ao obter usuário:', userError);
-    return { ok: false, reason: 'auth-error' };
-  }
-
-  if (!user) {
-    return { ok: false, reason: 'not-authenticated' };
-  }
-
-  const { data, error } = await supabase.rpc('start_casillas_trial');
-
-  if (error) {
-    console.error('[TRIAL] Erro ao iniciar/consultar trial:', error);
-    return { ok: false, reason: 'supabase-error', error };
-  }
-
-  if (!data) {
-    return { ok: false, reason: 'trial-not-found' };
-  }
-
-  const endsAt = new Date(data.ends_at);
-  const now = new Date();
-
-  if (Number.isNaN(endsAt.getTime())) {
-    return { ok: false, reason: 'invalid-end-date' };
-  }
-
-  if (endsAt <= now || data.status !== 'ACTIVE') {
-    return {
-      ok: false,
-      activated: false,
-      reason: 'expired',
-      daysLeft: 0
-    };
-  }
-
-  const daysLeft = Math.max(
-    0,
-    Math.ceil((endsAt.getTime() - now.getTime()) / DAY_MS)
-  );
-
-  return {
-    ok: true,
-    activated: false,
-    daysLeft,
-    trial: data
-  };
-}
-
-const KEYS = {
-  install: 'trial-install-date',
-  lastSeen: 'trial-last-seen',
-  activated: 'trial-activated',
-  activeCode: 'trial-active-code'
-};
+const access = createLeaseController({
+  storage: () => globalThis.localStorage,
+  online: () => globalThis.navigator?.onLine !== false,
+  identity: getCurrentUser, cachedUser: getCachedUser,
+  request: name => supabase.rpc(name)
+});
+export const invalidateAccessLease = () => access.invalidate();
+export const inspectAccessLease = () => access.inspect();
 
 // UI — TELA DE ATIVAÇÃO
 // ═══════════════════════════════════════════════════════════
@@ -249,9 +175,9 @@ function wireActivationButtons() {
         }
 
         activationConfirmed = true;
-        const entitlement = await getSupabaseEntitlement();
+        const entitlement = await access.check({ allowOffline: false });
 
-        if (!entitlement.ok) {
+        if (!entitlement.ok || entitlement.offline || !entitlement.activated) {
           const message = 'Licença processada, mas ainda não foi possível confirmar seu acesso. Verifique sua conexão e tente novamente.';
           showActivationScreen(message);
           const { showToast } = await import('./utils.js');
@@ -329,45 +255,22 @@ function wireActivationButtons() {
 
 export async function checkTrialStatus() {
   wireActivationButtons();
-  const entitlement = await getSupabaseEntitlement();
-
-  if (entitlement.ok) {
-    hideActivationScreen();
+  const result = await access.check();
+  if (!result.ok) {
+    showActivationScreen('Conecte-se para validar seu acesso ao Casillas.');
+    document.getElementById('trial-banner')?.classList.add('hidden');
+    return result;
+  }
+  hideActivationScreen();
+  if (result.offline) {
     const banner = document.getElementById('trial-banner');
-    if (banner) banner.classList.add('hidden');
-    return { ok: true, activated: true, daysLeft: Infinity };
-  }
-
-  if (entitlement.reason) {
-    showActivationScreen('Não foi possível verificar seu acesso. Verifique sua conexão e tente novamente.');
-    return {
-      ok: false,
-      activated: false,
-      reason: entitlement.reason,
-      daysLeft: 0
-    };
-  }
-
-  // Para usuários não licenciados, o Supabase é a autoridade do trial.
-  const supabaseTrial = await getSupabaseTrial();
-
-  if (supabaseTrial.ok) {
-    hideActivationScreen();
-    showTrialBanner(supabaseTrial.daysLeft);
-    return supabaseTrial;
-  }
-
-  if (supabaseTrial.reason === 'expired') {
-    showActivationScreen('Seu período de teste terminou. Ative o app para continuar.');
-    return supabaseTrial;
-  }
-
-  showActivationScreen('Não foi possível verificar seu acesso. Verifique sua conexão e tente novamente.');
-  return {
-    ok: false,
-    activated: false,
-    reason: supabaseTrial.reason || 'access-check-failed',
-    daysLeft: 0
-  };
+    const message = document.getElementById('trial-message');
+    if (banner && message) {
+      message.textContent = 'Modo offline — validação necessária até ' + new Date(result.leaseExpiresAt).toLocaleDateString('pt-BR');
+      banner.classList.remove('hidden');
+    }
+  } else if (!result.activated) showTrialBanner(result.daysLeft);
+  else document.getElementById('trial-banner')?.classList.add('hidden');
+  return result;
 }
 export { TRIAL_DAYS, WHATSAPP };

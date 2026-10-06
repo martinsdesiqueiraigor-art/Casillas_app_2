@@ -3,7 +3,8 @@
 import { initDB } from './db.js';
 import { showToast } from './utils.js';
 import { loadInitialState, persistCurrentModule, appState } from './state.js';
-import { checkTrialStatus } from './trial.js';
+import { checkTrialStatus, invalidateAccessLease, inspectAccessLease, showActivationScreen } from './trial.js';
+import { startAccessLifecycle, LEASE_KEY } from './auth.js';
 import { initKeyboard, bindInputsToKeyboard, hideKeyboard } from './keyboard.js';
 import {initMenu, setActiveMenuItem, initOptionsMenu, closeOptionsMenu, initShareButton, renderMenuIcons } from './menu.js';
 import { ICONS } from './icons.js';
@@ -44,8 +45,29 @@ const MODULE_TITLES = {
 };
 
 let accessStatus = null;
+let currentUserId = null;
+let stopAccessLifecycle;
+let hasMountedModule = false;
+
+async function refreshAccess() {
+  accessStatus = await checkTrialStatus();
+  const status = document.getElementById('header-access-status');
+  if (status) {
+    status.textContent = !accessStatus.ok ? 'Validação necessária' : accessStatus.offline ? 'Modo offline' : accessStatus.activated ? 'Acesso ativo' : 'Período de teste · ' + accessStatus.daysLeft + 'd';
+    status.dataset.access = accessStatus.ok ? (accessStatus.activated ? 'licensed' : 'trial') : 'blocked';
+  }
+  if (accessStatus.ok && !hasMountedModule) await loadModule('home');
+  return accessStatus;
+}
+function guardAccess() {
+  const current = inspectAccessLease();
+  if (accessStatus?.ok && current.ok) return true;
+  showActivationScreen('Conecte-se para validar seu acesso ao Casillas.');
+  return false;
+}
 
 async function loadModule(key) {
+  if (!guardAccess()) return;
   if (!MODULE_LOADERS[key]) {
     showToast(`Módulo "${key}" não encontrado`, 'error');
     return;
@@ -60,6 +82,7 @@ async function loadModule(key) {
 
   try {
     const mod = await MODULE_LOADERS[key]();
+    if (!guardAccess()) return;
     if (typeof mod.render !== 'function') {
       showToast('Módulo inválido (sem render)', 'error');
       return;
@@ -80,6 +103,7 @@ async function loadModule(key) {
     }
 
     mod.render(content, accessStatus);
+    hasMountedModule = true;
     bindInputsToKeyboard(content);
 
     // Re-vincula após o módulo renderizar campos dinamicamente.
@@ -220,6 +244,9 @@ function wireOptionsButtons() {
     optSignOut.dataset.wired = '1';
     optSignOut.addEventListener('click', async () => {
       closeOptionsMenu();
+      invalidateAccessLease();
+      accessStatus = null;
+      showActivationScreen('Sessão encerrada. Entre novamente.');
       const { error } = await signOut();
 
       if (error) {
@@ -247,6 +274,7 @@ async function boot() {
     return;
   }
 
+  currentUserId = user.id;
   try {
     await initDB();
   } catch (err) {
@@ -264,27 +292,11 @@ async function boot() {
   initOptionsMenu();
   wireOptionsButtons();
 
-  // Verifica trial ANTES de mostrar o app
-  const trial = await checkTrialStatus();
-  if (!trial.ok) {
-    // Tela de ativação já foi exibida
-    return;
-  }
-
-  accessStatus = trial;
-  const accountStatus = document.getElementById('header-access-status');
-  if (accountStatus) {
-    if (trial.activated === true && trial.daysLeft === Infinity) {
-      accountStatus.textContent = 'Licença ativa';
-      accountStatus.dataset.access = 'licensed';
-    } else {
-      const days = trial.daysLeft;
-      accountStatus.textContent = `Período de teste · ${days}d`;
-      accountStatus.dataset.access = 'trial';
-    }
-  }
-  const initial = 'home';
-  await loadModule(initial);
+  const result = await refreshAccess();
+  stopAccessLifecycle?.();
+  stopAccessLifecycle = startAccessLifecycle({
+    events: window, document, refresh: refreshAccess, initialResult: result
+  });
 }
 
 window.addEventListener('casillas:navigate-module', (event) => {
@@ -321,13 +333,24 @@ window.forcarAtualizacao = async function() {
 console.log('💡 Digite forcarAtualizacao() no console para limpar cache');
 
 // Reagir a ativação (esconder tela, carregar módulo)
-window.addEventListener('casillas:activated', () => {
+window.addEventListener('casillas:activated', async () => {
+  accessStatus = inspectAccessLease();
   const initial = appState.currentModule || 'trig';
   loadModule(initial);
 });
 
-onAuthStateChange((event) => {
+window.addEventListener('storage', event => {
+  if (event.key === LEASE_KEY || event.key === supabase.auth.storageKey || event.key === null) {
+    if (!inspectAccessLease().ok) { accessStatus = null; guardAccess(); }
+  }
+});
+
+onAuthStateChange((event, session) => {
   if (event === 'SIGNED_OUT') {
+    invalidateAccessLease(); accessStatus = null; stopAccessLifecycle?.();
+    window.location.href = './auth.html';
+  } else if (event === 'SIGNED_IN' && currentUserId && session?.user?.id !== currentUserId) {
+    invalidateAccessLease(); accessStatus = null; guardAccess();
     window.location.href = './auth.html';
   }
 });

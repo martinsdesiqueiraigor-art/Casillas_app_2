@@ -769,3 +769,15 @@ Sem commit/push/PR/merge/deploy/dispatch, Supabase remoto, licença real, EV2-06
 - Não repetidos manualmente: Production Gate, Pages, pinning, smoke produção, profiles e suítes históricas sem delta. CI automática da hardening/PR será observada, sem dispatch adicional.
 - Nenhum Supabase remoto, licença/usuário real, deployment, Service Worker, workflow ou EV2-02 alterado. Latest deployment GitHub observado permanece 6873475170 / SHA 8c56306054db0cf13b53481890022edfa01aeda4.
 - Revisão final do teste HTTP corrigiu o payload do probe de helper para usar apenas sua assinatura real e tornou o cleanup seguro para criação parcial do REST container. Rodada --acl-only: 6 checks PASS, exit 0; sem repetir pgTAP/frontend/concorrência. git diff --cached --check detectou uma linha vazia EOF no runner novo; removida antes do commit, sem mudança funcional.
+
+## 06/10/2026 — EV2-02: implementação local sobre release EV2-06
+
+- Fast-forward-only da hardening para 55f1fed8265bcfee6d60e7ca6a7e91dbc6972f7c, sem merge adicional.
+- Migration V2 20261006055325: contrato de acesso com statement_timestamp(), lógica canônica de entitlement/trial e ACL mínima; assinaturas antigas preservadas.
+- Lease cliente versão 1: sete dias desde validated_at, teto comercial/trial, conta/produto, high-water local, fail-closed, negativa explícita versus rede, JWT offline expirado e troca de conta.
+- Revalidação agrupada em conectividade/focus/visibility e timer visível limitado; módulo checa acesso antes/depois de import assíncrono. Bloqueio não apaga dados técnicos.
+- TDD/delta: fachada ausente e controller ausente comprovados em RED; banco 23 + setup 12 PASS; treze migrations locais reconstruídas, cleanup PASS. Evidências anteriores de EV2-03/04/06/Gate reutilizadas.
+- Entrada frontend existente agrega novos testes do lease/shell para CI automática sem alterar workflow/Production Gate. Runner EV2-06 apenas ajusta contagem de migrations ao diretório real; sua suíte não é repetida.
+- Checkpoint para commit/hardening/CI/PR, sem merge/deploy/aplicação remota. Handoff final contém SHAs, runs e resultados efetivamente observados.
+
+- Frontend final 61/61 PASS (38 lease, 5 shell, 18 acesso/ativação); syntax/diff checks PASS. Lease/lifecycle residem em auth.js já precacheado, sem asset executável novo obrigatório nem mudança no Service Worker.

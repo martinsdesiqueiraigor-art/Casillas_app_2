@@ -103,3 +103,17 @@ Desativação confirmada em 2026-10-05T23:23:09Z. Esse controle suspende novas e
 Bypass administrativo continua true. Ajuste a decidir pelo owner: Settings → Environments → github-pages → desmarcar Allow administrators to bypass configured protection rules → salvar → conferir GET. A API REST PUT documentada consultada não expõe esse campo; não enviar parâmetro inventado.
 
 B-03/B-04/B-05 e as provas do fluxo manual permanecem pendentes. A suspensão reduz o risco da transição, mas não fecha EV2-08 nem homologa o Gate.
+
+## 06/10/2026 — EV2-02: continuidade offline V1
+
+Após validação online positiva pela fachada canônica get_casillas_access_v2(), o cliente pode continuar por no máximo sete dias. O PostgreSQL produz validated_at na mesma chamada com statement_timestamp(); o lease termina em MIN(validated_at + 7 dias, valid_until), quando houver limite comercial. Para trial, valid_until é ends_at. Nenhum cache, relógio local ou ausência de rede cria/renova direito.
+
+Sessão e entitlement são distintos: JWT expirado offline pode fornecer somente identidade cacheada consistente (user.id = JWT sub), nunca autorização por si só. É indispensável lease válido daquela conta e produto casillas. Ausência/corrupção de armazenamento, identidade incerta, produto diferente ou RPC V2 indisponível falham fechados. Logout/troca de conta invalidam o lease.
+
+Negativa explícita do servidor invalida o lease. REVOKED não restaura trial antigo; direitos independentes válidos continuam pela autoridade existente. Falha real de transporte permite apenas usar lease anterior ainda válido, sem renovar a âncora. Ativação exige confirmação online, não pode aproveitar um lease offline antigo.
+
+Revalidar ao abrir online, retornar conectividade, focus/visibility (eventos agrupados, intervalo mínimo de um minuto), e em oportunidade visível de até quinze minutos ou antes da expiração. O timer não faz polling agressivo nem apaga dados técnicos. Offline exibe indicação discreta de prazo.
+
+Armazenamento operacional, não DRM: versão 1, vínculo user_id/produto, campos comerciais selecionados, sem código de licença ou token privilegiado. maxObservedLocalTime e marcador global avançam apenas; a avaliação usa tempo local máximo observado e duração desde a validação local para avançar a âncora server-side. Isso limita rollback simples e tolera offset inicial, mas não protege contra adulteração completa do cliente/armazenamento. Revogação não chega instantaneamente a aparelho realmente offline; risco aceito de até sete dias, limitado pela validade comercial.
+
+Migração V2 deve ser aplicada sob gate remoto próprio ANTES de eventual deployment do frontend. Nesta missão não há aplicação Supabase remota, merge ou deploy. Service Worker/Production Gate permanecem inalterados; atualização de PWA/cache existente exige validação específica no futuro gate de release.

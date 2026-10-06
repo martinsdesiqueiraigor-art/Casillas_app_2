@@ -62,8 +62,9 @@ try {
       console.log(run(cli, ['test', 'db', '--local', '--workdir', dir, '--agent', 'no']));
     // Additional committed-transaction, concurrency and HTTP assertions follow.
 
-    check(sql('select count(*) from supabase_migrations.schema_migrations;'), '12',
-      'Twelve versioned migrations reconstruct the LOCAL database');
+    check(sql('select count(*) from supabase_migrations.schema_migrations;'),
+      String(readdirSync(join(dir, 'supabase', 'migrations')).filter(f => f.endsWith('.sql')).length),
+      'All versioned migrations reconstruct the LOCAL database');
     console.log('PostgreSQL ' + sql('show server_version;'));
     const users = ['shared','race','oracle','shape','success','oldsuccess','input','internal','unique'];
     const uid = n => '00000000-0000-4000-8000-' + String(600 + users.indexOf(n)).padStart(12,'0');
