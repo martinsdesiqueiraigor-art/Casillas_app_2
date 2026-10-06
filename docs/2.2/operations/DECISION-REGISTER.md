@@ -19,6 +19,7 @@ Registro inicial da missão CAS22-OPS-01-R1 em 2026-10-06. Consolida decisões e
 | D13 | Biblioteca não vira aba principal vazia | VIGENTE | [Biblioteca](../LIBRARY-CONTRACT.md); ativação após coleção V1 útil e aceita |
 | D14 | Consultor não é quinta aba fixa | VIGENTE | [Navegação](../NAVIGATION-CONTRACT.md); ação em destaque no shell/Home |
 | D15 | Navegação final pretendida: Início / Calculadoras / Guia CNC / Biblioteca | VIGENTE | [Navegação](../NAVIGATION-CONTRACT.md); Biblioteca condicionada ao gate, destinos futuros |
+| D16 | Supervisor V1 pode automatizar missões reversíveis aprovadas; HUMAN GATE obrigatório para efeitos críticos; POC preservada | VIGENTE | CAS22-OPS-03-R1; [contrato V1](MISSION-SUPERVISOR-V1.md); runtime externo/manual, F1 PRÓXIMA até fechar OPS-03, sem início de F1 nesta missão |
 
 ## Manutenção e reabertura
 

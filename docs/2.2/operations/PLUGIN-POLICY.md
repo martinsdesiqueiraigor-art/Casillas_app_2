@@ -20,3 +20,7 @@ Antes de chamar, identificar pergunta/ação concreta, relação com paths e gat
 Ferramentas não ampliam permissões de commit, push, comunicação externa, banco ou deploy. Encontrar API ou manual não autoriza integração, conteúdo CNC novo ou mudança comercial. Não inserir credenciais, tokens ou dados sensíveis em prompts, URLs, screenshots ou documentos.
 Imagem gerada por IA pode ser referência identificada, mas a prova principal do [gate visual](VISUAL-APPROVAL-GATE.md) é tela real renderizada pelo código.
 Nesta OPS, a seleção pode se limitar a leitura/edição documental e validações locais de Git/links; não é necessário chamar plugins de implementação, banco, pesquisa ou revisão de frentes fechadas.
+
+## Runtime local OPS-03
+
+O [Supervisor V1](MISSION-SUPERVISOR-V1.md) transporta/executa missões reversíveis aprovadas e valida resultados localmente. Não é plugin nem autoridade de produto; não substitui Codex Coordinator nos claims/colisões de escrita paralela real. HUMAN GATE permanece obrigatório para efeitos críticos; POC preservada, sem serviços/autostart. F1 exige missão própria após fechar OPS-03.

@@ -1,7 +1,7 @@
 # Workflow operacional 2.2
 
 **DECISÃO → MISSÃO → EXECUÇÃO → VERIFICAÇÃO → REVISÃO → APROVAÇÃO → PRÓXIMA FASE**.
-Este é um contrato documental. Não implementar fila, daemon, watcher, scheduler ou heartbeat; não usar polling nem criar Agent Bus.
+Este contrato admite o [Supervisor V1](MISSION-SUPERVISOR-V1.md) externo, autorizado por OPS-03: scan manual Once/Watch de missões reversíveis aprovadas. Não criar Agent Bus, daemon, serviço, scheduler, heartbeat ou autostart. Registro manual mantém seu fluxo sem polling.
 
 ## Entrada e execução
 

@@ -9,6 +9,7 @@ Este pacote formaliza operação e gates; não altera comportamento nem autoriza
 | Documento | Uso |
 | --- | --- |
 | [Contrato da equipe](AGENT-TEAM-CONTRACT.md) | Papéis, escritor único, claims e findings |
+| [Mission Supervisor V1](MISSION-SUPERVISOR-V1.md) | Runtime externo, modos e HUMAN GATE |
 | [Workflow](WORKFLOW-2.2.md) | Missões, estados, dependências, evidências e handoff |
 | [Política de plugins](PLUGIN-POLICY.md) | Seleção por necessidade e limites de autoridade |
 | [Decision Register](DECISION-REGISTER.md) | Decisões vigentes e etapas fechadas |
@@ -52,3 +53,7 @@ Somente os seis documentos de `docs/2.2/operations/` e apontamento curto opciona
 Não criar Agent Bus, daemon, watcher, scheduler, heartbeat, fila própria, framework ou infraestrutura de agentes. Sem redesign, alteração comercial/CNC, PR, merge, release, deploy ou escrita Supabase.
 Um commit documental autorizado: `docs: definir governança multiagente do Casillas 2.2`; push somente para `origin/casillas-2.2`.
 Validar status/diff, `git diff --check`, allowlist documental, ausência de segredos e links Markdown locais. Não repetir testes funcionais ou físicos encerrados nesta missão documental.
+
+## Integração OPS-03
+
+O [Supervisor V1](MISSION-SUPERVISOR-V1.md) é a exceção explicitamente autorizada ao limite histórico de infraestrutura da OPS-01: runtime local externo, iniciado manualmente, sem heartbeat/serviço/autostart. Automatiza somente missões reversíveis aprovadas, preserva a POC e os HUMAN GATE críticos. F1 continua PRÓXIMA até o fechamento de OPS-03 e requer missão própria.
