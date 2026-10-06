@@ -1,5 +1,12 @@
+// @ts-check
 // app.js — Ponto de entrada: inicializa DB, trial, menu, teclado e roteia módulos
 
+import { eventBus } from './core/eventBus.js';
+import { wireGuideRouter } from './core/router.js';
+import { GuiaManager } from './modules/guia/GuiaManager.js';
+import { SyncQueue } from './core/syncQueue.js';
+import { outboxStore } from './core/outboxStore.js';
+import { createTransport, sessionOwner } from './core/supabaseClient.js';
 import { initDB } from './db.js';
 import { showToast } from './utils.js';
 import { loadInitialState, persistCurrentModule, appState } from './state.js';
@@ -25,6 +32,7 @@ const MODULE_LOADERS = {
   conicpad:  () => import('./modules/conicpad.js'),
   prog:      () => import('./modules/prog.js'),
   guia:      () => import('./modules/guia.js'),
+  'consultor-tecnico': () => import('./modules/consultor/index.js'),
   consult:   () => import('./modules/consult.js')
 };
 
@@ -41,6 +49,7 @@ const MODULE_TITLES = {
   conicpad: { name: 'Conicidades Padrão', icon: '🎯' },
   prog:     { name: 'Programação CNC',    icon: '🖥️' },
   guia:     { name: 'Guia de Programação', icon: '📖' },
+  'consultor-tecnico': { name: 'Consultor Técnico', icon: '🔎' },
   consult:  { name: 'Consultoria',        icon: '💬' }
 };
 
@@ -57,7 +66,7 @@ async function refreshAccess() {
     status.textContent = !accessStatus.ok ? 'Validação necessária' : accessStatus.offline ? 'Modo offline' : accessStatus.activated ? 'Acesso ativo' : 'Período de teste · ' + accessStatus.daysLeft + 'd';
     status.dataset.access = accessStatus.ok ? (accessStatus.activated ? 'licensed' : 'trial') : 'blocked';
   }
-  if (accessStatus.ok && !hasMountedModule) await loadModule('home');
+  if (accessStatus.ok && !hasMountedModule) await loadModule(window.location.hash?.startsWith('#/guia') ? 'guia' : 'home');
   return accessStatus;
 }
 function guardAccess() {
@@ -67,6 +76,7 @@ function guardAccess() {
   return false;
 }
 
+/** @param {string} key */
 async function loadModule(key) {
   if (!guardAccess()) return;
   if (!MODULE_LOADERS[key]) {
@@ -97,13 +107,15 @@ async function loadModule(key) {
       // Usa SVG customizado se disponível, senão cai no emoji
       const iconFn = ICONS[key];
       if (iconFn) {
-        headerIcon.innerHTML = iconFn(20);
+        // ICONS contém SVG estático do desenvolvedor, sem dados de URL/modelo.
+        const svg = new DOMParser().parseFromString(iconFn(20), 'image/svg+xml').documentElement;
+        headerIcon.replaceChildren(document.importNode(svg, true));
       } else {
         headerIcon.textContent = title.icon;
       }
     }
 
-    mod.render(content, accessStatus);
+    mod.render(content, accessStatus, { ownerUserId: currentUserId });
     hasMountedModule = true;
     bindInputsToKeyboard(content);
 
@@ -261,6 +273,22 @@ function wireOptionsButtons() {
   }
 }
 
+function initGuideBridge() {
+  // A navegação por hash requer uma Location de navegador disponível.
+  if (typeof window.location.hash !== 'string') return;
+  const queue = new SyncQueue(outboxStore, sessionOwner, createTransport());
+  wireGuideRouter(eventBus, new GuiaManager(), hash => {
+    if (window.location.hash === hash) loadModule('guia');
+    else window.location.hash = hash;
+  });
+  window.addEventListener('hashchange', () => {
+    if (window.location.hash.startsWith('#/guia')) loadModule('guia');
+  });
+  const flush = () => { void queue.flush().catch(error => console.warn('[EV3] Sync pendente', error)); };
+  window.addEventListener('online', flush);
+  flush();
+}
+
 async function boot() {
   const { user, error: authError } = await getCurrentUser();
 
@@ -298,6 +326,7 @@ async function boot() {
   stopAccessLifecycle = startAccessLifecycle({
     events: window, document, refresh: refreshAccess, initialResult: result, onExpiry: guardAccess
   });
+  initGuideBridge();
 }
 
 window.addEventListener('casillas:navigate-module', (event) => {

@@ -1,7 +1,13 @@
+// @ts-check
 // guia.js (module) — UI do módulo Guia de Programação CNC
 // Consulta rápida de códigos e ciclos (Siemens e Fanuc)
-// Funciona 100% offline — carrega dados de ./dados/guia_cnc.json
+// Conteúdo local canônico, migrado estruturalmente de dados/guia_cnc.json.
 
+import { bancoCiclosCNC } from './guia/bancoCiclosCNC.js';
+import { toLegacy } from './guia/adapter.js';
+import { GuiaManager } from './guia/GuiaManager.js';
+import { renderCycle } from './guia/renderers/blocks.js';
+import { parseRoute } from '../core/router.js';
 import { createElementSafe, showToast } from '../utils.js';
 import { updateKPIs, updateHeader } from '../state.js';
 
@@ -18,19 +24,8 @@ let debounceTimer = null;
 // CARREGAR DADOS
 // ═══════════════════════════════════════════════════════════
 async function carregarDados() {
-  if (dadosCache) return dadosCache;
-
-  try {
-    const resp = await fetch('./dados/guia_cnc.json');
-    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-    const json = await resp.json();
-    dadosCache = json;
-    return json;
-  } catch (err) {
-    console.error('Erro ao carregar guia_cnc.json:', err);
-    showToast('Não foi possível carregar os dados do Guia CNC.', 'error');
-    return { itens: [] };
-  }
+  if (!dadosCache) dadosCache = { versao: '2.0', itens: bancoCiclosCNC.map(toLegacy) };
+  return dadosCache;
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -194,9 +189,9 @@ function renderResultados(container, itens) {
         filtroTexto = '';
         filtroMaquina = '';
         filtroComando = '';
-        const input = document.getElementById('guia-busca');
-        const selMaq = document.getElementById('guia-maquina');
-        const selCmd = document.getElementById('guia-comando');
+        const input = /** @type {HTMLInputElement|null} */ (document.getElementById('guia-busca'));
+        const selMaq = /** @type {HTMLSelectElement|null} */ (document.getElementById('guia-maquina'));
+        const selCmd = /** @type {HTMLSelectElement|null} */ (document.getElementById('guia-comando'));
         if (input) input.value = '';
         if (selMaq) selMaq.value = '';
         if (selCmd) selCmd.value = '';
@@ -240,9 +235,27 @@ async function aplicarFiltro(containerResultados) {
 // ═══════════════════════════════════════════════════════════
 // RENDER PRINCIPAL
 // ═══════════════════════════════════════════════════════════
+/** @param {HTMLElement} container */
 export function render(container) {
   while (container.firstChild) container.removeChild(container.firstChild);
   updateHeader('Guia de Programação', '📖');
+
+  const manager = new GuiaManager();
+  const hash = window.location.hash;
+  if (hash.startsWith('#/guia/')) {
+    const target = manager.resolveTarget(parseRoute(hash));
+    if (target) {
+      const cycle = manager.lookup(target.cycleId);
+      if (cycle) renderCycle(container, cycle, target);
+      const back = document.createElement('button');
+      back.type = 'button'; back.className = 'btn btn-outline'; back.textContent = 'Voltar à lista';
+      back.addEventListener('click', () => { window.location.hash = '#/guia'; });
+      container.append(back);
+      return;
+    }
+    showToast('Destino do Guia inválido. Exibindo a lista local.', 'warning');
+    window.history.replaceState(null, '', '#/guia');
+  }
 
   // ─── Cabeçalho ───
   const card = createElementSafe('div', { class: 'card' });
@@ -274,7 +287,7 @@ export function render(container) {
     'data-native-keyboard': '1'
   });
   inputBusca.addEventListener('input', (ev) => {
-    filtroTexto = ev.target.value;
+    filtroTexto = inputBusca.value;
     // Debounce de 200ms
     clearTimeout(debounceTimer);
     debounceTimer = setTimeout(() => {
@@ -303,7 +316,7 @@ export function render(container) {
     selMaq.appendChild(createElementSafe('option', { value, text: opt }));
   });
   selMaq.addEventListener('change', (ev) => {
-    filtroMaquina = ev.target.value;
+    filtroMaquina = selMaq.value;
     aplicarFiltro(containerResultados);
   });
   maqGroup.appendChild(selMaq);
@@ -318,7 +331,7 @@ export function render(container) {
     selCmd.appendChild(createElementSafe('option', { value, text: opt }));
   });
   selCmd.addEventListener('change', (ev) => {
-    filtroComando = ev.target.value;
+    filtroComando = selCmd.value;
     aplicarFiltro(containerResultados);
   });
   cmdGroup.appendChild(selCmd);
