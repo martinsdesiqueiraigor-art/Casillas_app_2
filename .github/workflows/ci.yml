@@ -16,11 +16,11 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 25
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           ref: ${{ github.sha }}
           fetch-depth: 2
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: '24.19.0'
       - name: Whitespace, executable syntax and existing frontend tests
@@ -29,7 +29,7 @@ jobs:
           # base to synthetic merge for pull_request. Historical whitespace is unchanged.
           git diff --check HEAD^1 HEAD
           node .github/scripts/production-gate.mjs validate
-      - uses: supabase/setup-cli@v1
+      - uses: supabase/setup-cli@1dedf2c611547ede7232d26866dd3c56ab903bbb # v1 (branch)
         id: supabase_cli
         with:
           version: 2.118.0
