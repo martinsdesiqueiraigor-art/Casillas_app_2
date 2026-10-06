@@ -1,17 +1,30 @@
-# Contrato operacional — Casillas 2.0
+# Contrato operacional — Casillas 2.2 sobre baseline 2.1.0
 
 Estas instruções se aplicam às tarefas de desenvolvimento realizadas neste repositório. Instruções explícitas do usuário definem o escopo da tarefa e devem ser respeitadas.
 
+
+## Baseline congelada e linha 2.2
+
+Leia obrigatoriamente [Baseline 2.1](docs/BASELINE-2.1.md), [Release](docs/RELEASE-2.1.0.md) e [Transição](docs/HANDOFF-2.1-TO-2.2.md).
+v2.1.0 aponta ao SHA 1b3082e7ca82bb669180402cf419a56e51af374a e é referência congelada de produção.
+casillas-2.2 é desenvolvimento; toda mudança é retrofit progressivo, sem rewrite/framework novo.
+Não recriar eventBus, router, supabaseClient, syncQueue, outbox, ConsultorAgent/FSM, slotExtractor/resolver,
+Result Card, GuiaManager/renderers, deep links, telemetria/RLS, CI ou Production Gate.
+Preservar motores, Auth/licença, rate limiting e lease offline existente; lease é derivado de validação server-side e limitado, não uma nova autoridade comercial local.
+Consultor continua local/determinístico; LLM fora do 2.2. Conteúdo CNC novo exige fonte/validação em missão específica.
+Produção, deploy, Supabase write e mudanças comerciais só mediante missão explícita futura para SHA/escopo determinados.
+Não usar a linha 2.2 como autorização implícita de integração. Nesta missão só documentação está autorizada.
+
 ## 1. Identidade do projeto
 
-Este projeto é o **Casillas 2.0 — Calculadora Técnica de Usinagem**.
+Este projeto é o **Casillas — Calculadora Técnica de Usinagem**, com baseline de produção 2.1.0 e linha de desenvolvimento 2.2.
 
 ## 2. Repositórios e separação
 
-- `Casillas_app` é o repositório legado, mantido como referência histórica. Não o altere como parte do desenvolvimento do Casillas 2.0.
-- `Casillas_app_2` é o repositório oficial do Casillas 2.0.
+- `Casillas_app` é o repositório legado, mantido como referência histórica. Não o altere como parte do desenvolvimento do Casillas 2.2.
+- `Casillas_app_2` é o repositório oficial; a pasta `C:\Projetos\Casillas_app_2` preserva a release 2.1.
 - O remote oficial é `origin`, apontando para `https://github.com/martinsdesiqueiraigor-art/Casillas_app_2.git`.
-- A branch principal de desenvolvimento informada é `casillas-2.0`.
+- A branch de desenvolvimento é `casillas-2.2`, na cópia independente `C:\Projetos\Casillas_2.2_DEV`. Não desenvolver diretamente em `casillas-2.0`.
 - O remote `legacy`, quando configurado, aponta para `https://github.com/martinsdesiqueiraigor-art/Casillas_app.git`.
 - O nome da pasta local não comprova a identidade do repositório. Antes de operações Git importantes, confirme remote, branch e estado.
 
@@ -23,7 +36,7 @@ git branch --show-current
 git status --short
 ```
 
-Nunca envie alterações do Casillas 2.0 para `legacy` e nunca modifique o repositório legado como parte de uma tarefa do 2.0. Não faça commit ou push sem autorização explícita. Não use `reset`, `checkout` ou `clean` para descartar estado local.
+Nunca envie alterações do Casillas 2.2 para `legacy` e nunca modifique o repositório legado como parte de uma tarefa do 2.0. Não faça commit ou push sem autorização explícita. Não use `reset`, `checkout` ou `clean` para descartar estado local.
 
 ## 3. Princípio arquitetural
 
@@ -37,7 +50,7 @@ O Service Worker administra recursos e cache do PWA; não concede autorização 
 
 O Supabase é responsável por Auth, PostgreSQL, RLS, funções server-side, trial, licenças, entitlements e eventos de acesso.
 
-- Nunca exponha `service_role` ou qualquer segredo server-side no frontend, em logs ou em arquivos versionados.
+- Nunca exponha chaves privilegiadas ou qualquer segredo server-side no frontend, em logs ou em arquivos versionados.
 - Operações comerciais sensíveis devem ser executadas e validadas no servidor.
 - RLS deve proteger dados acessíveis por APIs expostas; grants e permissões de funções também devem ser revisados.
 - Não altere dados remotos, usuários, trials, licenças ou entitlements sem autorização explícita para a operação específica.

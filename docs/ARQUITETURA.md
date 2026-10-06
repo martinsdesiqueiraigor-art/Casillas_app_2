@@ -1,3 +1,20 @@
+## ESTADO ATUAL / OBSERVAÇÃO DE ENCERRAMENTO — 2026-10-06
+
+Casillas 2.1.0 está em PRODUÇÃO HOMOLOGADA: tag v2.1.0, SHA 1b3082e7ca82bb669180402cf419a56e51af374a,
+deployment 6888207195, SW casillas-v13, Supabase ACTIVE_HEALTHY com 14 migrations canônicas aplicadas.
+EV2, EV3, EV1 e Production Gate fechados. CI existe e passou; package.json existe.
+Offline autenticado, instalação PWA e validação física Android/offline real homologados pela Coordenação.
+
+Fontes atuais: [Release 2.1.0](RELEASE-2.1.0.md), [Baseline 2.1](BASELINE-2.1.md) e [Transição 2.2](HANDOFF-2.1-TO-2.2.md).
+Este cabeçalho não modifica o registro abaixo nem declara novas execuções de testes ou consultas remotas nesta missão.
+Desenvolvimento novo somente em casillas-2.2; não recriar contratos já entregues.
+
+## REGISTRO HISTÓRICO PRESERVADO
+
+O conteúdo abaixo descreve estados, testes e limites das respectivas datas/missões, incluindo pendências já encerradas.
+Ele não redefine a versão estável atual nem constitui autorização de produção.
+
+---
 # Arquitetura do Casillas 2.0
 
 Estado do código local na branch `casillas-2.0`, referência `629ebe3` (29/09/2026). Esta descrição deriva dos arquivos cliente e migrations versionadas; não confirma por si só o estado implantado.
