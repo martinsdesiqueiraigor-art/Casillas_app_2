@@ -221,7 +221,7 @@ function wireActivationButtons() {
           return;
         }
 
-        const { data, error } = await supabase.rpc('activate_casillas_license', {
+        const { data, error } = await supabase.rpc('activate_casillas_license_v2', {
           p_license_code: rawCode
         });
 
@@ -232,7 +232,17 @@ function wireActivationButtons() {
         }
 
         const activation = Array.isArray(data) ? data[0] : data;
-        if (!activation || typeof activation !== 'object' || !activation.license_id) {
+        if (activation && activation.result !== 'SUCCESS') {
+          const { showToast } = await import('./utils.js');
+          const messages = {
+            ACTIVATION_DENIED: 'Não foi possível ativar esta licença. Confira o código ou entre em contato com o suporte.',
+            INVALID_REQUEST: 'Código em formato inválido. Confira a licença recebida.',
+            RATE_LIMITED: 'Limite de tentativas atingido. Aguarde antes de tentar novamente.'
+          };
+          showToast(messages[activation.result] || 'Resposta inesperada. Nenhum acesso foi liberado.', 'error');
+          return;
+        }
+        if (!activation || typeof activation !== 'object' || activation.result !== 'SUCCESS' || !activation.license_id) {
           const { showToast } = await import('./utils.js');
           showToast('O serviço retornou uma resposta inesperada. Nenhum acesso foi liberado.', 'error');
           return;

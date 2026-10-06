@@ -166,8 +166,7 @@ cross join public.products p where p.slug='casillas';
 
 select tests.authenticate_as('ev2-license-future');
 select is((select count(*) from public.get_casillas_entitlement()),0::bigint,'K: ev2-license-future is not current access');
-select throws_ok($$select * from public.activate_casillas_license('EV2LOCALFUTURE')$$,'P0001',
- 'Entitlement fora da vigencia ou sem licenca valida; codigo preservado',
+select is((select count(*) from public.activate_casillas_license('EV2LOCALFUTURE')),0::bigint,
  'K: ev2-license-future reservation rejects activation before code consumption');
 reset role;
 select ok(exists(select 1 from public.licenses where license_code_hash=pg_temp.ev2_hash('EV2LOCALFUTURE')
@@ -181,8 +180,7 @@ select is((select count(*) from public.access_events where event_type='LICENSE_A
 
 select tests.authenticate_as('ev2-license-expired');
 select is((select count(*) from public.get_casillas_entitlement()),0::bigint,'K: ev2-license-expired is not current access');
-select throws_ok($$select * from public.activate_casillas_license('EV2LOCALEXPIRED')$$,'P0001',
- 'Entitlement fora da vigencia ou sem licenca valida; codigo preservado',
+select is((select count(*) from public.activate_casillas_license('EV2LOCALEXPIRED')),0::bigint,
  'K: ev2-license-expired reservation rejects activation before code consumption');
 reset role;
 select ok(exists(select 1 from public.licenses where license_code_hash=pg_temp.ev2_hash('EV2LOCALEXPIRED')
@@ -220,8 +218,8 @@ reset role;
 
 -- Existing ACTIVE access still blocks activation without consuming another code.
 select tests.authenticate_as('ev2-noend');
-select throws_ok($$select * from public.activate_casillas_license('EV2LOCALFUTURE')$$,'P0001',
- 'Usuário já possui acesso comercial ao Casillas','Current commercial access remains a real conflict');
+select is((select count(*) from public.activate_casillas_license('EV2LOCALFUTURE')),0::bigint,
+ 'Current commercial access remains a real conflict');
 reset role;
 select is((select status from public.licenses where license_code_hash=pg_temp.ev2_hash('EV2LOCALFUTURE')),
  'AVAILABLE','Real active conflict also preserves the code');
