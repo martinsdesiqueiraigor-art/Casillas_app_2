@@ -121,4 +121,3 @@ try {
   assert.equal(run('docker', ['volume', 'ls', '--filter', 'name=' + project, '--format', '{{.Name}}']), '');
   console.log('Cleanup PASS; existing containers unchanged; no disposable containers or volumes');
 }
-

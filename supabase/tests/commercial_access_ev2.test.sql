@@ -295,4 +295,3 @@ select throws_ok($$insert into public.entitlements(user_id,product_id,source,lic
 
 select * from finish();
 rollback;
-

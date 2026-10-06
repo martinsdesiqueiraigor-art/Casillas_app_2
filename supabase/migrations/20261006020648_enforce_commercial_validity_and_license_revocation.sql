@@ -347,4 +347,3 @@ comment on function private.start_casillas_trial() is
 'Blocks trial fallback after any revoked license for the same account/product.
 Trial history is retained; new licenses and independent valid entitlements use the commercial getter.';
 commit;
-
