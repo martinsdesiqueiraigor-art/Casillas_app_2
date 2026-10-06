@@ -689,3 +689,66 @@ PENDÊNCIAS PRESERVADAS:
 - can_admins_bypass=true não foi alterado. Interface: Settings → Environments → github-pages → desmarcar Allow administrators to bypass configured protection rules → salvar → reler GET. Schema REST PUT consultado não expõe esse controle.
 - B-03/B-04/B-05 permanecem sem correção. EV2-08 aberto; Gate não homologado. Estratégia e limites operacionais estão em POLITICA.md/DECISOES.md.
 - Sem merge, push na release, dispatch, reabilitação, deploy, mudança de aplicação/SW/migrations ou Supabase remoto.
+
+## 06/10/2026 - EV2-03/04: validade e revogação, candidato local
+
+PRÉ-FLIGHT:
+- Repo C:\Projetos\Casillas_app_2; origin oficial; casillas-2.0-hardening; working tree inicialmente limpa.
+- HEAD inicial f5367a65d4db999642ee8c57faf22edf36261a5e; fetch restrito às duas branches confirmou release 8c56306054db0cf13b53481890022edfa01aeda4.
+- Hardening era ancestral (0/1); merge --ff-only origin/casillas-2.0 avançou localmente ao SHA da release, sem merge commit ou push. Remote hardening permanece f5367a6.
+
+CAUSA E DELTA:
+- Getter e checagem de ativação ignoravam valid_from; getter não validava o backing LICENSE.
+- Revogar licenses não atualizava entitlements; a ausência de entitlement podia conduzir ao RPC de trial, que criava trial novo.
+- Reutilizados source + license_id; sem schema inventado. Migration nova contém três substituições de funções privadas, dois triggers privados e reconciliação auditada de dependentes antigos já revogados.
+- Assinaturas públicas, frontend, RLS/grants existentes, índice único e regras de preço/aparelhos preservados. Reserva fora da vigência rejeita ativação antes da escrita; nenhum entitlement independente é substituído.
+- Teste comercial usa fixtures de usuários/licenças sintéticas e rollback. Não foi utilizado o gerador de licença real.
+
+VALIDAÇÃO:
+- Node 24.19.0; Supabase CLI 2.118.0, binário instalado equivalente a npx --no-install supabase; PostgreSQL local 17.
+- CLI migration new gerou 20261006020648_enforce_commercial_validity_and_license_revocation.sql, mas manteve o scaffold vazio aberto; somente o processo gerador identificado desta tarefa foi encerrado antes da escrita. Nenhum banco envolvido nesse incidente.
+- Primeiro ciclo descartável: reset 11 migrations, exit 0; setup e profiles PASS. Novo teste executou 46 asserções sem falha, mas parou por dollar-quoting incorreto no teste de trial futuro (plano incompleto). Corrigida exclusivamente a sintaxe do teste, sem alterar assertions ou produto.
+- Segundo ciclo, teste corrigido contra as dez migrations anteriores: plano completo de 48, 18 falhas comportamentais esperadas; CLI exit 1. Confirma reproduções de validade, revogação, atomicidade e fallback de trial.
+- Reset --local --no-seed com as 11 migrations: exit 0. Novo pgTAP 48/48 + setup 12/12: Files=2 / Tests=60 / Result PASS, exit 0.
+- Profiles 16/16 do primeiro reset foi reutilizado: migration/produto e arquivo profiles permaneceram iguais; não repetido após correção exclusivamente sintática do novo teste.
+- node --test tests/trial-access.test.mjs: 12/12 PASS, exit 0; warning MODULE_TYPELESS_PACKAGE_JSON preexistente, sem mudança de package.json.
+- Testes cobrem A-F, revogação G, GRANT/PROMOTION/ADMIN intactos H, injeção de falha com rollback da licença/dependente/auditoria I, ausência de trial novo e preservação do anterior J, reserva futura/expirada com código intacto K; também órfão, reativação, idempotência, permissões e trial futuro.
+- Projetos LOCAL descartáveis Casillas_ev2_94cadaae93fc e Casillas_ev2_19ec5dc46285, porta DB 55622. Copiados somente config, migrations e testes; project_id/portas alterados apenas no diretório TEMP, sem metadata linked ou SQL preparatório de produto.
+- Comandos: supabase start --workdir TEMP --agent no --exclude (serviços não DB); supabase test db --local --workdir TEMP --agent no; supabase db reset --local --no-seed --workdir TEMP --agent no; supabase stop --no-backup --workdir TEMP --agent no.
+- Cleanup exit 0 em ambos; nenhum container/volume descartável restante; IDs dos containers preexistentes preservados.
+- Logs e results.json fora do Git: C:\Users\Usuario\AppData\Local\Temp\casillas-ev2-94cadaae93fc e casillas-ev2-19ec5dc46285.
+- git diff --check e inspeção de whitespace dos dois arquivos novos: sem erro. Production Gate, Pages, auditoria de pinning e smoke de produção não repetidos.
+
+ESCOPO:
+Sem commit, push, PR, merge adicional, dispatch, deploy, Supabase remoto, licença real, rate limit (EV2-06) ou revalidação/offline (EV2-02).
+Status: PASS local para revisão, não implantação nem encerramento remoto de EV2-03/04.
+
+VALIDAÇÃO ADICIONAL DO DELTA LEGADO:
+- Adicionado tests/ev2-migration.test.mjs: somente Node built-ins, Docker local e CLI instalada; cria diretório/projeto descartável, aplica dez migrations, insere fixtures sintéticas pelo próprio teste versionado e aplica a nova migration com migration up --local --workdir TEMP --agent no.
+- node --check tests/ev2-migration.test.mjs e node tests/ev2-migration.test.mjs: exit 0; 8/8 PASS. Confirma migration registrada, dependente antigo REVOKED com timestamp histórico, grant independente integralmente preservado, auditoria com IDs, acesso dependente negado, acesso independente preservado e nenhum trial criado.
+- Projeto Casillas_ev2_forward_1791253377796; TEMP C:\Users\Usuario\AppData\Local\Temp\casillas-ev2-forward-yu5vjg. Cleanup PASS; containers preexistentes preservados, nenhum container/volume descartável restante.
+- Essa regressão cobre somente o backfill da nova migration; não repetiu frontend, profiles, pgTAP já válido, Gate ou Pages.
+
+## 06/10/2026 - Retomada dos ajustes finais EV2-03/04: D1-D3
+
+Preflight confirmou casillas-2.0-hardening/8c56306054db0cf13b53481890022edfa01aeda4 e exatamente os sete caminhos anteriores; nenhuma alteração externa.
+
+A interrupção anterior identificou UPDATE privilegiado REVOKED para ACTIVE, aceito pelas constraints. A Coordenação autorizou explicitamente revogação terminal. Implementado primeiro trigger privado SECURITY INVOKER/search_path vazio, EXECUTE revogado de roles cliente/service_role; trigger exige preservar status REVOKED e revoked_at. Não adiciona auditoria nem bloqueia a primeira revogação.
+
+D1 substitui a interpretação anterior: guarda do RPC de trial é incondicional quanto à existência de trial, verificando licença revogada da mesma conta/produto antes de qualquer escrita. Retorna erro determinístico. Trial histórico fica intacto, sem extensão/reativação; getter continua independente para direitos comerciais válidos.
+
+D2 reutiliza source NOT NULL/FK/lista de quatro sources. Precheck aborta com SQLSTATE 23514 e contagem explícita; CHECK valida equivalência LICENSE/vínculo. Não corrige nem adivinha dados legados. Reconciliação legítima anterior mantida.
+
+TESTES:
+- node --check tests/ev2-migration.test.mjs: exit 0.
+- node tests/ev2-migration.test.mjs, com CASILLAS_SUPABASE_CLI apontando ao binário local instalado: exit 0.
+- Driver: 13/13 PASS. Antes da aplicação válida, injeta ambas as inconsistências em fixtures conhecidas; migration up --local falha como esperado, exit 1, informa duas linhas, preserva JSON dos dados e não deixa DDL nem histórico aplicado. Restaura somente suas fixtures sintéticas conhecidas e comprova aplicação válida/reconciliação das 11 migrations.
+- Mesmo stack: supabase test db --local --workdir TEMP --agent no executou somente novo teste EV2 e setup necessário aos helpers: 54 + 12 = 66/66 PASS, exit 0. Seis asserções líquidas adicionais; duas anteriores de trial foram ajustadas ao contrato D1.
+- Casos cobrem serviço privilegiado tentando ACTIVE/AVAILABLE/timestamp, origem/vínculo nas duas direções, fallback antigo negado com snapshot integral do trial preservado e trial normal sem revogação. Primeira revogação, idempotência, independentes e atomicidade reutilizados na regressão EV2.
+- Projeto LOCAL Casillas_ev2_forward_1791254564960; TEMP C:\Users\Usuario\AppData\Local\Temp\casillas-ev2-forward-FEUg7L.
+- Cleanup PASS: stop --no-backup, containers preexistentes preservados, nenhum container/volume descartável restante.
+- Supabase CLI 2.118.0, Node 24.19.0, PostgreSQL local major 17, conforme ambiente já verificado.
+- Frontend não alterado; seu erro de RPC já bloqueia acesso. Frontend/profiles, Production Gate, Pages, CI release, pinning, actionlint e smoke de produção deliberadamente não repetidos.
+- Evidências anteriores 48/48 e 8/8 permanecem históricas; para os arquivos ajustados, resultados vigentes são 54/54 e 13/13.
+
+Sem commit/push/PR/merge/deploy/dispatch, Supabase remoto, licença real, EV2-06 ou EV2-02. PASS local, aguardando revisão final.

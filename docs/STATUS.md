@@ -191,3 +191,24 @@ Antes de qualquer tarefa: consultar este arquivo, `PLANO-MESTRE.md`, `PROGRESSO.
 - EV2-08 continua ABERTO; gate não homologado. can_admins_bypass=true permanece pendente, sem mudança no environment.
 - B-03 (proteção de alterações de workflow), B-04 (TOCTOU residual) e B-05 (actions por tag) permanecem para decisão da Coordenação. Não houve correção desses achados.
 - Etapa autorizada: documentação, push da hardening e criação/validação de um PR. Merge, reabilitação, dispatch, deploy, EV2 e Supabase remoto não estão autorizados.
+
+## 06/10/2026 - EV2-03/04: implementação local para revisão
+
+- Base local sincronizada por fast-forward puro com a release 8c56306054db0cf13b53481890022edfa01aeda4; sem push da hardening.
+- EV2-08 encerrado pela Coordenação após homologação do Pages #21/run 37399684550. Registro histórico anterior preservado; Production Gate não foi alterado nesta missão.
+- EV2-03: candidato local aplica intervalo inclusivo no início/exclusivo no fim no banco, incluindo NULL end; getter e ativação respeitam início e backing de licença.
+- EV2-04: candidato local revoga dependentes LICENSE/mesmo license_id atomicamente, audita, preserva origens independentes e impede criação automática de trial após revogação.
+- Índice único preservado: reserva futura/expirada impede nova ativação com erro explícito, antes de consumir o código; não é tratada como acesso vigente.
+- Novo teste de banco 48/48 PASS; setup 12/12 e profiles 16/16 PASS; frontend existente 12/12 PASS. Reset descartável aplicou 11 migrations, exit 0; cleanup exit 0.
+- Somente diff LOCAL, ainda não commitado. Revisão da Coordenação pendente. Nenhuma alteração em Supabase remoto, produção, frontend, Service Worker, Gate, EV2-06 ou EV2-02.
+
+- Regressão de aplicação sobre dados anteriores: tests/ev2-migration.test.mjs, 8/8 PASS, exit 0; reconciliação auditada preserva grant independente e não cria trial. Cleanup PASS.
+
+## 06/10/2026 - EV2-03/04: ajustes finais D1-D3, PASS local
+
+- REVOKED terminal e revoked_at imutável, inclusive para UPDATE comum por service_role.
+- Trial antigo preservado historicamente, mas não restaura acesso após revogação da mesma conta/produto. Direitos independentes e nova licença continuam pelo getter comercial.
+- Invariant source/license_id adicionada com precheck explícito; dados legados inconsistentes abortam a migration.
+- Forward migration 13/13 PASS; pgTAP EV2 54/54 + setup necessário 12/12 = 66 PASS; exit 0; cleanup PASS.
+- Profiles/frontend/Gate/Pages não repetidos. Migração histórica e frontend inalterados.
+- Diff exclusivamente local, sem commit/push ou Supabase remoto. Revisão final da Coordenação pendente.

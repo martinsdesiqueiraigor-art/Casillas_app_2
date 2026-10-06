@@ -68,3 +68,34 @@ As definições vêm de Basejump 0.0.6, arquivo `supabase_test_helpers--0.0.6.sq
 Dependências utilizadas: pgTAP 1.3.3, uuid-ossp 1.1, schema auth e role authenticated do Supabase local. Sem download HTTP, pg_tle ou dbdev durante os testes. EXECUTE dos helpers é revogado de PUBLIC e concedido a authenticated; não há alteração de grants comerciais. Os getters e criação de fixture preservam SECURITY DEFINER da fonte; authenticate_as preserva SECURITY INVOKER e configura role/claims locais à transação. Fixtures, role e claims são revertidos pelo rollback dos testes.
 
 O setup agora verifica schema, extensões, assinaturas e funcionamento de identidade/auth em 12 asserções. Profiles permanece byte a byte inalterado, com plano 16; total da suíte: 28. Duas reconstruções independentes aplicaram as dez migrations e recriaram o harness automaticamente, com PASS. BL-02 foi fechado no escopo local pela Coordenação; BL-01 está resolvido tecnicamente para revisão. Baseline LOCAL reproduzível recomendada como APROVÁVEL, referente ao HEAD mais estes diffs locais ainda não commitados. Evidências detalhadas em PROGRESSO.md; nenhuma escrita remota.
+
+## 06/10/2026 - EV2-03/04: candidato local de validade e revogação
+
+Fonte: release 8c56306054db0cf13b53481890022edfa01aeda4 mais o diff local desta missão; não aplicado remotamente.
+
+A migration nova `20261006020648_enforce_commercial_validity_and_license_revocation.sql` preserva migrations históricas, assinaturas dos wrappers, RLS, grants existentes e o índice único de uma linha ACTIVE por usuário/produto.
+
+- `private.get_casillas_entitlement()`: acesso somente em `[valid_from, valid_until)`; fim NULL é ilimitado, sem dispensar o início. Para origem LICENSE, exige também licença ACTIVE, não revogada, da mesma conta/produto.
+- Dependência explícita: `source = 'LICENSE'` e `license_id` apontando à licença. GRANT, PROMOTION e ADMIN são origens independentes. Não foi adicionado relacionamento ou coluna.
+- O trigger de revogação em licenses atualiza apenas dependentes LICENSE/mesmo license_id, incluindo futuros/expirados, para REVOKED com o timestamp da licença. Registra LICENSE_REVOKED com IDs dos dependentes e identidade auth.uid() do ator quando disponível. Falha na atualização/auditoria aborta a operação inteira; não cria trial.
+- O trigger de escrita em entitlements impede dependente ACTIVE sem licença ACTIVE da mesma conta/produto. FOR SHARE na licença serializa essa escrita com sua revogação. Funções dos triggers são privadas, SECURITY DEFINER, search_path vazio, sem EXECUTE para PUBLIC, anon, authenticated ou service_role.
+- A migration reconcilia e audita dependentes ACTIVE de licenças já REVOKED. Uma futura aplicação remota exige revisão própria de dados e plano; não foi executada aqui.
+- `private.activate_casillas_license(text)`: verifica vigência real. Uma linha ACTIVE fora da vigência ou sem backing válido ainda reserva o índice; rejeita antes de tocar no código, com erro específico, sem revogar/substituir grants independentes. A ativação não é aceita nesse caso. Permitir coexistência/substituição exigiria decisão separada sobre o índice e as regras comerciais.
+- `private.start_casillas_trial()`: não cria trial novo para conta/produto com licença revogada. Trials preexistentes seguem sua própria validade, sem reinício/extensão. Trial futuro não é devolvido como acesso vigente.
+- Frontend inalterado: recebe as mesmas assinaturas; ausência de entitlement e erro de trial continuam bloqueando acesso. Revalidação durante sessão/offline pertence a EV2-02, fora do escopo.
+
+Testes locais: novo pgTAP 48/48; setup 12/12; profiles 16/16; frontend trial-access 12/12. Fixtures sintéticas com rollback, exclusivamente no stack descartável. Detalhes e incidentes de validação em PROGRESSO.md.
+
+Teste de aplicação sobre estado anterior: node tests/ev2-migration.test.mjs cria outro banco LOCAL descartável com as dez migrations históricas e fixtures sintéticas; aplica a nova migration pela CLI e verifica reconciliação, auditoria, grant independente, ausência de acesso dependente e ausência de trial. 8/8 PASS; cleanup PASS. Nenhuma preparação manual de produto ou escrita remota.
+
+## 06/10/2026 - Ajuste final local EV2-03/04: decisões D1-D3
+
+Este registro substitui a interpretação anterior de trial preexistente como fallback independente após revogação. Ainda somente candidato local, sem aplicação remota.
+
+- D3: trigger BEFORE UPDATE OF status, revoked_at torna REVOKED terminal: rejeita saída para qualquer estado e qualquer alteração de revoked_at após a primeira revogação. Atua também em UPDATE comum por service_role. Primeira revogação e UPDATE sem alteração real continuam permitidos; não duplicam auditoria.
+- D1: private.start_casillas_trial() rejeita com "Licenca revogada impede acesso por trial" se existir licença REVOKED para a mesma conta/produto, mesmo havendo trial antigo válido. A guarda precede qualquer escrita no trial; preserva todo seu registro histórico. Sem revogação, trial segue funcionando normalmente. Direitos comerciais válidos continuam pelo getter: nova licença ou GRANT/PROMOTION/ADMIN autorizado, sem ressuscitar a licença anterior.
+- D2: source permanece NOT NULL, com as quatro origens reais do schema. CHECK entitlements_source_license_consistency impõe (source = 'LICENSE') = (license_id IS NOT NULL), preservando a FK existente. Precheck conta combinações inconsistentes e aborta com SQLSTATE 23514/erro explícito antes de alterar dados. Não infere source ou vínculo.
+- A reconciliação anterior de dependentes LICENSE ACTIVE ligados a licença REVOKED continua atômica e auditada. Não modifica direitos independentes.
+- Frontend e assinaturas públicas permanecem iguais: o cliente já bloqueia em erro do RPC de trial.
+
+Validação direcionada: pgTAP EV2 54/54; setup obrigatório do harness 12/12, total 66 PASS. Forward-migration 13/13 (inclui duas inconsistências legadas, rollback de dados/DDL/histórico e aplicação válida das 11 migrations). Cleanup PASS. Profiles/frontend/Gate/Pages não repetidos.
