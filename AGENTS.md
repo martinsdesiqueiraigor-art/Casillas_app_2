@@ -15,6 +15,8 @@ Consultor continua local/determinístico; LLM fora do 2.2. Conteúdo CNC novo ex
 Produção, deploy, Supabase write e mudanças comerciais só mediante missão explícita futura para SHA/escopo determinados.
 Não usar a linha 2.2 como autorização implícita de integração. Nesta missão só documentação está autorizada.
 
+Governança multiagente e gates: [Operações 2.2](docs/2.2/operations/README.md).
+
 ## 1. Identidade do projeto
 
 Este projeto é o **Casillas — Calculadora Técnica de Usinagem**, com baseline de produção 2.1.0 e linha de desenvolvimento 2.2.
