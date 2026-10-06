@@ -119,3 +119,15 @@ Nova migration: 20261006043029_rate_limit_commercial_activation.sql. Candidato d
 - Riscos residuais: múltiplas contas, abuso distribuído e infraestrutura/HTTP antes da RPC exigem controles próprios; não são substituídos por Auth rate limits. Erro técnico real pode desfazer admissão. V1 não altera esses limites de confiança nem implementa EV2-02.
 
 Validação local: frontend 16/16; pgTAP 40 limiter + 54 EV2 + 12 setup = 106/106; 52 checks de integração HTTP/concorrência/cleanup, incluindo cinco admissões em doze chamadas paralelas, rotas legadas, anti-enumeração, transporte de rollback e falha técnica. Stack descartável com 12 migrations, PostgreSQL 17.6, Supabase CLI 2.118.0 e PostgREST 16.3. Profiles/Production Gate/Pages não foram repetidos manualmente.
+
+## 06/10/2026 — EV2-02: contrato V2 de acesso e lease offline
+
+Migration nova: 20261006055325_add_casillas_access_v2_offline_lease.sql, somente candidata local/versionada; não aplicada remotamente nesta missão.
+
+public.get_casillas_access_v2() retorna JSONB: contract_version=2, user_id derivado de auth.uid(), product=casillas canônico ativo, validated_at=statement_timestamp(), has_access, state (VALID/NO_ACCESS/EXPIRED/REVOKED), source e valid_until. LICENSE/GRANT/PROMOTION/ADMIN reutilizam private.get_casillas_entitlement(); trial reutiliza private.start_casillas_trial(), com ends_at como limite. A fachada online pode iniciar o primeiro trial conforme a política já existente; não é uma RPC puramente de leitura. Frontend offline nunca a chama.
+
+Assinaturas/corpos históricos preservados. D1 é conferida antes do caminho trial; direito independente válido é considerado antes da negativa por revogação histórica. Não amplia D2/D3/EV2-06. Fachada pública SECURITY INVOKER, privada SECURITY DEFINER, search_path vazio, objetos qualificados. EXECUTE somente authenticated (inclusive delegação privada necessária ao invoker); sem PUBLIC/anon/service_role. Relógio do navegador não define validated_at.
+
+Lease local versão 1: formatVersion, user_id, product, source, validated_at, valid_until, leaseExpiresAt, localValidatedAt, maxObservedLocalTime. Expiração derivada do servidor e revalidada estruturalmente a cada uso. Marcador de tempo global separado preserva high-water entre reinícios/logout; não contém segredo. Dados são modificáveis pelo cliente, não prova criptográfica.
+
+Estado anterior, conforme handoff aprovado da Coordenação: EV2-07 fechado, EV2-03/04/06 aplicados remotamente, doze migrations canônicas até 20261006043029; release homologada 55f1fed8265bcfee6d60e7ca6a7e91dbc6972f7c. Evidências brutas EV2-07 preservadas fora do repo em C:\Backups\Casillas\2026-10-06-ev207-repair-ev20304\; não publicar JSON brutos.

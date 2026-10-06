@@ -222,3 +222,13 @@ Entradas anteriores de candidato local são histórico, não o estado remoto atu
 - Local: frontend 16/16; pgTAP limiter 40 + EV2 54 + setup 12 = 106 PASS; integração HTTP/concorrência/cleanup 52 checks PASS; 12 migrations em stack descartável.
 - Contrato/compatibilidade/limites de confiança em BANCO-DADOS.md. EV2-06 ainda NÃO aplicado remotamente e NÃO publicado; CI/PR e revisão da Coordenação são gates seguintes.
 - Production Gate/Pages/Service Worker preservados. Nenhuma operação Supabase remota ou deploy nesta missão. EV2-02 não iniciado; R-01/R-02 anteriores não corrigidos.
+
+## 06/10/2026 — Estado posterior: EV2-02 candidato para CI/PR
+
+Entradas anteriores são histórico. EV2-06 integrado/aplicado remotamente pela missão anterior; release homologada 55f1fed8265bcfee6d60e7ca6a7e91dbc6972f7c, doze migrations remotas canônicas. Hardening sincronizada por fast-forward puro nessa base.
+
+EV2-02 implementado localmente: fachada V2 com validated_at server-side; lease operacional de até sete dias limitado por valid_until/ends_at; negativa online invalida; offline exige identidade/lease válidos; logout/troca de conta e rollback simples tratados; revalidação online/focus/visibility/timer visível. D1-D3 preservados.
+
+Banco local: 23 assertions V2 + setup necessário 12 = 35 PASS; reconstrução das treze migrations e cleanup PASS, containers anteriores preservados. Frontend/delta determinístico com integração do shell registrado no handoff final/CI; suites históricas não repetidas manualmente.
+
+Supabase remoto não acessado/alterado nesta missão; nova migration 20261006055325 PENDING remoto. CI/PR são gates seguintes; merge/deploy não autorizados. Production Gate/Service Worker inalterados; EV1 não iniciado.

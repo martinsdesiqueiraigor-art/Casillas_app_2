@@ -162,3 +162,11 @@ Implementação local usa lock por conta/produto, timestamps limitados a 20 e re
 EV2-03/04 e D1-D3 não são redefinidos. Frontend confirma entitlement após sucesso e não cria autoridade offline. Aplicação remota e publicação futura exigem gate separado, com migration antes do cliente V2.
 
 Registro sanitizado EV2-07: conforme handoff operacional aprovado pela Coordenação, cinco versões canônicas foram reconciliadas, alias 20260928160738 removido do tracking e 20261006020648 aplicada remotamente pelo fluxo oficial. EV2-07 fechado; EV2-03/04 integrados/aplicados. Evidência bruta preservada fora do Git em C:\Backups\Casillas\2026-10-06-ev207-repair-ev20304\. history-original.json SHA-256 5DC081B811FD332B1D39D2C28796B3263BC4A990AC8331156F30201CEAE0B5AC, cópia verificada na missão anterior. Nenhum JSON bruto publicado; nenhuma consulta/escrita Supabase remota realizada nesta missão EV2-06.
+
+## 06/10/2026 — EV2-02: fachada compatível e lease operacional
+
+Coordenação autorizou nova migration local para suprir validated_at autoritativo, sem editar migrations históricas ou substituir assinaturas legadas. Fachada get_casillas_access_v2() reutiliza getter/trial existentes e fornece tempo PostgreSQL da mesma validação. Frontend usa essa única fachada, sem fallback para RPC antiga quando V2 falta.
+
+Lease de sete dias é teto, nunca extensão de trial/valid_until. Negativa online remove o lease; transporte indisponível não é revogação. D1-D3 preservados, incluindo trial histórico não restaurar acesso após licença revogada. Identidade cacheada offline consistente + lease correspondente são necessários; JWT expirado isoladamente não cancela continuidade ainda válida.
+
+Controle de relógio é high-water operacional com duração local relativa à âncora server-side, não DRM. Armazenamento cliente é adulterável e revogação realmente offline tem atraso aceito de até sete dias. Service Worker fora do delta. Migration remota precisa preceder futuro deploy; nenhuma autorização de aplicação remota, merge ou deploy neste checkpoint.
