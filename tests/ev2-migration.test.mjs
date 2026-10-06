@@ -42,7 +42,7 @@ config = config.replace(/^project_id\s*=.*$/m, 'project_id = "' + project + '"')
   .replace(/\b5432([0-9])\b/g, (_, digit) => '5562' + digit);
 writeFileSync(join(dir, 'supabase', 'config.toml'), config);
 for (const file of readdirSync(join(root, 'supabase', 'migrations'))) {
-  if (file.endsWith('.sql') && file !== migration)
+  if (file.endsWith('.sql') && file < migration)
     copyFileSync(join(root, 'supabase', 'migrations', file), join(dir, 'supabase', 'migrations', file));
 }
 const before = run('docker', ['ps', '--format', '{{.ID}} {{.Names}}']).split('\n').sort();
@@ -108,6 +108,13 @@ try {
   check(access(independent), 1, 'Independent entitlement still grants access');
   check(sql('select count(*) from public.trials;'), '0', 'Forward migration does not create a trial');
   console.log(JSON.stringify({ result: 'PASS', assertions, project, dir, local_only: true }));
+  // Legacy reconciliation assertions above target only the EV2-03/04 migration.
+  // Current RPC regression below must use the current chain (EV2-06 changes failures).
+  for (const file of readdirSync(join(root, 'supabase', 'migrations'))) {
+    if (file.endsWith('.sql') && file > migration)
+      copyFileSync(join(root, 'supabase', 'migrations', file), join(dir, 'supabase', 'migrations', file));
+  }
+  run(cli, ['migration', 'up', '--local', '--workdir', dir, '--agent', 'no']);
   // Directly affected SQL regression only; the setup file provides its test helpers.
   mkdirSync(join(dir, 'supabase', 'tests'), { recursive: true });
   for (const file of ['000-setup-tests-hooks.sql', 'commercial_access_ev2.test.sql'])

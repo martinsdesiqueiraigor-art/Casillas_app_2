@@ -752,3 +752,20 @@ TESTES:
 - Evidências anteriores 48/48 e 8/8 permanecem históricas; para os arquivos ajustados, resultados vigentes são 54/54 e 13/13.
 
 Sem commit/push/PR/merge/deploy/dispatch, Supabase remoto, licença real, EV2-06 ou EV2-02. PASS local, aguardando revisão final.
+
+## 06/10/2026 - EV2-06: rate limit comercial V1, validação local
+
+- Preflight: origin oficial, hardening limpa em 2f8ff125, release 01369eb; fetch e sincronização local FAST-FORWARD ONLY para 01369eb, sem merge extra.
+- Evidências EV2-07 reutilizadas: history-original.json e operation-evidence.json preservados em C:\Backups\Casillas\2026-10-06-ev207-repair-ev20304\, hashes da cópia iguais aos originais. Snapshot original SHA-256 5DC081B811FD332B1D39D2C28796B3263BC4A990AC8331156F30201CEAE0B5AC. EV2-07 fechado e EV2-03/04 aplicados conforme handoff da Coordenação; nenhum acesso ao Supabase remoto nesta missão.
+- Supabase CLI 2.118.0 criou 20261006043029_rate_limit_commercial_activation.sql. Changelog e documentação PostgREST/Context7 consultados, incluindo rollback da transação e Prefer tx=rollback/max-affected.
+- RED: testes frontend mostraram 7 falhas esperadas por RPC antiga/recusa sem result; teste SQL de existência da V2 falhou na baseline aprovada (1/1), confirmando ausência da feature.
+- GREEN: node --test tests/trial-access.test.mjs: 16/16 PASS, exit 0. Quatro recusas estruturadas, inclusive resposta contraditória com license_id, continuam bloqueando sem consulta adicional de entitlement.
+- node tests/activation-rate-limit.test.mjs: reconstruiu 12 migrations exclusivamente em stack temporário. pgTAP 106/106 (setup 12, limiter 40, EV2 54), subcomando exit 0. Profiles não executado manualmente.
+- Diagnóstico local: assert de search_path inicialmente esperava search_path=, mas PostgreSQL registra search_path=""; conferido no catálogo e corrigida só a representação esperada. Tentativa inicial de alterar senha do authenticator no fixture foi recusada por role reservada; removida. Teste HTTP usa conexão LOCAL postgres e PostgREST muda para authenticated do JWT; nenhuma ACL comercial foi relaxada.
+- Rodada complementar node tests/activation-rate-limit.test.mjs --http-only: exit 0, 52 checks PASS, sem duplicar pgTAP já verde. PostgreSQL 17.6; PostgREST 16.3, image local sha256:ec0e25a4e24b0a3bc5e4f011369bfc736bd1b19f513bd01079b86329a7636962.
+- HTTP prova persistência de falha comercial/input, superfície pública/privada nova/legada, anti-enumeração, produto canônico, quinta/sexta, 12 concorrentes = 5 admitidas + 7 bloqueadas, contrato legado de sucesso, headers de rollback, helper inacessível e rollback técnico/integridade não mascarado. Cleanup confirmou containers existentes intactos e ausência de containers/volumes descartáveis.
+- Testes EV2 mantêm plano 54 e todas as verificações de consumo/acesso/integridade; três expectations de exception da ativação agora verificam zero linhas, conforme contrato aprovado. Harness de forward migration separa migrations anteriores à alvo e aplica a cauda antes da regressão da API atual; suas 13 assertions legadas não foram repetidas nesta missão.
+- Validação de sintaxe dos executáveis alterados sem executá-los. Aviso Node MODULE_TYPELESS_PACKAGE_JSON preexistente, sem alteração de package.json.
+- Não repetidos manualmente: Production Gate, Pages, pinning, smoke produção, profiles e suítes históricas sem delta. CI automática da hardening/PR será observada, sem dispatch adicional.
+- Nenhum Supabase remoto, licença/usuário real, deployment, Service Worker, workflow ou EV2-02 alterado. Latest deployment GitHub observado permanece 6873475170 / SHA 8c56306054db0cf13b53481890022edfa01aeda4.
+- Revisão final do teste HTTP corrigiu o payload do probe de helper para usar apenas sua assinatura real e tornou o cleanup seguro para criação parcial do REST container. Rodada --acl-only: 6 checks PASS, exit 0; sem repetir pgTAP/frontend/concorrência. git diff --cached --check detectou uma linha vazia EOF no runner novo; removida antes do commit, sem mudança funcional.

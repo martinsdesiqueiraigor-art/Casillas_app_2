@@ -212,3 +212,13 @@ Antes de qualquer tarefa: consultar este arquivo, `PLANO-MESTRE.md`, `PROGRESSO.
 - Forward migration 13/13 PASS; pgTAP EV2 54/54 + setup necessário 12/12 = 66 PASS; exit 0; cleanup PASS.
 - Profiles/frontend/Gate/Pages não repetidos. Migração histórica e frontend inalterados.
 - Diff exclusivamente local, sem commit/push ou Supabase remoto. Revisão final da Coordenação pendente.
+
+## 06/10/2026 - Estado posterior: EV2-07 fechado e EV2-06 V1 local
+
+Entradas anteriores de candidato local são histórico, não o estado remoto atual informado pela Coordenação.
+
+- EV2-07 fechado; history remoto com 11 versões canônicas. EV2-03/04 aplicados remotamente na missão anterior; release base 01369eb9498cd97da2e446e2bc88dd9cc17c3f63.
+- EV2-06 implementado na hardening sobre fast-forward da release: migration 20261006043029, limiter autoritativo comum a RPC V2 e legadas, 5/5min e 20/24h.
+- Local: frontend 16/16; pgTAP limiter 40 + EV2 54 + setup 12 = 106 PASS; integração HTTP/concorrência/cleanup 52 checks PASS; 12 migrations em stack descartável.
+- Contrato/compatibilidade/limites de confiança em BANCO-DADOS.md. EV2-06 ainda NÃO aplicado remotamente e NÃO publicado; CI/PR e revisão da Coordenação são gates seguintes.
+- Production Gate/Pages/Service Worker preservados. Nenhuma operação Supabase remota ou deploy nesta missão. EV2-02 não iniciado; R-01/R-02 anteriores não corrigidos.

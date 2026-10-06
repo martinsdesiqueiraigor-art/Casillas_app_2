@@ -150,3 +150,15 @@ Revogação bloqueia trial como fallback, inclusive trial preexistente válido. 
 A origem LICENSE equivale à presença de license_id; outras origens devem ter vínculo NULL. Migration aborta diante de combinações legadas inconsistentes, sem escolher intenção. FK e lista de origens existentes preservadas.
 
 Alterada somente a migration EV2 ainda local/não commitada, seus testes e documentação. Nenhuma aplicação Supabase remota, commit, push ou release.
+
+## 06/10/2026 - EV2-06 V1: decisão aprovada da Coordenação
+
+Autorizar limiter no banco por conta autenticada/produto canônico, 5/5min e 20/24h móveis, input bruto 128 bytes UTF-8 e normalizado 1-64 ASCII alfanuméricos. Falha normal admitida deve persistir, sem exception/rollback da própria RPC. Chamadas bloqueadas não são novas admissões.
+
+Contrato aprovado: RPC estruturada V2 para cliente atualizado; wrappers legados com sucesso original e zero linhas nas falhas normais. Diferença de mensagem nos clientes antigos aceita; nenhuma rota legada pode pular enforcement. Recusas comerciais compartilham ACTIVATION_DENIED; INVALID_REQUEST e RATE_LIMITED são diferenciáveis sem oracle da chave.
+
+Implementação local usa lock por conta/produto, timestamps limitados a 20 e relógio após lock; helpers não expostos. Transporte com rollback/singular/max-affected é recusado antes de consultar chave. Erros inesperados seguem técnicos; somente conflito conhecido do índice de reserva é tratado em subtransação.
+
+EV2-03/04 e D1-D3 não são redefinidos. Frontend confirma entitlement após sucesso e não cria autoridade offline. Aplicação remota e publicação futura exigem gate separado, com migration antes do cliente V2.
+
+Registro sanitizado EV2-07: conforme handoff operacional aprovado pela Coordenação, cinco versões canônicas foram reconciliadas, alias 20260928160738 removido do tracking e 20261006020648 aplicada remotamente pelo fluxo oficial. EV2-07 fechado; EV2-03/04 integrados/aplicados. Evidência bruta preservada fora do Git em C:\Backups\Casillas\2026-10-06-ev207-repair-ev20304\. history-original.json SHA-256 5DC081B811FD332B1D39D2C28796B3263BC4A990AC8331156F30201CEAE0B5AC, cópia verificada na missão anterior. Nenhum JSON bruto publicado; nenhuma consulta/escrita Supabase remota realizada nesta missão EV2-06.

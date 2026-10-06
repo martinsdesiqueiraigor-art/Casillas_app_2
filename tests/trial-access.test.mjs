@@ -283,7 +283,7 @@ test('ativação válida só conclui após entitlement revalidado', async () => 
       return { data: null, error: new Error('trial unavailable') };
     }
     return {
-      data: [{ license_id: 'license-1' }],
+      data: { result: 'SUCCESS', license_id: 'license-1' },
       error: null
     };
   };
@@ -296,7 +296,7 @@ test('ativação válida só conclui após entitlement revalidado', async () => 
   assert.deepEqual(calls, [
     'get_casillas_entitlement',
     'start_casillas_trial',
-    'activate_casillas_license',
+    'activate_casillas_license_v2',
     'get_casillas_entitlement'
   ]);
   assert.equal(dom.elements.get('activation-screen').classList.hidden, true);
@@ -319,7 +319,7 @@ test('ativação aceita pelo RPC mas sem entitlement confirmado continua bloquea
     if (name === 'start_casillas_trial') {
       return { data: null, error: new Error('trial unavailable') };
     }
-    return { data: [{ license_id: 'license-1' }], error: null };
+    return { data: { result: 'SUCCESS', license_id: 'license-1' }, error: null };
   };
   console.error = () => {};
 
@@ -330,7 +330,7 @@ test('ativação aceita pelo RPC mas sem entitlement confirmado continua bloquea
   assert.deepEqual(calls, [
     'get_casillas_entitlement',
     'start_casillas_trial',
-    'activate_casillas_license',
+    'activate_casillas_license_v2',
     'get_casillas_entitlement'
   ]);
   assert.equal(entitlementReads, 2);
@@ -361,7 +361,28 @@ test('erro na RPC de ativação não consulta entitlement novamente', async () =
   assert.deepEqual(calls, [
     'get_casillas_entitlement',
     'start_casillas_trial',
-    'activate_casillas_license'
+    'activate_casillas_license_v2'
   ]);
   assert.equal(dom.elements.get('activation-screen').classList.hidden, false);
 });
+
+for (const result of ['ACTIVATION_DENIED', 'INVALID_REQUEST', 'RATE_LIMITED', 'UNKNOWN']) {
+  test('resultado estruturado ' + result + ' não concede acesso nem revalida entitlement', async () => {
+    const dom = installActivationDom();
+    const calls = [];
+    supabase.auth.getUser = async () => ({ data: { user: { id: 'test-user' } }, error: null });
+    supabase.rpc = async name => {
+      calls.push(name);
+      if (name === 'get_casillas_entitlement') return { data: [], error: null };
+      if (name === 'start_casillas_trial') return { data: null, error: new Error('trial unavailable') };
+      // Even contradictory/malformed data must not turn a failure into success.
+      return { data: { result, license_id: 'must-not-authorize', retry_after_seconds: 30 }, error: null };
+    };
+    console.error = () => {};
+    await checkTrialStatus();
+    dom.elements.get('activation-code').value = 'CASILLAS-TEST-0001';
+    await dom.click('btn-submit-activation')();
+    assert.deepEqual(calls, ['get_casillas_entitlement', 'start_casillas_trial', 'activate_casillas_license_v2']);
+    assert.equal(dom.elements.get('activation-screen').classList.hidden, false);
+  });
+}
