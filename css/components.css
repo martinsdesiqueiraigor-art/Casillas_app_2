@@ -476,6 +476,12 @@
   line-height: 1.5;
 }
 
+.activation-hint {
+  margin: 6px 0 0;
+  color: var(--text-secondary);
+  font-size: var(--fs-sm);
+}
+
 .activation-card .input {
   text-align: center;
   font-size: var(--fs-lg);

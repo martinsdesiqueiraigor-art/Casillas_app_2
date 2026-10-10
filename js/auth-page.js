@@ -19,6 +19,41 @@ const loginTab = document.getElementById('tab-login');
 const signupTab = document.getElementById('tab-signup');
 const tabs = document.querySelector('.auth-tabs');
 const message = document.getElementById('auth-message');
+const heading = document.getElementById('auth-heading');
+const subtitle = document.getElementById('auth-subtitle');
+const signupNote = document.getElementById('auth-signup-note');
+const offlineAlert = document.getElementById('auth-offline');
+
+const HEADINGS = {
+  login: ['Entrar', 'Acesse seu Casillas com e-mail e senha.'],
+  signup: ['Criar conta', 'Crie sua conta para começar o teste.'],
+  recovery: ['Nova senha', 'Digite e confirme sua nova senha.']
+};
+
+function setHeading(key) {
+  heading.textContent = HEADINGS[key][0];
+  subtitle.textContent = HEADINGS[key][1];
+  signupNote.hidden = key !== 'signup';
+}
+
+function syncOffline() {
+  offlineAlert.hidden = navigator.onLine !== false;
+}
+
+document.querySelectorAll('[data-eye]').forEach((button) => {
+  button.addEventListener('click', () => {
+    const input = document.getElementById(button.dataset.eye);
+    if (!input) return;
+    const show = input.type === 'password';
+    input.type = show ? 'text' : 'password';
+    button.setAttribute('aria-pressed', String(show));
+    button.setAttribute('aria-label', show ? 'Ocultar senha' : 'Mostrar senha');
+  });
+});
+
+window.addEventListener('online', syncOffline);
+window.addEventListener('offline', syncOffline);
+syncOffline();
 
 let mode = 'login';
 
@@ -28,6 +63,8 @@ function showMessage(text) {
 
 function setMode(nextMode) {
   mode = nextMode;
+
+  setHeading(mode);
 
   if (mode === 'recovery') {
     tabs.hidden = true;
@@ -39,7 +76,7 @@ function setMode(nextMode) {
     passwordInput.autocomplete = 'new-password';
     passwordInput.placeholder = 'Digite a nova senha';
     submitButton.textContent = 'Redefinir senha';
-    showMessage('Digite e confirme sua nova senha.');
+    showMessage('');
     passwordInput.focus();
     return;
   }
