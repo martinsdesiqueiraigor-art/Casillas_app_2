@@ -30,7 +30,7 @@ const MODULE_GROUPS = [
     title: 'Guias e suporte',
     modules: [
       { key: 'guia', name: 'Guia de Programação', description: 'Consulta de comandos e ciclos.' },
-      { key: 'consult', name: 'Consultoria', description: 'Suporte técnico para sua usinagem.' }
+      { key: 'consult', name: 'Biblioteca', description: 'Contato, serviços, cursos e licença.' }
     ]
   }
 ];

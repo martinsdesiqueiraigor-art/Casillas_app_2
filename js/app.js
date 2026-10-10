@@ -53,7 +53,7 @@ const MODULE_TITLES = {
   prog:     { name: 'Programação CNC',    icon: '🖥️' },
   guia:     { name: 'Guia de Programação', icon: '📖' },
   'consultor-tecnico': { name: 'Consultor Técnico', icon: '🔎' },
-  consult:  { name: 'Consultoria',        icon: '💬' }
+  consult:  { name: 'Biblioteca',         icon: '📚' }
 };
 
 let accessStatus = null;

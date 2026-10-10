@@ -1092,3 +1092,180 @@
   text-align: center;
   color: var(--text-secondary);
 }
+
+/* ---------- Biblioteca ---------- */
+.lib-view {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--sp-3);
+}
+
+.lib-title {
+  margin: 0;
+  font-size: var(--fs-xl);
+}
+
+.lib-heading {
+  margin: var(--sp-2) 0 0;
+  font-size: var(--fs-lg);
+}
+
+.lib-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.lib-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-2);
+  width: 100%;
+}
+
+.lib-svg {
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.lib-list {
+  display: grid;
+  gap: var(--sp-2);
+}
+
+.lib-item {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+}
+
+.lib-item summary {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 64px;
+  padding: var(--sp-2) 14px;
+  font-weight: 600;
+  list-style: none;
+  cursor: pointer;
+}
+
+.lib-item summary::-webkit-details-marker {
+  display: none;
+}
+
+.lib-item summary:focus-visible {
+  outline: 3px solid var(--accent-secondary);
+  outline-offset: 2px;
+}
+
+.lib-item-icon {
+  width: 44px;
+  height: 44px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  color: var(--accent-secondary);
+  background: var(--accent-secondary-soft);
+  border: 1px solid var(--accent-secondary-line);
+  border-radius: var(--radius-md);
+}
+
+.lib-item-copy {
+  display: grid;
+  min-width: 0;
+}
+
+.lib-item-copy small {
+  color: var(--text-secondary);
+  font-weight: 400;
+  font-size: var(--fs-sm);
+}
+
+.lib-item-chev {
+  margin-left: auto;
+  color: var(--text-secondary);
+  transition: transform 150ms ease;
+}
+
+.lib-item[open] .lib-item-chev {
+  transform: rotate(90deg);
+}
+
+.lib-item-body {
+  display: grid;
+  gap: var(--sp-3);
+  padding: 0 14px 14px;
+  color: var(--text-secondary);
+  font-size: var(--fs-md);
+}
+
+.lib-item-body p {
+  margin: 0;
+}
+
+.lib-license {
+  display: grid;
+  gap: var(--sp-3);
+  padding: var(--sp-4);
+  background: var(--bg-card);
+  border: 1px solid var(--accent-primary-line);
+  border-radius: var(--radius-lg);
+}
+
+.lib-license-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.lib-license-head h3 {
+  margin: 0;
+  font-size: var(--fs-lg);
+}
+
+.lib-license-icon {
+  color: var(--accent-primary);
+  background: var(--accent-primary-soft);
+  border-color: var(--accent-primary-line);
+}
+
+.lib-tag {
+  margin-left: auto;
+  padding: 3px 10px;
+  color: var(--success);
+  background: var(--success-soft);
+  border: 1px solid var(--success-line);
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.lib-price {
+  margin: 0;
+}
+
+.lib-price s {
+  color: var(--text-secondary);
+}
+
+.lib-price strong {
+  font-size: 1.75rem;
+}
+
+.lib-muted {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: var(--fs-md);
+}
+
+.lib-note {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: var(--fs-xs, 13px);
+}
