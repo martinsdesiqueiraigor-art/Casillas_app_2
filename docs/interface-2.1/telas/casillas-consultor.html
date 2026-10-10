@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Casillas · Consultor</title>
+<style>
+:root{--bg:#0b1118;--card:#111b27;--card2:#16232f;--line:#24364a;--tx:#eef3f8;--mut:#93a4b6;--or:#ff7a1a;--bl:#4aa3ff;--ok:#6fd3a6;--okbg:#0f2a22;--okline:#2a6a52;--wn:#ffb35c;--wnbg:#3a2a10;--wnline:#7a5316;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.45 "Segoe UI",Roboto,system-ui,sans-serif;padding-bottom:calc(5.5rem + env(safe-area-inset-bottom,0px))}
+main{max-width:480px;margin:0 auto;padding:.75rem 1rem;display:grid;gap:1rem}
+header{display:flex;align-items:center;justify-content:space-between;padding:.25rem 0 .25rem}
+.brand{display:flex;align-items:center;gap:.625rem}.brand b{font-size:1.375rem}
+svg.logo{width:30px;height:30px;color:var(--or);fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+svg.i{width:24px;height:24px;display:block;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.iconbtn{background:none;border:0;color:var(--mut);min-width:48px;min-height:48px;display:grid;place-items:center;border-radius:12px;cursor:pointer}
+h1{font-size:1.75rem;margin:.25rem 0 0}
+.sub{color:var(--mut);margin:.25rem 0 0}
+.hero{background:linear-gradient(135deg,#ff7a1a,#e0610a);border-radius:16px;padding:.875rem;display:grid;gap:.625rem;color:#1a0d00}
+.hero .in{display:flex;background:#fff;border-radius:12px;min-height:52px}
+.hero input{flex:1;min-width:0;border:0;background:none;font:1rem "Segoe UI",Roboto,system-ui,sans-serif;color:#111;padding:.75rem .875rem;outline:none;border-radius:12px}
+.btn{min-height:52px;border-radius:12px;border:0;background:#0b1118;color:#fff;font-family:inherit;font-weight:700;font-size:1.0625rem;cursor:pointer;width:100%}
+.btn.sm{width:auto;padding:0 1.25rem}
+.chips{display:flex;flex-wrap:wrap;gap:.5rem}
+.chip{min-height:48px;border-radius:24px;border:1px solid var(--line);background:var(--card);color:var(--tx);font-family:inherit;font-weight:600;font-size:1rem;padding:0 1.125rem;cursor:pointer}
+.chip.sel{border-color:var(--bl);color:var(--bl);background:#0f2236}
+h2{font-size:.9375rem;color:var(--mut);margin:.25rem 0 0;font-weight:600}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:.875rem;display:grid;gap:.5rem}
+.res{display:grid;grid-template-columns:5px 1fr auto;gap:.75rem;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:.875rem;color:var(--tx);text-align:left;width:100%;font-family:inherit;cursor:pointer;min-height:64px}
+.res .bar{align-self:stretch;border-radius:3px;background:var(--or);min-height:44px}
+.res h3{margin:0;font-size:1.375rem;line-height:1.15}
+.res small{display:block;color:var(--mut);font-size:.9375rem}
+.res p{margin:.25rem 0 0;color:var(--tx);font-size:.9375rem}
+.res.calc .bar{background:var(--bl)}
+.res .go{color:var(--mut)}
+.rev{display:inline-block;margin-top:.375rem;font-size:.8125rem;font-weight:600;color:var(--wn)}
+.fb{display:flex;align-items:center;gap:.75rem;flex-wrap:wrap}
+.fb span{flex:1;min-width:8rem;font-weight:600}
+.fb .chip{min-width:72px}
+.thanks{color:var(--ok);font-weight:600;display:flex;align-items:center;gap:.5rem}
+.empty{text-align:center;color:var(--mut);padding:1rem .5rem;display:grid;gap:.5rem}
+.irow{display:flex;align-items:center;gap:.75rem;background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:.875rem .75rem;color:var(--tx);font-family:inherit;font-weight:600;font-size:1rem;width:100%;text-align:left;min-height:48px;cursor:pointer}
+.irow svg{color:var(--bl)}.irow .go{margin-left:auto;color:var(--mut)}
+.demo{border:1px dashed var(--line);border-radius:12px;padding:.5rem .75rem;color:var(--mut);font-size:.875rem}
+.demo summary{min-height:44px;display:flex;align-items:center;cursor:pointer}
+.demo code{color:var(--tx);font-family:ui-monospace,Consolas,monospace}
+nav{position:fixed;left:0;right:0;bottom:0;background:#0d1620;border-top:1px solid var(--line);display:flex;padding-bottom:env(safe-area-inset-bottom,0px)}
+nav a{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:.5rem .25rem;color:var(--mut);font-size:.8125rem;text-decoration:none;border-top:3px solid transparent;min-height:56px}
+nav a[aria-current]{color:var(--or);border-color:var(--or)}
+[hidden]{display:none!important}
+:focus-visible{outline:3px solid var(--bl);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<main>
+  <header><div class="brand"><svg class="logo" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.5"/><path d="M12 2l1.5 2.5 3-.5 1 2.8 2.7 1.4-.8 3 .8 3-2.7 1.4-1 2.8-3-.5L12 22l-1.5-2.5-3 .5-1-2.8-2.7-1.4.8-3-.8-3 2.7-1.4 1-2.8 3 .5z"/></svg><b>Casillas</b></div><button class="iconbtn" type="button" aria-label="Configurações"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2l1.5 2.5 3-.5 1 2.8 2.7 1.4-.8 3 .8 3-2.7 1.4-1 2.8-3-.5L12 22l-1.5-2.5-3 .5-1-2.8-2.7-1.4.8-3-.8-3 2.7-1.4 1-2.8 3 .5z"/></svg></button></header>
+  <div><h1>Consultor Técnico</h1><p class="sub">Pergunte. O Casillas encontra o caminho técnico.</p></div>
+
+  <form class="hero" id="f" novalidate>
+    <div class="in"><input id="q" type="search" enterkeyhint="search" autocomplete="off" placeholder="Digite sua dúvida de usinagem ou CNC..." aria-label="Sua dúvida" value="rosca"></div>
+    <button class="btn" type="submit">Consultar</button>
+  </form>
+
+  <section id="out" aria-live="polite"></section>
+
+  <details class="demo">
+    <summary>Demonstração: o que digitar</summary>
+    <p style="margin:.25rem 0">Resultado de ciclo: <code>rosca</code> ou <code>thread</code><br>Resultado de calculadora: <code>calcular tolerância h7</code><br>Pergunta de esclarecimento: <code>furação</code><br>Sem resultado: qualquer outro texto</p>
+    <p style="margin:.25rem 0">Nenhum texto digitado é guardado.</p>
+  </details>
+</main>
+<nav aria-label="Navegação principal">
+  <a href="#" aria-current="page"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11l8-7 8 7v9H4z"/><path d="M10 20v-6h4v6"/></svg>Início</a>
+  <a href="#"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8M8 12h.5M12 12h.5M16 12h.5M8 16h.5M12 16h.5M16 16h.5"/></svg>Calculadoras</a>
+  <a href="#"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5c3-1 6-1 9 1v14c-3-2-6-2-9-1zM21 5c-3-1-6-1-9 1v14c3-2 6-2 9-1z"/></svg>Guia CNC</a>
+  <a href="#"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4v16M10 4v16M14 6l4 14M5 4h5"/></svg>Biblioteca</a>
+</nav>
+<script>
+const $=s=>document.querySelector(s);
+const norm=s=>s.normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase();
+const CHEV='<span class="go"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></span>';
+const ICON={warn:'<path d="M12 3l10 18H2z"/><path d="M12 10v5M12 18v.5"/>',ok:'<circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/>',book:'<path d="M3 5c3-1 6-1 9 1v14c-3-2-6-2-9-1zM21 5c-3-1-6-1-9 1v14c3-2 6-2 9-1z"/>',calc:'<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8M8 12h.5M12 12h.5M16 12h.5"/>'};
+const ico=n=>`<svg class="i" viewBox="0 0 24 24" aria-hidden="true">${ICON[n]}</svg>`;
+const cyc=(c,t,why,rev)=>`<button class="res" type="button"><span class="bar"></span><span><h3>${c}</h3><small>${t}</small><p>${why}</p>${rev?'<span class="rev">Em revisão técnica</span>':""}</span>${CHEV}</button>`;
+const calc=(t,why)=>`<button class="res calc" type="button"><span class="bar"></span><span><small>Calculadora</small><h3>${t}</h3><p>${why}</p></span>${CHEV}</button>`;
+const FB=`<div class="card" id="fb"><div class="fb"><span>Isso ajudou?</span><button class="chip" type="button" data-h="1">Sim</button><button class="chip" type="button" data-h="0">Não</button></div></div>`;
+function show(html){$("#out").innerHTML=html}
+function resultado(q){
+ const n=norm(q);
+ if(/rosc|thread|g76/.test(n))return `<div style="display:grid;gap:.75rem"><h2>Melhor resultado</h2>${cyc("G76","Ciclo de rosqueamento","Rosca em vários passes, com um único comando em dois blocos.",true)}<h2>Relacionados</h2>${calc("Roscas","Cálculos de roscas métricas.")}${FB}</div>`;
+ if(/toleranc|h7|ajuste/.test(n))return `<div style="display:grid;gap:.75rem"><h2>Melhor resultado</h2>${calc("Tolerâncias ISO","Ajustes e tolerâncias dimensionais, como o h7.")}${FB}</div>`;
+ if(/fura|g83|broca/.test(n))return `<div class="card" style="gap:.75rem"><b>Para qual controle?</b><p style="margin:0;color:var(--mut)">Isso muda o formato do ciclo de furação.</p><div class="chips"><button class="chip" type="button" data-c="Fanuc">Fanuc</button><button class="chip" type="button" data-c="Siemens">Siemens</button></div></div>`;
+ return `<div class="card"><div class="empty"><b>Não encontrei um ciclo ou calculadora para isso</b><span>Tente outras palavras, como "rosca", "furação" ou "tolerância".</span></div><button class="irow" type="button">${ico("book")}Ver todos os ciclos do Guia${CHEV}</button><button class="irow" type="button">${ico("calc")}Ver todas as calculadoras${CHEV}</button></div>`;
+}
+$("#f").addEventListener("submit",e=>{e.preventDefault();const q=$("#q").value.trim();if(!q){show(`<div class="card"><div class="empty"><b>Digite sua dúvida</b><span>Por exemplo: rosca, furação ou tolerância h7.</span></div></div>`);return}show(resultado(q))});
+document.addEventListener("click",e=>{
+ const c=e.target.closest("[data-c]"),h=e.target.closest("[data-h]");
+ if(c){show(`<div style="display:grid;gap:.75rem"><div class="chips"><span class="chip sel" style="cursor:default">${c.dataset.c}</span></div><h2>Melhor resultado</h2>${cyc("G83","Ciclo de furação profunda ("+c.dataset.c+")","Furação com retiradas parciais para quebrar e retirar o cavaco.",true)}${FB}</div>`)}
+ if(h){$("#fb").innerHTML=`<div class="thanks">${ico("ok")}${h.dataset.h==="1"?"Obrigado pelo retorno.":"Obrigado. Tente outras palavras ou consulte o Guia."}</div>`}
+});
+// Demonstração: a busca roda só neste aparelho e nada é guardado nem enviado.
+show(resultado($("#q").value));
+</script>
+</body>
+</html>

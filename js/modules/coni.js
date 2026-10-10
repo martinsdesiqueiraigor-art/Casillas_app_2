@@ -10,8 +10,8 @@ import { updateKPIs, updateHeader } from '../state.js';
 
 let currentMode = 'DdL';
 
-function resultRow(label, value) {
-  return createElementSafe('div', { class: 'result-row' }, [
+function resultRow(label, value, primary = false) {
+  return createElementSafe('div', { class: primary ? 'result-row result-row--primary' : 'result-row' }, [
     createElementSafe('span', { class: 'result-label', text: label }),
     createElementSafe('span', { class: 'result-value', text: value })
   ]);
@@ -52,10 +52,10 @@ function renderResults(res) {
   wrap.appendChild(resultRow('Diâmetro maior D', formatNumber(res.D, 4) + ' mm'));
   wrap.appendChild(resultRow('Diâmetro menor d', formatNumber(res.d, 4) + ' mm'));
   wrap.appendChild(resultRow('Comprimento L', formatNumber(res.L, 4) + ' mm'));
-  wrap.appendChild(resultRow('Ângulo total α', formatNumber(res.anguloGraus, 4) + '°'));
+  wrap.appendChild(resultRow('Ângulo total α', formatNumber(res.anguloGraus, 4) + '°', true));
   wrap.appendChild(resultRow('Ângulo ½α', formatNumber(res.anguloMeioGraus, 4) + '°'));
   wrap.appendChild(resultRow('Conicidade C', formatNumber(res.conicidade, 6)));
-  wrap.appendChild(resultRow('Relação', '1 : ' + formatNumber(res.relacao1ParaX, 4)));
+  wrap.appendChild(resultRow('Relação', '1 : ' + formatNumber(res.relacao1ParaX, 4), true));
   wrap.appendChild(resultRow('Inclinação (D-d)/2', formatNumber(res.inclinacao, 4) + ' mm'));
   return wrap;
 }

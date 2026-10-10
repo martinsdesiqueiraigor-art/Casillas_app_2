@@ -24,7 +24,12 @@
         </div>
       </div>
 
-      <div class="auth-tabs" role="tablist">
+      <div class="auth-heading">
+        <h2 id="auth-heading">Entrar</h2>
+        <p id="auth-subtitle">Acesse seu Casillas com e-mail e senha.</p>
+      </div>
+
+      <div class="auth-tabs" role="tablist" aria-label="Acesso">
         <button
           id="tab-login"
           class="btn btn-primary auth-tab"
@@ -44,6 +49,8 @@
         </button>
       </div>
 
+      <p id="auth-offline" class="auth-alert" role="status" hidden>Sem internet. Conecte-se para continuar.</p>
+
       <form id="auth-form" novalidate>
 
         <div class="input-group">
@@ -59,25 +66,39 @@
 
         <div class="input-group">
           <label id="auth-password-label" class="input-label" for="auth-password">Senha</label>
-          <input
-            id="auth-password"
-            class="input"
-            type="password"
-            autocomplete="current-password"
-            placeholder="Sua senha"
-            minlength="6"
-            required>
+          <div class="auth-field">
+            <input
+              id="auth-password"
+              class="input"
+              type="password"
+              autocomplete="current-password"
+              placeholder="Sua senha"
+              minlength="6"
+              required>
+            <button class="auth-eye" type="button" data-eye="auth-password" aria-label="Mostrar senha" aria-pressed="false">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+          </div>
         </div>
 
         <div id="auth-password-confirm-group" class="input-group" hidden>
           <label class="input-label" for="auth-password-confirm">Confirmar nova senha</label>
-          <input
-            id="auth-password-confirm"
-            class="input"
-            type="password"
-            autocomplete="new-password"
-            placeholder="Repita a nova senha"
-            minlength="6">
+          <div class="auth-field">
+            <input
+              id="auth-password-confirm"
+              class="input"
+              type="password"
+              autocomplete="new-password"
+              placeholder="Repita a nova senha"
+              minlength="6">
+            <button class="auth-eye" type="button" data-eye="auth-password-confirm" aria-label="Mostrar senha" aria-pressed="false">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+          </div>
+        </div>
+
+        <div class="auth-forgot">
+          <button id="btn-forgot-password" class="auth-link" type="button">Esqueci a senha</button>
         </div>
 
         <button
@@ -89,12 +110,9 @@
 
       </form>
 
-      <button
-        id="btn-forgot-password"
-        class="btn btn-outline auth-secondary"
-        type="button">
-        Esqueci minha senha
-      </button>
+      <p id="auth-signup-note" class="auth-note" hidden>
+        Ao criar a conta, você recebe uma mensagem no e-mail cadastrado para confirmar o cadastro.
+      </p>
 
       <p id="auth-message" class="auth-message" role="status" aria-live="polite"></p>
 

@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Casillas · Guia CNC · G76</title>
+<style>
+:root{--bg:#0b1118;--card:#111b27;--card2:#16232f;--line:#24364a;--tx:#eef3f8;--mut:#93a4b6;--or:#ff7a1a;--bl:#4aa3ff;--code:#060a0f;--warn:#3a2a10;--ok:#6fd3a6;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px)}
+:root:not([data-theme="dark"]){color-scheme:dark}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.45 "Segoe UI",Roboto,system-ui,sans-serif;padding-bottom:calc(84px + env(safe-area-inset-bottom,0px))}
+main{max-width:480px;margin:0 auto;padding:12px 16px}
+header{display:flex;align-items:center;justify-content:space-between;padding:4px 0 8px}
+header b{font-size:22px;letter-spacing:.3px}
+h1{font-size:28px;margin:8px 0 12px}
+.search{display:flex;gap:8px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:0 12px}
+.search input{flex:1;background:none;border:0;color:var(--tx);font:inherit;padding:12px 0;outline:none}
+.filters{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}
+.filters label{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:6px 10px;font-size:12px;color:var(--mut)}
+.filters select{display:block;width:100%;background:none;border:0;color:var(--tx);font:600 15px inherit;padding:2px 0;outline:none}
+.filters option{background:var(--card)}
+.variant{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px}
+.chip{white-space:nowrap;border:1px solid var(--line);background:var(--card);color:var(--mut);border-radius:20px;padding:6px 12px;font:600 13px inherit;cursor:pointer}
+.chip[aria-pressed=true]{border-color:var(--bl);color:var(--bl);background:#10253a}
+.cycle{background:var(--card);border:1px solid var(--line);border-radius:16px;margin-top:10px;overflow:hidden}
+.head{display:flex;gap:10px;align-items:center;padding:14px;border-left:4px solid var(--or)}
+.head h2{margin:0;font-size:24px;line-height:1.1}
+.head small{display:block;color:var(--mut);font-size:14px;margin-top:2px}
+.badge{margin-left:auto;font:600 12px inherit;border-radius:8px;padding:6px 8px;border:1px solid #7a5316;background:var(--warn);color:#ffb35c;text-align:center}
+.badge.ok{background:#0f2a22;border-color:#2a6a52;color:var(--ok)}
+[role=tablist]{display:flex;border-bottom:1px solid var(--line)}
+[role=tab]{flex:1;background:none;border:0;border-bottom:3px solid transparent;color:var(--mut);font:600 13px inherit;padding:12px 2px;cursor:pointer}
+[role=tab][aria-selected=true]{color:var(--or);border-color:var(--or)}
+.panel{padding:14px;display:grid;gap:12px}
+.panel[hidden]{display:none}
+.box{background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:12px}
+.box h3{margin:0 0 6px;font-size:16px}
+.box p{margin:0;color:var(--mut);font-size:15px}
+.ctx{display:flex;flex-wrap:wrap;gap:8px}
+.ctx span{border:1px solid var(--line);border-radius:8px;padding:5px 10px;font-size:14px;background:var(--card2)}
+svg{width:100%;height:auto;display:block;background:var(--code);border:1px solid var(--line);border-radius:12px}
+figcaption{font-size:12px;color:var(--mut);text-align:right;margin-top:4px}
+figure{margin:0}
+.code{position:relative;background:var(--code);border:1px solid var(--line);border-radius:12px;padding:12px;font:14px/1.7 ui-monospace,Consolas,monospace;overflow-x:auto;white-space:pre}
+.code .a{color:var(--or)}
+.code .lbl{display:block;font:12px "Segoe UI",sans-serif;color:var(--mut);margin-bottom:2px}
+.copy{position:absolute;right:8px;top:8px;background:var(--card2);border:1px solid var(--line);color:var(--tx);border-radius:8px;padding:4px 10px;font:600 12px "Segoe UI",sans-serif;cursor:pointer}
+.params{display:grid;gap:0}
+.params div{display:grid;grid-template-columns:92px 1fr;gap:10px;padding:10px 0;border-top:1px solid var(--line)}
+.params div:first-child{border-top:0}
+.params code{color:var(--bl);font:600 14px ui-monospace,Consolas,monospace;background:#0e2236;border-radius:6px;padding:2px 6px;align-self:start;justify-self:start}
+.params span small{display:block;color:var(--mut);font-size:13px}
+details{background:var(--card2);border:1px solid var(--line);border-radius:12px}
+summary{display:flex;gap:10px;align-items:center;padding:12px;cursor:pointer;list-style:none;font-weight:600}
+summary::-webkit-details-marker{display:none}
+summary i{width:28px;height:28px;border-radius:50%;background:var(--or);color:#1a0d00;display:grid;place-items:center;font-style:normal;font-weight:700}
+summary::after{content:"›";margin-left:auto;font-size:22px;color:var(--mut);transition:transform .2s}
+details[open] summary::after{transform:rotate(90deg)}
+details>div{padding:0 12px 12px;display:grid;gap:10px}
+.lines{display:grid;gap:8px}
+.line{display:grid;gap:2px;font-size:14px;color:var(--mut)}
+.line code{color:var(--tx);font:14px ui-monospace,Consolas,monospace}
+.warn{background:var(--warn);border:1px solid #7a5316;color:#ffb35c;border-radius:12px;padding:10px 12px;font-size:14px}
+.empty{text-align:center;color:var(--mut);padding:24px 8px}
+.rows{display:grid;gap:8px}
+.row{display:flex;justify-content:space-between;align-items:center;background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:12px;color:var(--tx);font:600 15px inherit;width:100%;text-align:left;cursor:pointer}
+.row span{color:var(--mut);font-weight:400;font-size:13px;display:block}
+nav{position:fixed;left:0;right:0;bottom:0;background:#0d1620;border-top:1px solid var(--line);display:flex;padding-bottom:env(safe-area-inset-bottom,0px)}
+nav a{flex:1;text-align:center;padding:12px 4px;color:var(--mut);font-size:13px;text-decoration:none;border-top:3px solid transparent}
+nav a[aria-current]{color:var(--or);border-color:var(--or)}
+.ctl{display:flex;gap:10px;align-items:center}.ctl input{flex:1;accent-color:var(--or)}
+:focus-visible{outline:2px solid var(--bl);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<main>
+<header><b>Casillas</b><span style="color:var(--mut);font-size:13px">Guia CNC 2.0</span></header>
+<h1>Guia CNC</h1>
+<div class="search"><span aria-hidden="true">🔍</span><input id="q" type="search" placeholder="Buscar código, ciclo ou operação" aria-label="Buscar"></div>
+<div class="filters">
+<label>Controle<select id="fc"><option>Fanuc</option><option>Siemens</option></select></label>
+<label>Máquina<select id="fm"><option>Torno</option><option>Centro</option></select></label>
+<label>Operação<select id="fo"><option>Rosca</option><option>Desbaste</option></select></label>
+</div>
+<div class="variant" id="vars"></div>
+<section id="out" aria-live="polite"></section>
+</main>
+<nav><a href="#">Início</a><a href="#">Calculadoras</a><a href="#" aria-current="page">Guia CNC</a><a href="#">Biblioteca</a></nav>
+<script>
+const CICLOS=[{
+ id:"g76",codigo:"G76",titulo:"Ciclo de rosqueamento",controle:"Fanuc",maquina:"Torno",operacao:"Rosca",termos:"rosca rosquear thread multiplos passes",
+ variantes:[
+  {id:"0itf-a",nome:"0i-TF · Sistema A",status:"em_revisao",
+   fonte:"Manual de programação Fanuc 0i-TF (conferir capítulo do ciclo de rosqueamento).",
+   contexto:["Plano G18","X em diâmetro","Unidades: mm"],
+   aplicacao:"Rosca externa ou interna em vários passes, com um único comando em dois blocos. O controle calcula a profundidade de cada passe.",
+   precond:["Rotação constante (G97) com a velocidade da rosca definida.","Ferramenta de rosca posicionada no ponto inicial, afastada do material.","Passo F igual ao passo real da rosca."],
+   obs:["Os dois blocos G76 são lidos em sequência. Não coloque outros comandos entre eles.","Valores P(k), Q(Δd) e Q(Δdmin) são inseridos em microns, sem ponto decimal.","Confira no manual da sua máquina o formato do primeiro bloco (P e Q)."],
+   sintaxe:[["Bloco 1","G76 P(m)(r)(a) Q(Δdmin) R(d)"],["Bloco 2","G76 X(u) Z(w) R(i) P(k) Q(Δd) F(l)"]],
+   params:[
+    ["P(m)","Número de passes de acabamento","01 a 99"],
+    ["P(r)","Chanfro de saída","00 a 99, em 0,1 × passo"],
+    ["P(a)","Ângulo da ponta da ferramenta","00, 29, 30, 55, 60 ou 80 graus"],
+    ["Q(Δdmin)","Profundidade mínima de corte","em microns"],
+    ["R(d)","Sobremetal para acabamento","em mm (raio)"],
+    ["X(u)","Diâmetro final do fundo da rosca","absoluto ou incremental"],
+    ["Z(w)","Posição final em Z","absoluto ou incremental"],
+    ["R(i)","Conicidade da rosca","0 para rosca reta"],
+    ["P(k)","Altura do filete","em microns"],
+    ["Q(Δd)","Profundidade do primeiro passe","em microns"],
+    ["F(l)","Passo da rosca","mm/rot"]],
+   passos:[
+    {t:"Preparação e estados iniciais",l:[["G18 G21 G97 S800 M03","Plano XZ, milímetros, rotação constante, fuso ligado."],["T0404","Chama a ferramenta de rosca."],["G00 X22.0 Z5.0","Aproxima do ponto inicial, fora do material."]]},
+    {t:"Definição do ciclo e do perfil",l:[["G76 P021060 Q100 R0.05","02 passes de acabamento, chanfro 1,0 × passo, ponta de 60°, corte mínimo 0,1 mm, sobremetal 0,05 mm."],["G76 X17.4 Z-30.0 R0 P1530 Q350 F2.5","Fundo da rosca em Ø17,4, até Z-30, rosca reta, filete de 1,530 mm, primeiro passe 0,35 mm, passo 2,5."]]},
+    {t:"Acabamento e encerramento",l:[["G00 X100.0 Z100.0","Retira a ferramenta para a posição segura."],["M05","Para o fuso."]]}],
+   cod:"G76 P021060 Q100 R0.05\nG76 X17.4 Z-30.0 R0 P1530 Q350 F2.5",calc:"Roscas (3 rolos)",traj:{k:1530,dd:350,dmin:100,d:50,m:2},cuid:{erros:["Passo F diferente do passo real da rosca.","Sem distância de entrada em Z (use cerca de 3 × passo): o primeiro filete sai irregular.","Q(Δd), Q(Δdmin) e P(k) digitados em mm em vez de microns.","Ponto inicial com X dentro do diâmetro da peça: a ferramenta bate na entrada.","Rotação variável (G96) durante a rosca. Use G97 com rotação constante.","Esquecer o R(i) no segundo bloco: a rosca sai cônica ou inesperada."],lim:["Exemplo de rosca externa reta, X em diâmetro, em mm.","Não cobre rosca interna, rosca cônica nem rosca de várias entradas.","Formato dos blocos conforme Fanuc 0i-TF Sistema A. Outros controles podem exigir outro formato."],rev:"Revisão técnica pendente. Responsável e data a definir antes de marcar como revisado."}},
+  {id:"31i-b",nome:"31i-B · Sistema B",status:"vazio"}
+ ]},
+ {id:"g71",codigo:"G71",titulo:"Desbaste longitudinal",controle:"Fanuc",maquina:"Torno",operacao:"Desbaste",termos:"desbaste",variantes:[{id:"x",nome:"0i-TF · Sistema A",status:"vazio"}]}];
+const ST={em_revisao:["⚠ Em revisão técnica",""],revisado:["✔ Revisado","ok"]};
+const $=s=>document.querySelector(s);
+const norm=s=>s.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
+const esc=s=>s.replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+const hl=s=>esc(s).replace(/\b([GMPQRXZFSTU])(?=[\d(\-.])/g,'<span class="a">$1</span>');
+const hlLine=s=>s.split("\n").map(hl).join("\n");
+let sel=null,vid=null,tab=0,pi=1,cur=null,timer=null;
+const mm=x=>(x/1000).toFixed(3).replace(".",",");
+function passes(t){const o=[],alvo=t.k-t.d;let prev=0;for(let n=1;prev<alvo&&n<200;n++){const d=Math.min(Math.max(t.dd*Math.sqrt(n),prev+t.dmin),alvo);o.push({d,inc:d-prev,tipo:"desbaste"});prev=d}for(let i=0;i<t.m;i++){o.push({d:t.k,inc:i?0:t.k-prev,tipo:"acabamento"});prev=t.k}return o}
+function stopPlay(){clearInterval(timer);timer=null;const b=$("#pl");if(b)b.textContent="Reproduzir"}
+function togglePlay(){if(timer){stopPlay();return}const N=passes(cur.traj).length;if(pi>=N)pi=1;$("#pl").textContent="Pausar";const tick=()=>{$("#sl").value=pi;drawTraj();if(pi>=N){stopPlay();return}pi++};tick();timer=setInterval(tick,700)}
+function drawTraj(){const el=$("#tjv");if(!el||!cur||!cur.traj)return;const t=cur.traj,P=passes(t),N=P.length;pi=Math.min(Math.max(pi,1),N);const p=P[pi-1],s=80,cx=180,y0=34;
+const tri=d=>{const h=d/1000*s,w=.577*h;return `${cx-w},${y0} ${cx+w},${y0} ${cx},${y0+h}`};
+let g="";for(let i=0;i<pi-1;i++)g+=`<polygon points="${tri(P[i].d)}" fill="none" stroke="#4aa3ff" stroke-opacity=".4"/>`;
+const ap=y0+p.d/1000*s,prev=pi>1?P[pi-2].d:0;
+const xs=`<svg viewBox="0 0 360 170" role="img" aria-label="Corte transversal do filete no passe ${pi}"><rect x="0" y="${y0}" width="360" height="${170-y0}" fill="#1c2e44"/><polygon points="${tri(p.d)}" fill="#ff7a1a66"/>${prev?`<polygon points="${tri(prev)}" fill="#060a0f"/>`:""}${g}<polygon points="${tri(p.d)}" fill="none" stroke="#ff7a1a" stroke-width="2"/><polygon points="${tri(t.k)}" fill="none" stroke="#eef3f8" stroke-dasharray="4 4" stroke-opacity=".6"/><line x1="0" x2="360" y1="${y0}" y2="${y0}" stroke="#93a4b6"/><polygon points="${cx},${ap} ${cx-18},${ap-32} ${cx+18},${ap-32}" fill="#ff7a1a"/><text x="8" y="18" fill="#93a4b6" font-size="11">Corte transversal do filete (ampliado)</text><text x="352" y="164" text-anchor="end" fill="#93a4b6" font-size="10">Tracejado: perfil final</text></svg>`;
+const dy=p.d/1000*20,yc=70+dy;
+const ps=`<svg viewBox="0 0 360 120" role="img" aria-label="Trajetória da ferramenta no passe ${pi}"><rect x="14" y="40" width="24" height="76" fill="#3a4b5e"/><rect x="38" y="70" width="302" height="46" fill="#1c2e44"/><rect x="80" y="70" width="240" height="${dy}" fill="#060a0f" stroke="#4aa3ff" stroke-opacity=".4"/><path d="M320 36V${yc}" stroke="#ff7a1a" stroke-dasharray="5 4" fill="none"/><path d="M320 ${yc}H80L66 48" stroke="#4aa3ff" stroke-width="2.5" fill="none"/><path d="M66 48V36H320" stroke="#ff7a1a" stroke-dasharray="5 4" fill="none"/><polygon points="320,${yc} 310,${yc-18} 330,${yc-18}" fill="#ff7a1a"/><text x="8" y="14" fill="#93a4b6" font-size="11">Vista lateral: trajetória da ferramenta</text><text x="14" y="34" fill="#93a4b6" font-size="10">Mandril</text><text x="130" y="62" fill="#4aa3ff" font-size="11">Corte com avanço F (para o mandril)</text><text x="130" y="30" fill="#ff7a1a" font-size="11">Retorno rápido</text></svg>`;
+el.innerHTML=`<figure>${xs}</figure><figure>${ps}</figure><p class="box" style="margin:0;color:var(--mut);font-size:14px"><b style="color:var(--tx)">Passe ${pi} de ${N}</b> · ${p.tipo}<br>Profundidade acumulada ${mm(p.d)} mm · ${p.inc?"remove "+mm(p.inc)+" mm":"sem remoção (passe de alívio)"}</p>`}
+document.addEventListener("input",e=>{if(e.target.id==="sl"){stopPlay();pi=+e.target.value;drawTraj()}});
+function matches(){const q=norm($("#q").value);return CICLOS.filter(c=>c.controle===$("#fc").value&&c.maquina===$("#fm").value&&c.operacao===$("#fo").value&&(!q||norm(c.codigo+" "+c.titulo+" "+c.termos).includes(q)))}
+function render(){clearInterval(timer);timer=null;
+ const list=matches();const c=list[0];
+ if(!c){$("#vars").innerHTML="";$("#out").innerHTML='<p class="empty">Nenhum ciclo para esses filtros. Mude controle, máquina ou operação.</p>';return}
+ if(!vid||!c.variantes.find(v=>v.id===vid))vid=c.variantes[0].id;
+ $("#vars").innerHTML=c.variantes.map(v=>`<button class="chip" aria-pressed="${v.id===vid}" data-v="${v.id}">${v.nome}</button>`).join("");
+ const v=c.variantes.find(x=>x.id===vid);cur=v;
+ let h=`<article class="cycle"><div class="head"><div><h2>${c.codigo}</h2><small>${c.titulo}</small></div>`;
+ if(v.status==="vazio"){$("#out").innerHTML=h+`</div><p class="empty">Conteúdo desta variante ainda não foi escrito.<br>Use outra variante ou consulte o manual do fabricante.</p></article>`;return}
+ const s=ST[v.status];
+ h+=`<span class="badge ${s[1]}">${s[0]}</span></div>
+ <div role="tablist">${["Visão geral","Trajetória","Parâmetros","Exemplo","Cuidados"].map((n,i)=>`<button role="tab" aria-selected="${i===tab}" data-t="${i}">${n}</button>`).join("")}</div>`;
+ h+=`<div class="panel" ${tab?"hidden":""}>
+  <div class="ctx">${v.contexto.map(x=>`<span>${x}</span>`).join("")}</div>
+  <div class="box"><h3>Aplicação</h3><p>${v.aplicacao}</p></div>
+  <figure><svg viewBox="0 0 360 150" role="img" aria-label="Rosca externa com passes sucessivos">
+   <line x1="10" y1="75" x2="350" y2="75" stroke="#3a4b5e" stroke-dasharray="6 5"/>
+   <path d="M20 20H120V40H170V50H300V20H340V0H20Z" fill="none"/>
+   <path d="M20 25H110V35H150V45H190V50H330V75H20Z" fill="#1c2e44" stroke="#4aa3ff"/>
+   <g stroke="#4aa3ff" fill="none">${Array.from({length:11},(_,i)=>`<path d="M${190+i*12} 50l6 -9 6 9"/>`).join("")}</g>
+   <path d="M330 22V10H180" stroke="#ff7a1a" stroke-dasharray="5 4" fill="none"/>
+   <g stroke="#4aa3ff" fill="none"><path d="M175 36H320"/><path d="M175 31H320" opacity=".6"/><path d="M175 26H320" opacity=".35"/></g>
+   <text x="12" y="142" fill="#93a4b6" font-size="10">Passadas (azul) e retorno (laranja)</text></svg>
+   <figcaption>Ilustração conceitual · sem escala</figcaption></figure>
+  <details><summary>Pré-condições</summary><div>${v.precond.map(x=>`<p style="margin:0;color:var(--mut)">• ${x}</p>`).join("")}</div></details>
+  <details><summary>Observações</summary><div>${v.obs.map(x=>`<p style="margin:0;color:var(--mut)">• ${x}</p>`).join("")}</div></details>
+  <details><summary>Fonte e revisão</summary><div><p style="margin:0;color:var(--mut)">${v.fonte}</p><p style="margin:0;color:var(--mut)">Revisão técnica pendente.</p></div></details>
+  <div class="warn">Confira a variante do seu controle e as pré-condições antes de rodar.</div>
+  <button class="row" data-go="1">Ver parâmetros <b>›</b></button>
+  <button class="row" type="button">Calculadora relacionada<span>${v.calc}</span></button>
+ </div>`;
+ h+=`<div class="panel" ${tab===1?"":"hidden"}>
+  <div class="ctl"><button class="chip" id="pl" data-play="1" type="button">Reproduzir</button><input id="sl" type="range" min="1" max="${passes(v.traj).length}" value="${pi}" aria-label="Número do passe"></div>
+  <div id="tjv"></div>
+  <div class="ctx"><span>Azul: corte</span><span>Laranja: aproximação e retorno</span></div>
+  <div class="warn">Divisão dos passes estimada: profundidade proporcional a √n, respeitando Q(Δdmin) e R(d). O cálculo real do controle pode diferir. Dados: P(k) 1,530 · Q(Δd) 0,350 · Q(Δdmin) 0,100 · R(d) 0,050 · 2 passes de acabamento.</div></div>
+ <div class="panel" ${tab===2?"":"hidden"}>
+  <div class="rows">${v.sintaxe.map(x=>`<div class="code"><span class="lbl">${x[0]}</span>${hl(x[1])}<button class="copy" data-c="${esc(x[1])}">Copiar</button></div>`).join("")}</div>
+  <div class="box params">${v.params.map(p=>`<div><code>${esc(p[0])}</code><span>${p[1]}<small>${p[2]}</small></span></div>`).join("")}</div></div>`;
+ h+=`<div class="panel" ${tab===3?"":"hidden"}>
+  <div class="code">${hlLine(esc(v.cod))}<button class="copy" data-c="${esc(v.cod)}">Copiar</button></div>
+  <div class="warn">Valores de exemplo. Ajuste ao seu material, ferramenta e máquina.</div>
+  ${v.passos.map((p,i)=>`<details><summary><i>${i+1}</i>${p.t}</summary><div class="lines">${p.l.map(l=>`<div class="line"><code>${hl(l[0])}</code>${l[1]}</div>`).join("")}</div></details>`).join("")}
+ </div><div class="panel" ${tab===4?"":"hidden"}>
+  <div class="warn">Confira controle, variante e pré-condições antes de rodar.</div>
+  <details open><summary>Erros comuns</summary><div>${v.cuid.erros.map(x=>`<p style="margin:0;color:var(--mut)">• ${x}</p>`).join("")}</div></details>
+  <details><summary>Limitações do exemplo</summary><div>${v.cuid.lim.map(x=>`<p style="margin:0;color:var(--mut)">• ${x}</p>`).join("")}</div></details>
+  <details><summary>Fonte documental</summary><div><p style="margin:0;color:var(--mut)">${v.fonte}</p></div></details>
+  <details><summary>Revisão técnica</summary><div><p style="margin:0;color:var(--mut)">${v.cuid.rev}</p></div></details>
+  <button class="row" type="button">Calculadora relacionada<span>${v.calc}</span></button>
+ </div></article>`;
+ $("#out").innerHTML=h;drawTraj();
+}
+document.addEventListener("click",e=>{
+ const t=e.target.closest("[data-t],[data-v],[data-c],[data-go],[data-play]");if(!t)return;if(t.dataset.play){togglePlay();return}
+ if(t.dataset.t){tab=+t.dataset.t;render()}
+ else if(t.dataset.v){vid=t.dataset.v;tab=0;render()}
+ else if(t.dataset.go){tab=2;render()}
+ else if(t.dataset.c){const txt=t.dataset.c.replace(/&lt;/g,"<").replace(/&gt;/g,">").replace(/&amp;/g,"&");try{navigator.clipboard.writeText(txt)}catch(_){}t.textContent="Copiado";setTimeout(()=>t.textContent="Copiar",1500)}
+});
+["#q","#fc","#fm","#fo"].forEach(s=>$(s).addEventListener("input",()=>{tab=0;render()}));
+render();
+</script>
+</body>
+</html>

@@ -15,12 +15,14 @@ import { startAccessLifecycle, LEASE_KEY } from './auth.js';
 import { initKeyboard, bindInputsToKeyboard, hideKeyboard } from './keyboard.js';
 import {initMenu, setActiveMenuItem, initOptionsMenu, closeOptionsMenu, initShareButton, renderMenuIcons } from './menu.js';
 import { ICONS } from './icons.js';
+import { initBottomNav, setBottomNavActive } from './bottom-nav.js';
 import { supabase } from './supabase.bundle.js';
 import { getCurrentUser, onAuthStateChange, signOut } from './auth.js';
 
 // Registro dos módulos (carregamento dinâmico)
 const MODULE_LOADERS = {
   home:      () => import('./modules/home.js'),
+  calculadoras: () => import('./modules/calculadoras.js'),
   trig:      () => import('./modules/trig.js'),
   coni:      () => import('./modules/coni.js'),
   poly:      () => import('./modules/poly.js'),
@@ -38,6 +40,7 @@ const MODULE_LOADERS = {
 
 const MODULE_TITLES = {
   home:     { name: 'Visão geral',        icon: '⌂' },
+  calculadoras: { name: 'Calculadoras',   icon: '🧮' },
   trig:     { name: 'Trigonometria',      icon: '📐' },
   coni:     { name: 'Conicidade',         icon: '📏' },
   poly:     { name: 'Polígonos',          icon: '⬡' },
@@ -50,7 +53,7 @@ const MODULE_TITLES = {
   prog:     { name: 'Programação CNC',    icon: '🖥️' },
   guia:     { name: 'Guia de Programação', icon: '📖' },
   'consultor-tecnico': { name: 'Consultor Técnico', icon: '🔎' },
-  consult:  { name: 'Consultoria',        icon: '💬' }
+  consult:  { name: 'Biblioteca',         icon: '📚' }
 };
 
 let accessStatus = null;
@@ -126,6 +129,7 @@ async function loadModule(key) {
     }, 100);
 
     setActiveMenuItem(key);
+    setBottomNavActive(key);
     appState.currentModule = key;
     await persistCurrentModule(key);
   } catch (err) {
@@ -316,6 +320,7 @@ async function boot() {
 
   await loadInitialState();
   initMenu(loadModule);
+  initBottomNav(loadModule);
   renderMenuIcons();
   initShareButton();
   initOptionsMenu();

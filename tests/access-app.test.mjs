@@ -17,7 +17,7 @@ function fixture({ allowed = true, identity = true, loader } = {}) {
     showActivationScreen:()=>{blocked++;}, startAccessLifecycle: options=>{refresh=options.refresh;return()=>{};},
     LEASE_KEY:'lease', initKeyboard:()=>{}, bindInputsToKeyboard:()=>{}, hideKeyboard:()=>{},
     initMenu:()=>{}, setActiveMenuItem:()=>{}, initOptionsMenu:()=>{}, closeOptionsMenu:()=>{},
-    initShareButton:()=>{}, renderMenuIcons:()=>{}, ICONS:{},
+    initShareButton:()=>{}, renderMenuIcons:()=>{}, ICONS:{}, initBottomNav:()=>{}, setBottomNavActive:()=>{},
     supabase:{auth:{storageKey:'session'}}, getCurrentUser:async()=>({user:identity?{id:'A'}:null,error:null}),
     onAuthStateChange:fn=>{winEvents.set('auth',fn);}, signOut:async()=>({error:null}),
     window:{addEventListener:(k,v)=>winEvents.set(k,v),location:{},console:{}},

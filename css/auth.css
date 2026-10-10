@@ -1,4 +1,15 @@
-﻿/* CASILLAS — Tela de autenticação */
+/* CASILLAS — Tela de autenticação */
+
+body {
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: var(--fs-md);
+}
+
+.auth-page input,
+.auth-page button {
+  font-family: inherit;
+}
 
 .auth-page {
   min-height: 100vh;
@@ -13,7 +24,7 @@
   width: 100%;
   max-width: 420px;
   padding: 32px;
-  background: var(--bg-surface);
+  background: var(--bg-card);
   border: 1px solid var(--border-color);
   border-radius: 16px;
 }
@@ -32,7 +43,7 @@
   place-items: center;
   flex-shrink: 0;
   border-radius: 12px;
-  background: var(--accent);
+  background: var(--accent-primary);
   color: #0d1117;
   font-size: 28px;
   font-weight: 800;
@@ -63,12 +74,97 @@
 
 .auth-submit {
   width: 100%;
-  margin-top: 8px;
+  margin-top: 4px;
 }
 
-.auth-secondary {
-  width: 100%;
-  margin-top: 12px;
+
+.auth-heading {
+  margin-bottom: 20px;
+}
+
+.auth-heading h2 {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: var(--fs-xl);
+}
+
+.auth-heading p {
+  margin: 4px 0 0;
+  color: var(--text-secondary);
+  font-size: var(--fs-md);
+}
+
+.auth-field {
+  position: relative;
+}
+
+.auth-field .input {
+  padding-right: 56px;
+}
+
+.auth-eye {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 52px;
+  height: 52px;
+  display: grid;
+  place-items: center;
+  color: var(--text-secondary);
+  background: none;
+  border: 0;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+}
+
+.auth-eye svg {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.auth-eye[aria-pressed="true"] {
+  color: var(--accent-secondary);
+}
+
+.auth-alert {
+  margin: 0 0 16px;
+  padding: 12px 14px;
+  color: var(--danger);
+  background: var(--danger-soft);
+  border: 1px solid var(--danger-line);
+  border-radius: var(--radius-md);
+  font-size: var(--fs-md);
+}
+
+.auth-forgot {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.auth-link {
+  min-height: 44px;
+  padding: 0 4px;
+  color: var(--accent-secondary);
+  background: none;
+  border: 0;
+  font-size: var(--fs-md);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.auth-link:disabled {
+  opacity: 0.5;
+}
+
+.auth-note {
+  margin: 16px 0 0;
+  color: var(--text-secondary);
+  font-size: var(--fs-sm);
 }
 
 .auth-message {

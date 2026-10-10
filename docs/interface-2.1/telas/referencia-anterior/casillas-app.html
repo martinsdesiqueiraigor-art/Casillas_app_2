@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Casillas · Início, Calculadoras e Biblioteca</title>
+<style>
+:root{--bg:#0b1118;--card:#111b27;--card2:#16232f;--line:#24364a;--tx:#eef3f8;--mut:#93a4b6;--or:#ff7a1a;--bl:#4aa3ff;--ok:#6fd3a6;color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.45 "Segoe UI",Roboto,system-ui,sans-serif}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px;padding:12px 16px;max-width:480px;margin:0 auto}
+header b{font-size:20px}header span{color:var(--mut);font-size:14px;margin-left:auto}
+header a{color:var(--tx);text-decoration:none;font-size:22px;line-height:1}
+main{max-width:480px;margin:0 auto;padding:12px 16px calc(96px + env(safe-area-inset-bottom,0px));display:grid;gap:12px}
+h1{font-size:28px;line-height:1.1;margin:8px 0 0}h2{font-size:18px;margin:8px 0 0;display:flex;justify-content:space-between;align-items:baseline}
+h2 a{font:600 14px inherit;color:var(--bl);text-decoration:none}
+p{margin:0}.mut{color:var(--mut);font-size:15px}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.pill{border:1px solid var(--line);border-radius:20px;padding:5px 12px;font:600 13px inherit;background:var(--card);color:var(--mut);cursor:pointer}
+.pill.ok{color:var(--ok);border-color:#2a6a52;background:#0f2a22}
+.hero{background:linear-gradient(145deg,#f08a3c,#d8651f);color:#1a0d00;border-radius:16px;padding:16px;display:grid;gap:10px}
+.hero input{background:#0000002e;border:1px solid #0003;border-radius:10px;padding:12px;font:inherit;color:#1a0d00}
+.hero input::placeholder{color:#3a1d05}
+.btn{display:block;width:100%;text-align:center;text-decoration:none;border:0;border-radius:12px;padding:13px;font:600 16px inherit;cursor:pointer;background:var(--or);color:#1a0d00}
+.btn.dark{background:#060a0f;color:var(--tx)}.btn.out{background:none;border:1px solid var(--bl);color:var(--bl)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tile,.row{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;color:var(--tx);text-decoration:none;font:600 15px inherit;text-align:left;cursor:pointer;display:block;width:100%}
+.tile i{font-style:normal;display:block;font-size:22px;margin-bottom:12px;color:var(--bl)}
+.tile small,.row small{display:block;color:var(--mut);font-weight:400;font-size:13px}
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.row[disabled],.tile[disabled]{opacity:.5}
+.search{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px;color:var(--tx);font:inherit;width:100%}
+.seg{display:flex;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:3px;gap:3px;overflow-x:auto}
+.seg button{flex:1;white-space:nowrap;background:none;border:0;color:var(--mut);font:600 14px inherit;padding:9px 10px;border-radius:9px;cursor:pointer}
+.seg button[aria-pressed=true]{background:var(--or);color:#1a0d00}
+.seg button:disabled{opacity:.45}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;display:grid;gap:12px}
+.fld{display:grid;gap:4px;font-size:14px;color:var(--mut)}
+.fld div{display:flex;align-items:center;background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:0 12px}
+.fld input,.fld select{flex:1;min-width:0;background:none;border:0;color:var(--tx);font:600 17px ui-monospace,Consolas,monospace;padding:12px 0;outline:none}
+.fld select{font-family:inherit}.fld option{background:var(--card)}
+.fld span{color:var(--mut);font-size:14px;margin-left:8px}
+.big{background:#2a1a0a;border:1px solid #7a4a16;border-radius:14px;padding:14px}
+.big small{color:#ffb35c;font-size:13px}.big b{display:block;font:700 30px ui-monospace,Consolas,monospace;color:var(--or)}
+.res div{display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-top:1px dashed var(--line);font-size:15px}
+.res div:first-child{border-top:0}.res div span:first-child{color:var(--mut)}.res div span:first-child small{display:block;font-size:12px}
+.res b{font:600 15px ui-monospace,Consolas,monospace}.res .hot b{color:var(--or)}
+.note{font-size:13px;color:var(--mut)}
+.warn{background:#3a2a10;border:1px solid #7a5316;color:#ffb35c;border-radius:12px;padding:10px 12px;font-size:14px}
+svg{width:100%;height:auto;background:#060a0f;border:1px solid var(--line);border-radius:12px}
+details{background:var(--card2);border:1px solid var(--line);border-radius:12px}
+summary{padding:12px;cursor:pointer;font-weight:600}details p{padding:0 12px 12px;color:var(--mut);font-size:14px}
+nav{position:fixed;left:0;right:0;bottom:0;background:#0d1620;border-top:1px solid var(--line);display:flex;padding-bottom:env(safe-area-inset-bottom,0px)}
+nav a{flex:1;text-align:center;padding:12px 2px;color:var(--mut);font-size:13px;text-decoration:none;border-top:3px solid transparent}
+nav a[aria-current]{color:var(--or);border-color:var(--or)}
+#toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom,0px));background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:10px 16px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s}
+#toast.on{opacity:1}
+.ir{display:flex;align-items:center;gap:8px;background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:6px 8px 6px 12px}
+.ir span{flex:1;font-size:14px}
+.ir input,.ir select{width:112px;background:#0b1118;border:1px solid var(--line);border-radius:8px;color:var(--tx);font:600 16px ui-monospace,Consolas,monospace;padding:9px 10px;outline:none}
+.ir select{width:150px;font-family:inherit}.ir option{background:var(--card)}
+.ir em{font-style:normal;color:var(--mut);font-size:13px;min-width:26px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px}
+.kpi{background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.kpi small{color:var(--mut);font-size:13px}
+.kpi b{display:block;font:700 24px ui-monospace,Consolas,monospace;color:var(--bl)}
+.kpi i{font:500 13px "Segoe UI",sans-serif;font-style:normal;margin-left:4px}
+.kpi.main b{font-size:32px}
+details .res{padding:0 12px 8px}
+.tile svg{display:block;margin-bottom:10px;background:none;border:0;border-radius:0}
+.tile small{margin-top:2px}
+.code{background:#060a0f;border:1px solid var(--line);border-radius:12px;padding:12px;margin:0;font:13px/1.6 ui-monospace,Consolas,monospace;overflow:auto;white-space:pre;max-height:360px;color:#dbe6f1}
+:focus-visible{outline:2px solid var(--bl);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<header id="hd"></header>
+<main id="app"></main>
+<div id="toast" role="status"></div>
+<nav id="nav"></nav>
+<script>
+const $=s=>document.querySelector(s);
+const num=s=>parseFloat(String(s).replace(",","."));
+const fm=(n,d=4)=>n.toFixed(d).replace(".",",");
+const fld=(id,l,v,u)=>`<label class="fld">${l}<div><input id="${id}" inputmode="decimal" value="${v}"><span>${u}</span></div></label>`;
+const row=(l,v,hot,sub)=>`<div class="${hot?"hot":""}"><span>${l}${sub?`<small>${sub}</small>`:""}</span><b>${v}</b></div>`;
+let tt;function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("on");clearTimeout(tt);tt=setTimeout(()=>t.classList.remove("on"),2200)}
+const CALCS=[["trig","Trigonometria","Ângulos e relações do triângulo.","Geometria",1],["con","Conicidade","Cálculos de cones e ângulos.","Geometria",1],["pol","Polígonos","Geometria de perfis poligonais.","Geometria",1],["fur","Furação Circular","Coordenadas para padrões circulares.","Geometria",1],["roscas","Roscas","Cálculos de roscas métricas.","Roscas e ajustes",1],["tol","Tolerâncias ISO","Ajustes e tolerâncias dimensionais.","Roscas e ajustes",1],["cha","Chaveta DIN 6885","Dimensões normalizadas de chavetas.","Roscas e ajustes",1],["prog","Programação CNC","Gerador de código G Fanuc.","Usinagem",1],["pot","Potência de Corte","Apoio ao planejamento de corte.","Usinagem",1]];
+let cat="Todas",qry="",tmode=0;
+
+/* Início */
+function inicio(){return `<div class="chips"><span class="pill ok">Licença ativa</span><span class="pill">Cálculos locais</span></div>
+<h1>O que vamos resolver?</h1><p class="mut">Calcule, consulte e encontre informações técnicas.</p>
+<div class="hero"><div><b style="font-size:20px">Consultor Técnico</b><p>Pergunte. O Casillas encontra o caminho técnico.</p></div><input placeholder="Digite sua dúvida de usinagem ou CNC..." aria-label="Pergunta"><button class="btn dark" data-soon="O Consultor entra no próximo protótipo">Consultar</button></div>
+<h2>Acesso rápido <a href="#calc">Ver todas</a></h2>
+<div class="grid2"><a class="tile" href="#calc/trig">${ic('<path d="M6 34V8L34 34Z"/>')}Trigonometria<small>Triângulos e ângulos</small></a><a class="tile" href="#calc/con">${ic('<path d="M6 13L34 7V33L6 27Z"/>')}Conicidade<small>Cones e conicidades</small></a><a class="tile" href="#calc/pol">${ic('<path d="M20 5L33 12.5V27.5L20 35L7 27.5V12.5Z"/>')}Polígonos<small>Cálculos geométricos</small></a><a class="tile" href="#calc/fur">${ic('<circle cx="20" cy="20" r="14" stroke-dasharray="3 3"/><circle cx="20" cy="6" r="3"/><circle cx="32" cy="27" r="3"/><circle cx="8" cy="27" r="3"/>')}Furação circular<small>Padrões de furos</small></a></div>
+<h2>Guia CNC</h2><a class="row" href="#guia"><span>Consultar ciclos CNC<small>Referências locais para Fanuc e Siemens.</small></span><b>›</b></a>`}
+
+/* Lista de calculadoras */
+function calcList(){const q=qry.toLowerCase();const cats=["Todas",...new Set(CALCS.map(c=>c[3]))];
+const items=CALCS.filter(c=>(cat==="Todas"||c[3]===cat)&&(!q||(c[1]+c[2]).toLowerCase().includes(q)));
+return `<input class="search" id="sq" placeholder="Buscar: roscas, furos, tolerância" value="${qry}" aria-label="Buscar calculadoras"><div class="seg">${cats.map(c=>`<button data-cat="${c}" aria-pressed="${c===cat}">${c}</button>`).join("")}</div>
+<div id="cl" style="display:grid;gap:10px">${items.map(c=>c[4]?`<a class="row" href="#calc/${c[0]}"><span>${c[1]}<small>${c[2]}</small></span><b>›</b></a>`:`<button class="row" data-soon="${c[1]} em breve"><span>${c[1]}<small>${c[2]}</small></span><small>em breve</small></button>`).join("")||'<p class="mut">Nada encontrado. Tente outro termo ou categoria.</p>'}</div>`}
+
+/* Calculadoras (identidade dos painéis) */
+const V={},M={trig:0,pol:0,prog:0,tol:0,pot:0};let curCalc=null;
+const ic=p=>`<svg viewBox="0 0 40 40" width="38" height="38" fill="none" stroke="#ff7a1a" stroke-width="2">${p}</svg>`;
+const g=(k,d)=>num(V["v_"+k]??d);
+const ir=(k,l,d,u)=>`<label class="ir"><span>${l}</span><input id="v_${k}" inputmode="decimal" value="${V["v_"+k]??d}" aria-label="${l}"><em>${u}</em></label>`;
+const seg=(k,n)=>`<div class="seg">${n.map((x,i)=>`<button data-seg="${k}:${i}" aria-pressed="${i===M[k]}">${x}</button>`).join("")}</div>`;
+const segOff=n=>`<div class="seg">${n.map((x,i)=>`<button ${i?"disabled":'aria-pressed="true"'}>${x}</button>`).join("")}</div>`;
+const kpi=(l,v,u,c)=>`<div class="kpi ${c||""}"><small>${l}</small><b>${v}<i>${u||""}</i></b></div>`;
+const shell=(t,sub,inp,extra,lbl)=>`<div class="card"><div><h1>${t}</h1><p class="mut">${sub}</p></div>${inp}<button class="btn" data-calc="1">${lbl||"Calcular"}</button></div><div class="card" id="rr"></div>${extra||""}`;
+const out=h=>{$("#rr").innerHTML=h};
+const bad=m=>out(`<p class="warn">${m}</p>`);
+const pos=(...a)=>a.every(x=>isFinite(x)&&x>0);
+const tx=(x,y,t,a,c)=>`<text x="${x}" y="${y}" fill="${c||"#4aa3ff"}" font-size="12" text-anchor="${a||"middle"}" font-family="ui-monospace,Consolas,monospace">${t}</text>`;
+const sv=(h,l)=>`<svg viewBox="0 0 300 170" role="img" aria-label="${l}">${h}</svg>`;
+const dt=(t,rows)=>`<details><summary>${t}</summary><div class="res">${rows}</div></details>`;
+const BL='stroke="#4aa3ff"',OR='stroke="#ff7a1a"';
+
+/* Trigonometria */
+const TMODES=[["2 catetos","co","ca"],["Hipotenusa + α","h","al"],["Cateto oposto + α","co","al"],["Cateto adj. + α","ca","al"]];
+const LB={co:["Cateto oposto","mm",3],ca:["Cateto adjacente","mm",4],h:["Hipotenusa","mm",5],al:["Ângulo α","°",36.87]};
+function trig(){const m=TMODES[M.trig];return shell("Trigonometria","Cálculos em triângulos retângulos",seg("trig",TMODES.map(x=>x[0]))+[m[1],m[2]].map(k=>ir(k,LB[k][0],LB[k][2],LB[k][1])).join(""))}
+function trigCalc(){const m=M.trig,r=Math.PI/180,G=k=>g(k,LB[k][2]);let co,ca,h,al;
+if(m===0){co=G("co");ca=G("ca");h=Math.hypot(co,ca);al=Math.atan2(co,ca)/r}else{al=G("al");if(!(al>0&&al<90))return bad("Informe um ângulo α entre 0° e 90°.");
+if(m===1){h=G("h");co=h*Math.sin(al*r);ca=h*Math.cos(al*r)}else if(m===2){co=G("co");ca=co/Math.tan(al*r);h=co/Math.sin(al*r)}else{ca=G("ca");co=ca*Math.tan(al*r);h=ca/Math.cos(al*r)}}
+if(!pos(co,ca,h,al))return bad("Preencha os valores com números maiores que zero.");
+const sc=Math.min(200/ca,100/co),X=70,Y=140,cw=ca*sc,chh=co*sc;
+out(sv(`<polygon points="${X},${Y} ${X+cw},${Y} ${X},${Y-chh}" fill="#ff7a1a14" ${OR} stroke-width="2.5"/><path d="M${X} ${Y-10}H${X+10}V${Y}" fill="none" ${OR}/>${tx(X-8,Y-chh/2,fm(co,2),"end")}${tx(X+cw/2,Y+18,fm(ca,2)+" mm")}${tx(X+cw/2+10,Y-chh/2-8,fm(h,2),"start")}${tx(X+cw-8,Y-6,"α","end")}${tx(X+8,Y-chh+20,"β","start")}`,"Triângulo retângulo")
++kpi("Hipotenusa",fm(h,3),"mm","main")+`<div class="kpis">${kpi("Ângulo α",fm(al,2),"°")}${kpi("Ângulo β",fm(90-al,2),"°")}</div>`
++dt("Ver fórmula",row("Hipotenusa","√(co² + ca²)")+row("Ângulo α","arctan(co / ca)")+row("Ângulo β","90° − α")+row("Cateto oposto",fm(co,4)+" mm")+row("Cateto adjacente",fm(ca,4)+" mm")+row("sen α / cos α",fm(Math.sin(al*r),5)+" / "+fm(Math.cos(al*r),5))+row("tan α",fm(Math.tan(al*r),5))))}
+
+/* Polígonos */
+const PD=[["R","Raio circunscrito",20],["a","Lado",20],["ap","Apótema",17.321]];
+function pol(){const k=PD[M.pol];return shell("Polígonos","Cálculos de polígonos regulares",seg("pol",["n + R","n + lado","n + apótema"])+ir("n","Número de lados",6,"")+ir(k[0],k[1],k[2],"mm"))}
+function polCalc(){const n=Math.round(g("n",6)),k=PD[M.pol],v=g(k[0],k[2]);if(!(n>=3&&n<=60))return bad("Use de 3 a 60 lados.");if(!pos(v))return bad("Informe um valor maior que zero.");
+const t=Math.PI/n,R=M.pol===0?v:M.pol===1?v/(2*Math.sin(t)):v/Math.cos(t),a=2*R*Math.sin(t),ap=R*Math.cos(t),cx=150,cy=85,rr=68;
+const pts=Array.from({length:n},(_,i)=>{const q=-Math.PI/2+i*2*t;return `${cx+rr*Math.cos(q)},${cy+rr*Math.sin(q)}`}).join(" ");
+out(sv(`<circle cx="${cx}" cy="${cy}" r="${rr}" fill="none" ${BL} stroke-dasharray="5 4"/><polygon points="${pts}" fill="#ff7a1a14" ${OR} stroke-width="2.5"/><line x1="${cx}" y1="${cy}" x2="${cx}" y2="${cy-rr}" ${BL}/><circle cx="${cx}" cy="${cy}" r="3" fill="#4aa3ff"/>${tx(cx+6,cy-rr/2,"R = "+fm(R,2)+" mm","start")}`,"Polígono regular")
++`<div class="kpis">${kpi("Lado",fm(a,3),"mm")}${kpi("Apótema",fm(ap,3),"mm")}</div>`
++dt("Resultados detalhados",row("Raio circunscrito R",fm(R,4)+" mm")+row("Perímetro",fm(n*a,4)+" mm")+row("Área",fm(.5*n*a*ap,3)+" mm²")+row("Ângulo interno",fm((n-2)*180/n,2)+"°")))}
+
+/* Furação circular */
+const fur=()=>shell("Furação circular","Distribuição de furos em círculo",ir("D","Diâmetro do círculo",80,"mm")+ir("n","Número de furos",6,"")+ir("a0","Ângulo inicial",0,"°"));
+function furCalc(){const D=g("D",80),n=Math.round(g("n",6)),a0=g("a0",0);if(!pos(D)||!(n>=2&&n<=60)||!isFinite(a0))return bad("Informe diâmetro maior que zero e de 2 a 60 furos.");
+const R=D/2,st=360/n,cx=150,cy=85,rr=56;let h=`<circle cx="${cx}" cy="${cy}" r="${rr}" fill="none" ${BL} stroke-dasharray="5 4"/><path d="M${cx-80} ${cy}H${cx+80}M${cx} ${cy-80}V${cy+80}" ${BL} stroke-dasharray="6 4" opacity=".6"/>`,rows="";
+for(let i=0;i<n;i++){const q=(a0+i*st)*Math.PI/180,c=Math.cos(q),s2=Math.sin(q);h+=`<circle cx="${cx+rr*c}" cy="${cy-rr*s2}" r="9" fill="none" ${OR} stroke-width="2.5"/>`;if(n<=24)h+=tx(cx+(rr+22)*c,cy-(rr+22)*s2+4,i+1,"middle","#93a4b6");rows+=row("Furo "+(i+1),"X "+fm(R*c,3)+" · Y "+fm(R*s2,3))}
+out(sv(h,"Furos em círculo")+`<div class="kpis">${kpi("Passo angular",fm(st,2),"°")}${kpi("Corda",fm(D*Math.sin(Math.PI/n),3),"mm")}</div>`+dt("Coordenadas X e Y (mm)",rows)+'<a class="row" href="#calc/prog"><span>Programação CNC<small>Gerar código G de furação</small></span><b>›</b></a>')}
+
+/* Conicidade */
+const con=()=>shell("Conicidade","Cálculo de diâmetros, comprimento e ângulo",segOff(["D · d · L","Ângulo","Inclinação"])+ir("D","Diâmetro maior D",50,"mm")+ir("d","Diâmetro menor d",40,"mm")+ir("L","Comprimento L",100,"mm"));
+function conCalc(){const D=g("D",50),d=g("d",40),L=g("L",100);if(!pos(D,d,L)||d>=D)return bad("Informe D maior que d e valores maiores que zero.");
+const sa=Math.atan((D-d)/(2*L))*180/Math.PI,rt=fm(L/(D-d),2).replace(/,00$/,"").replace(/(,\d)0$/,"$1"),hl=70,hs=70*d/D;
+out(sv(`<polygon points="60,${85-hl/2} 240,${85-hs/2} 240,${85+hs/2} 60,${85+hl/2}" fill="#ff7a1a14" ${OR} stroke-width="2.5"/><line x1="40" y1="85" x2="260" y2="85" ${BL} stroke-dasharray="6 4" opacity=".6"/><path d="M60 148H240" ${OR}/>${tx(150,164,"L = "+fm(L,1)+" mm","middle","#ff7a1a")}${tx(46,89,"D")}${tx(254,89,"d")}`,"Cone truncado")
++`<div class="kpis">${kpi("Conicidade","1:"+rt)}${kpi("Ângulo total",fm(2*sa,3),"°")}</div>`
++dt("Resultados detalhados",row("Semi-ângulo",fm(sa,4)+"°")+row("Diferença D − d",fm(D-d,3)+" mm")+row("Inclinação i = (D − d) / 2L",fm((D-d)/(2*L),4))))}
+
+/* Roscas */
+const MET=[[6,1],[8,1.25],[10,1.5],[12,1.75],[16,2],[20,2.5],[10,1.25],[12,1.5]];
+const roscas=()=>shell("Roscas","Cálculos de roscas padronizadas",segOff(["Métrica","UNC","UNF","Whitworth"])+`<label class="ir"><span>Rosca selecionada</span><select id="v_rs">${MET.map((m,i)=>`<option value="${i}" ${(V.v_rs??2)==i?"selected":""}>M${m[0]} × ${m[1]}</option>`).join("")}</select></label>`+ir("rw","Diâmetro do rolo (opcional)","","mm"),'<a class="row" href="#guia"><span>Ver ciclo G76 no Guia<small>Rosqueamento em múltiplos passes</small></span><b>›</b></a>');
+function roscasCalc(){const q=MET[+(V.v_rs??2)],d=q[0],P=q[1],w0=g("rw",""),w=w0>0?w0:.57735*P;
+const H=.866025*P,d2=d-.649519*P,d1=d-1.082532*P,d3=d-1.226869*P,M3=d2+3*w-.866025*P;
+const zz=Array.from({length:8},(_,i)=>`L${50+i*26} 60 L${63+i*26} 100 L${76+i*26} 60`).join(" ").replace(/L(\d+) 60 L(\d+) 100 L(\d+) 60/g,"L$1 60 L$2 100 L$3 60");
+out(sv(`<path d="M30 60 ${zz}" fill="none" ${OR} stroke-width="2.5"/><path d="M30 130H270" ${BL}/>${tx(150,150,"P = "+fm(P,2)+" mm")}<line x1="30" y1="80" x2="270" y2="80" ${BL} stroke-dasharray="5 4"/>${tx(36,76,"d2","start")}`,"Perfil da rosca")
++kpi("Furo para macho (D − P)",fm(d-P,3),"mm","main")+`<div class="kpis">${kpi("Diâmetro médio d2",fm(d2,3),"mm")}${kpi("Diâmetro interno d1",fm(d1,3),"mm")}${kpi("Medida sobre 3 rolos",fm(M3,3),"mm")}</div>`
++dt("Detalhes do perfil",row("Passo P",fm(P,4)+" mm")+row("Altura H",fm(H,4)+" mm")+row("Altura h1","rosca interna: "+fm(.541266*P,4)+" mm")+row("Altura h3","rosca externa: "+fm(.612372*P,4)+" mm")+row("Diâmetro de fundo d3",fm(d3,4)+" mm")+row("Rolo",fm(w,3)+" mm"+(w0>0?"":" (ideal)")))+'<p class="note">Perfil ISO 60°, conforme ISO 68-1 e ISO 724. Confira a tolerância na norma antes de usinar.</p>')}
+/* Programação CNC */
+const PG=[["Furos G83",[["D","Diâmetro do círculo",80,"mm"],["n","Número de furos",6,""],["a0","Ângulo inicial",0,"°"],["pr","Profundidade",15,"mm"],["zs","Plano Z seguro",50,"mm"],["q","Q · pique",5,"mm"],["r","R · plano de retorno",2,"mm"],["S","Rotação S",900,"rpm"],["F","Avanço F",120,"mm/min"]]],
+["Desbaste G71",[["Di","Diâmetro inicial",50,"mm"],["Df","Diâmetro final",40,"mm"],["L","Comprimento",60,"mm"],["S","Rotação S",800,"rpm"],["F","Avanço de desbaste",0.25,"mm/rev"],["Fa","Avanço de acabamento",0.1,"mm/rev"],["ap","Profundidade por passe",1.5,"mm"]]],
+["Rosca G76",[["D","Diâmetro nominal",10,"mm"],["P","Passo",1.5,"mm"],["L","Comprimento da rosca",20,"mm"],["S","Rotação S",600,"rpm"],["dd","Q · 1º passe",350,"µm"]]]];
+let LAST="";const esc=t=>t.replace(/&/g,"&amp;").replace(/</g,"&lt;");
+const prog=()=>shell("Programação CNC","Gerador de código G · Fanuc",seg("prog",PG.map(x=>x[0]))+PG[M.prog][1].map(f=>ir(M.prog+"_"+f[0],f[1],f[2],f[3])).join(""),"","Gerar código G");
+function progCalc(){const m=M.prog,G=k=>g(m+"_"+k,PG[m][1].find(f=>f[0]===k)[2]),c=(x,d=3)=>x.toFixed(d);let L;
+if(m===0){const D=G("D"),n=Math.round(G("n")),a0=G("a0"),pr=G("pr"),zs=G("zs"),q=G("q"),r=G("r"),S=G("S"),F=G("F");
+if(!pos(D,pr,zs,q,S,F)||!(n>=1&&n<=60)||!isFinite(a0)||!isFinite(r))return bad("Preencha todos os campos com valores válidos (de 1 a 60 furos).");
+if(q>pr)return bad("O pique Q não pode ser maior que a profundidade.");if(zs<=r)return bad("O plano Z seguro deve ficar acima do plano R.");
+const pt=i=>{const a=(a0+i*360/n)*Math.PI/180;return `X${c(D/2*Math.cos(a))} Y${c(D/2*Math.sin(a))}`};
+L=["%","O0010 (FURACAO CIRCULAR G83)","G21 G17 G40 G49 G80 G90","G54","T01 M06",`G97 S${Math.round(S)} M03`,"G00 "+pt(0),`G43 H01 Z${c(zs)}`,`G98 G83 ${pt(0)} Z-${c(pr)} R${c(r)} Q${c(q)} F${c(F,1)}`];
+for(let i=1;i<n;i++)L.push(pt(i));L.push("G80",`G00 Z${c(zs)}`,"M05","G28 G91 Z0","G90","M30","%")}
+else if(m===1){const Di=G("Di"),Df=G("Df"),Lg=G("L"),S=G("S"),F=G("F"),Fa=G("Fa"),ap=G("ap");
+if(!pos(Di,Df,Lg,S,F,Fa,ap))return bad("Preencha todos os campos com valores maiores que zero.");
+if(Df>=Di)return bad("O diâmetro final deve ser menor que o inicial.");if(ap>(Di-Df)/2)return bad("A profundidade por passe não pode passar da metade da diferença de diâmetros.");
+L=["%","O0030 (DESBASTE LONGITUDINAL G71)","G21 G18 G40 G97 G99","G28 U0 W0","T0101",`G97 S${Math.round(S)} M03`,`G00 X${c(Di+2)} Z2.000`,`G71 U${c(ap)} R0.500`,`G71 P100 Q200 U0.400 W0.100 F${c(F)}`,`N100 G00 X${c(Df)}`,`G01 Z-${c(Lg)} F${c(Fa)}`,`N200 X${c(Di+2)}`,"G70 P100 Q200","G00 X100.000 Z100.000","M05","M30","%"]}
+else{const D=G("D"),P=G("P"),Lg=G("L"),S=G("S"),dd=G("dd");
+if(!pos(D,P,Lg,S,dd))return bad("Preencha todos os campos com valores maiores que zero.");
+const d3=D-1.226869*P,k=Math.round(.61343*P*1000);if(dd>k)return bad("O primeiro passe Q não pode passar da altura do filete ("+k+" µm).");
+L=["%","O0076 (ROSCA EXTERNA G76)","G21 G18 G40 G97 G99","G28 U0 W0","T0404",`G97 S${Math.round(S)} M03`,`G00 X${c(D+2)} Z${c(3*P)}`,"G76 P021060 Q100 R0.050",`G76 X${c(d3)} Z-${c(Lg)} R0 P${k} Q${Math.round(dd)} F${c(P)}`,"G00 X100.000 Z100.000","M05","M30","%"]}
+LAST=L.join("\n");
+out(`<div class="warn">Código gerado automaticamente. Simule antes de rodar na máquina. Revisão técnica pendente.</div><div class="kpis">${kpi("Linhas",L.length)}${kpi("Módulo",PG[m][0].split(" ")[1])}</div><pre class="code" tabindex="0">${esc(LAST)}</pre><div class="grid2"><button class="btn" data-copy>Copiar</button><button class="btn out" data-share>Compartilhar</button></div><p class="note">Números de ferramenta (T, H), compensações e limites de rotação seguem um padrão. Ajuste ao seu setup. Em G71 e G76, o formato dos blocos depende do controle e da variante.</p>`)}
+/* Tolerâncias ISO 286 */
+const RG=[3,6,10,18,30,50,80,120,180,250,315,400,500];
+const ITT={6:[6,8,9,11,13,16,19,22,25,29,32,36,40],7:[10,12,15,18,21,25,30,35,40,46,52,57,63],8:[14,18,22,27,33,39,46,54,63,72,81,89,97],9:[25,30,36,43,52,62,74,87,100,115,130,140,155]};
+const FD={g:[-2,-4,-5,-6,-7,-9,-10,-12,-14,-15,-17,-18,-20],f:[-6,-10,-13,-16,-20,-25,-30,-36,-43,-50,-56,-62,-68],k:[0,1,1,1,2,2,2,3,3,4,4,4,5],m:[2,4,6,7,8,9,11,13,15,17,20,21,23],p:[6,12,15,18,22,26,32,37,43,50,56,62,68]};
+const FH=["H6","H7","H8","H9"],FS=["h6","h7","h8","g6","f7","k6","m6","p6"],CL=[...FH,...FS];
+const dev=(c,D)=>{const i=RG.findIndex(x=>D<=x),it=ITT[c.slice(1)][i],t=c[0];if(t==="H")return[0,it];if(t==="h")return[-it,0];const f=FD[t][i];return t==="g"||t==="f"?[f-it,f]:[f,f+it]};
+const sl=(k,l,o,d)=>`<label class="ir"><span>${l}</span><select id="v_${k}">${o.map((x,i)=>`<option value="${i}" ${(V["v_"+k]??d)==i?"selected":""}>${x}</option>`).join("")}</select></label>`;
+const um=x=>(x>0?"+":"")+x+" µm";
+const band=(y,a,b,sc,col)=>`<rect x="${150+Math.min(a,b)*sc}" y="${y}" width="${Math.max(Math.abs(b-a)*sc,2)}" height="22" fill="${col}55" stroke="${col}"/>`;
+const tol=()=>shell("Tolerâncias ISO","Ajustes e limites dimensionais (ISO 286)",seg("tol",["Tolerância","Ajuste"])+ir("N","Dimensão nominal",80,"mm")+(M.tol?sl("fh","Furo",FH,1)+sl("fs","Eixo",FS,3):sl("cl","Classe",CL,1)));
+function tolCalc(){const N=g("N",80);if(!(N>=1&&N<=500))return bad("Informe a dimensão nominal entre 1 e 500 mm.");
+if(!M.tol){const c=CL[+(V.v_cl??1)],d=dev(c,N),sc=90/Math.max(Math.abs(d[0]),Math.abs(d[1]),1);
+return out(sv(`<line x1="150" y1="40" x2="150" y2="130" stroke="#93a4b6" stroke-dasharray="4 3"/>${band(70,d[0],d[1],sc,"#4aa3ff")}${tx(150,32,fm(N,3)+" (nominal)","middle","#93a4b6")}${tx(150+d[0]*sc,118,um(d[0]))}${tx(150+d[1]*sc,62,um(d[1]))}`,"Zona de tolerância")
++`<div class="kpis">${kpi("Mínimo",fm(N+d[0]/1000,3),"mm")}${kpi("Máximo",fm(N+d[1]/1000,3),"mm")}</div>${kpi("Tolerância",d[1]-d[0],"µm","main")}`
++dt("Afastamentos",row(c[0]==="H"?"Inferior (EI)":"Inferior (ei)",um(d[0]))+row(c[0]==="H"?"Superior (ES)":"Superior (es)",um(d[1]))+row("Sistema","ISO 286 · "+c)))}
+const h=dev(FH[+(V.v_fh??1)],N),e=dev(FS[+(V.v_fs??3)],N),fx=h[1]-e[0],fn=h[0]-e[1],sc=90/Math.max(Math.abs(h[0]),Math.abs(h[1]),Math.abs(e[0]),Math.abs(e[1]),1);
+out(sv(`<line x1="150" y1="30" x2="150" y2="140" stroke="#93a4b6" stroke-dasharray="4 3"/>${band(45,h[0],h[1],sc,"#4aa3ff")}${band(95,e[0],e[1],sc,"#ff7a1a")}${tx(14,60,"Furo","start")}${tx(14,110,"Eixo","start","#ff7a1a")}`,"Furo e eixo")
++kpi("Tipo de ajuste",fn>=0?"Com folga":fx<=0?"Com interferência":"Incerto","","main")+`<div class="kpis">${kpi("Folga mín.",fn,"µm")}${kpi("Folga máx.",fx,"µm")}</div>`
++dt("Detalhes",row("Furo "+FH[+(V.v_fh??1)],um(h[0])+" / "+um(h[1]))+row("Eixo "+FS[+(V.v_fs??3)],um(e[0])+" / "+um(e[1])))+'<p class="note">Folga negativa indica interferência. Tabela parcial: classes de uso comum, de 1 a 500 mm.</p>')}
+
+/* Potência de corte */
+const PF=[[["Vc","Velocidade de corte Vc",180,"m/min"],["f","Avanço f",0.2,"mm/rot"],["ap","Profundidade ap",2,"mm"],["D","Diâmetro da peça",50,"mm"],["kc","Força específica kc",1800,"N/mm²"],["et","Rendimento η",0.9,""]],[["Vc","Velocidade de corte Vc",150,"m/min"],["fz","Avanço por dente fz",0.1,"mm"],["z","Número de dentes z",4,""],["ap","Profundidade ap",3,"mm"],["ae","Largura ae",10,"mm"],["D","Diâmetro da fresa",20,"mm"],["kc","Força específica kc",1800,"N/mm²"],["et","Rendimento η",0.85,""]]];
+const pot=()=>shell("Potência de corte","Estimativa para torneamento e fresamento",seg("pot",["Torneamento","Fresamento"])+PF[M.pot].map(f=>ir("p"+M.pot+f[0],f[1],f[2],f[3])).join(""));
+function potCalc(){const m=M.pot,G=k=>g("p"+m+k,PF[m].find(f=>f[0]===k)[2]),Vc=G("Vc"),ap=G("ap"),D=G("D"),kc=G("kc"),et=G("et");
+if(!pos(Vc,ap,D,kc,et)||et>1)return bad("Preencha os campos com valores maiores que zero. O rendimento η fica entre 0 e 1.");
+const n=1000*Vc/(Math.PI*D);let Pc,x;
+if(m===0){const f=G("f");if(!pos(f))return bad("Informe o avanço f.");const Fc=kc*ap*f;Pc=Fc*Vc/60000;x=kpi("Força de corte Fc",fm(Fc,0),"N")}
+else{const fz=G("fz"),z=G("z"),ae=G("ae");if(!pos(fz,z,ae))return bad("Preencha todos os campos com valores maiores que zero.");const vf=fz*z*n;Pc=ap*ae*vf*kc/6e7;x=kpi("Avanço vf",fm(vf,0),"mm/min")+kpi("Remoção Q",fm(ap*ae*vf/1000,1),"cm³/min")}
+out(kpi("Potência de corte",fm(Pc,2),"kW","main")+`<div class="kpis">${kpi("Potência no motor",fm(Pc/et,2),"kW")}${kpi("Torque",fm(Pc*9549/n,1),"N·m")}${kpi("Rotação n",fm(n,0),"rpm")}${x}</div><p class="note">Estimativa. O kc varia com o material, a espessura do cavaco e a geometria da ferramenta. Resultado depende das premissas informadas.</p>`)}
+
+/* Chaveta DIN 6885 */
+const DIN=[[8,2,2,1.2,1],[10,3,3,1.8,1.4],[12,4,4,2.5,1.8],[17,5,5,3,2.3],[22,6,6,3.5,2.8],[30,8,7,4,3.3],[38,10,8,5,3.3],[44,12,8,5,3.3],[50,14,9,5.5,3.8],[58,16,10,6,4.3],[65,18,11,7,4.4],[75,20,12,7.5,4.9]];
+const MAT=[["Aço",60,90],["Ferro fundido",40,60],["Alumínio",30,40]];
+const cha=()=>shell("Chaveta DIN 6885","Seleção dimensional da chaveta paralela",segOff(["Paralela","Ver tabela"])+ir("d","Diâmetro do eixo",40,"mm")+ir("T","Torque",250,"N·m")+sl("mt","Material do cubo",MAT.map(x=>x[0]),0));
+function chaCalc(){const d=g("d",40),T=g("T",250),mt=MAT[+(V.v_mt??0)];if(!(d>6&&d<=75))return bad("Informe o diâmetro do eixo entre 6 e 75 mm.");if(!pos(T))return bad("Informe o torque.");
+const r=DIN.find(x=>d<=x[0]),b=r[1],h=r[2],t1=r[3],t2=r[4],Fu=2000*T/d,ls=Fu/(b*mt[1])+b,lp=Fu/((h-t1)*mt[2])+b,lm=Math.max(ls,lp);
+out(`<div class="kpis">${kpi("Largura b",b,"mm")}${kpi("Altura h",h,"mm")}${kpi("Comprimento mínimo",Math.ceil(lm),"mm")}</div>`
++dt("Verificações",row("Cisalhamento",fm(ls,1)+" mm")+row("Esmagamento",fm(lp,1)+" mm")+row("Força tangencial Fu",fm(Fu,0)+" N")+row("Limites ("+mt[0]+")","τ "+mt[1]+" · p "+mt[2]+" MPa"))
++dt("Rasgos",row("Profundidade no eixo t1",fm(r[3],1)+" mm")+row("Profundidade no cubo t2",fm(r[4],1)+" mm"))+'<p class="note">Comprimento sem folga de segurança, tipo A (pontas arredondadas). Os limites τ e p são de referência. Escolha o comprimento normalizado seguinte e confira na DIN 6885-1.</p>')}
+const CALCMAP={tol:["Tolerâncias ISO",tol,tolCalc],pot:["Potência de corte",pot,potCalc],cha:["Chaveta DIN 6885",cha,chaCalc],prog:["Programação CNC",prog,progCalc],trig:["Trigonometria",trig,trigCalc],con:["Conicidade",con,conCalc],pol:["Polígonos",pol,polCalc],fur:["Furação circular",fur,furCalc],roscas:["Roscas",roscas,roscasCalc]};
+
+/* Guia + Biblioteca */
+const guia=()=>`<div class="card"><h2 style="margin:0">Guia CNC 2.0</h2><p class="mut">Ciclos por controle e variante, com trajetória, parâmetros e exemplo explicado. O G76 já está no protótipo.</p><a class="btn" href="https://claude.ai/artifact/XevLcpXYbGYh8CKwFwQdwn" target="_blank" rel="noopener">Abrir protótipo do G76</a></div>`;
+const lib=()=>`<h1>Biblioteca</h1><h2>Contato</h2><div class="grid2"><button class="btn" data-soon="WhatsApp: adicione o link real">WhatsApp</button><button class="btn out" data-soon="Grupo: adicione o link real">Entrar no grupo</button><button class="btn out" data-soon="Instagram: adicione o link real">Instagram</button><button class="btn out" data-soon="YouTube: adicione o link real">YouTube</button></div>
+<h2>Serviços de usinagem</h2>${[["Torneamento CNC","Programação, otimização de ciclos e cálculo de parâmetros."],["Fresamento CNC","Estratégias de desbaste, acabamento e fixação."],["Programação CNC","Fanuc Macro B, Siemens, Mach3 e ajustes finos."],["Treinamento","Aulas in-company para operadores e programadores."]].map(s=>`<details><summary>${s[0]}</summary><p>${s[1]}</p></details>`).join("")}
+<h2>Cursos</h2>${[["Programação CAM","Mastercam, Fusion 360 e estratégias de usinagem."],["SolidWorks","Modelagem 3D, montagem e desenho técnico."],["Programação parametrizada","Fanuc Macro B, variáveis e subprogramas."]].map(s=>`<details><summary>${s[0]} · sob consulta</summary><p>${s[1]}</p></details>`).join("")}
+<div class="card"><h2 style="margin:0">Licença</h2><p class="mut">Licença vitalícia. De <s>R$ 49,90</s> por <b style="color:var(--tx)">R$ 19,90</b>, preço promocional. Pagamento único, sem mensalidade e sem limite de aparelhos.</p><button class="btn" data-soon="Ativação por código no app real">Ativar com código</button><button class="btn out" data-soon="Link de compra no app real">Comprar licença</button></div>
+<p class="note">Casillas App · Calculadora Técnica de Usinagem. Cálculos feitos no aparelho, funcionam offline, seguindo normas ISO, DIN e práticas de oficina.</p>`;
+
+/* Roteador */
+const TABS=[["inicio","Início"],["calc","Calculadoras"],["guia","Guia CNC"],["lib","Biblioteca"]];
+function route(){curCalc=null;const h=(location.hash||"#inicio").slice(1).split("/"),t=h[0],sub=h[1];let html,title="",back="";
+if(t==="calc"&&CALCMAP[sub]){const c=CALCMAP[sub];html=c[1]();title=c[0];back="#calc";curCalc=c[2]}
+
+else if(t==="calc"){html=calcList();title="Calculadoras"}
+else if(t==="guia"){html=guia();title="Guia CNC"}
+else if(t==="lib"){html=lib();title="Biblioteca"}
+else{html=inicio()}
+$("#hd").innerHTML=`${back?`<a href="${back}" aria-label="Voltar">←</a>`:""}<b>Casillas</b><span>${title}</span>`;
+$("#app").innerHTML=html;
+$("#nav").innerHTML=TABS.map(x=>`<a href="#${x[0]}" ${x[0]===(t||"inicio")?'aria-current="page"':""}>${x[1]}</a>`).join("");
+if(curCalc)curCalc();window.scrollTo(0,0)}
+document.addEventListener("input",e=>{const i=e.target.id;
+if(i==="sq"){qry=e.target.value;const p=e.target.selectionStart;route();const s=$("#sq");s.focus();s.setSelectionRange(p,p)}
+else if(i&&i.slice(0,2)==="v_"){V[i]=e.target.value;if(curCalc)curCalc()}});
+document.addEventListener("click",e=>{const t=e.target.closest("[data-soon],[data-cat],[data-seg],[data-calc],[data-copy],[data-share]");if(!t)return;
+if(t.dataset.soon)toast(t.dataset.soon);else if(t.dataset.cat){cat=t.dataset.cat;route()}else if(t.dataset.copy!==undefined){try{navigator.clipboard.writeText(LAST)}catch(_){}toast("Código copiado")}else if(t.dataset.share!==undefined){if(navigator.share)navigator.share({text:LAST}).catch(()=>{});else toast("Compartilhar indisponível neste navegador")}else if(t.dataset.seg){const q=t.dataset.seg.split(":");M[q[0]]=+q[1];route()}else{if(curCalc)curCalc();toast("Calculado")}});
+window.addEventListener("hashchange",route);route();
+</script>
+</body>
+</html>

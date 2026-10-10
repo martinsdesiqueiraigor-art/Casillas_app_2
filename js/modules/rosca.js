@@ -11,8 +11,8 @@ let currentTab = 'metrica';
 let metricaSel = 'M10';
 let polSel = '1/2';
 
-function resultRow(label, value) {
-  return createElementSafe('div', { class: 'result-row' }, [
+function resultRow(label, value, primary = false) {
+  return createElementSafe('div', { class: primary ? 'result-row result-row--primary' : 'result-row' }, [
     createElementSafe('span', { class: 'result-label', text: label }),
     createElementSafe('span', { class: 'result-value', text: value })
   ]);
@@ -69,7 +69,7 @@ function renderResults(res, rolos) {
   wrap.appendChild(resultRow('Altura H', formatNumber(res.H, 4) + ' mm'));
   wrap.appendChild(resultRow('Altura h1', formatNumber(res.h1, 4) + ' mm'));
   wrap.appendChild(resultRow('Diâmetro médio d2', formatNumber(res.d2, 4) + ' mm'));
-  wrap.appendChild(resultRow('Diâmetro interno d1', formatNumber(res.d1, 4) + ' mm'));
+  wrap.appendChild(resultRow('Diâmetro interno d1', formatNumber(res.d1, 4) + ' mm', true));
   if (Number.isFinite(res.d3) && res.d3 !== res.d1) {
     wrap.appendChild(resultRow('Diâmetro fundo d3', formatNumber(res.d3, 4) + ' mm'));
   }

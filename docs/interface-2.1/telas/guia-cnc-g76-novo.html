@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Casillas · Guia CNC · G76</title>
+<style>
+:root{--bg:#0b1118;--card:#111b27;--card2:#16232f;--line:#24364a;--tx:#eef3f8;--mut:#93a4b6;--or:#ff7a1a;--bl:#4aa3ff;--code:#060a0f;--warn:#3a2a10;--ok:#6fd3a6;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px)}
+:root:not([data-theme="dark"]){color-scheme:dark}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.45 "Segoe UI",Roboto,system-ui,sans-serif;padding-bottom:calc(84px + env(safe-area-inset-bottom,0px))}
+main{max-width:480px;margin:0 auto;padding:12px 16px}
+header{display:flex;align-items:center;justify-content:space-between;padding:4px 0 8px}
+header b{font-size:22px;letter-spacing:.3px}
+.brand{display:flex;align-items:center;gap:10px}
+.iconbtn{background:none;border:0;color:var(--mut);padding:6px;border-radius:10px;cursor:pointer}
+svg.i{width:20px;height:20px;display:block;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;background:none;border:0;border-radius:0;flex:none}
+svg.logo{width:30px;height:30px;color:var(--or);fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;background:none;border:0}
+h1{font-size:28px;margin:8px 0 12px}
+.search{display:flex;gap:8px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:0 12px}
+.search input{flex:1;background:none;border:0;color:var(--tx);font:inherit;padding:12px 0;outline:none}
+.filters{display:grid;grid-template-columns:1fr 1fr 1fr 48px;gap:8px;margin:10px 0}
+.filters label{position:relative;display:flex;align-items:center;gap:6px;background:#0f2236;border:1px solid #1f4a78;border-radius:12px;padding:10px 22px 10px 8px;color:var(--bl);min-width:0}
+.filters label::after{content:"";position:absolute;right:9px;top:50%;width:6px;height:6px;border-right:2px solid var(--mut);border-bottom:2px solid var(--mut);transform:translateY(-70%) rotate(45deg);pointer-events:none}
+.filters label svg.i{width:18px;height:18px}
+.filters select{flex:1;min-width:0;appearance:none;-webkit-appearance:none;background:none;border:0;color:var(--tx);font:600 14px inherit;padding:2px 0;outline:none}
+.fbtn{background:var(--card);border:1px solid var(--line);border-radius:12px;color:var(--tx);display:grid;place-items:center;cursor:pointer}
+.filters option{background:var(--card)}
+.variant{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px}
+.chip{white-space:nowrap;border:1px solid var(--line);background:var(--card);color:var(--mut);border-radius:20px;padding:6px 12px;font:600 13px inherit;cursor:pointer}
+.chip[aria-pressed=true]{border-color:var(--bl);color:var(--bl);background:#10253a}
+.cycle{background:var(--card);border:1px solid var(--line);border-radius:16px;margin-top:10px;overflow:hidden}
+.head{display:flex;gap:10px;align-items:center;padding:14px}
+.head .bar{width:5px;align-self:stretch;min-height:44px;border-radius:3px;background:var(--or);flex:none}
+.head h2{margin:0;font-size:26px;line-height:1.1}
+.head small{display:block;color:var(--mut);font-size:14px;margin-top:2px}
+.head .rev{display:block;font-size:12px;color:#ffb35c;margin-top:4px;font-weight:600}
+.head .rev.ok{color:var(--ok)}
+.alert{margin-left:auto;display:flex;align-items:center;gap:8px;background:var(--warn);border:1px solid #7a5316;color:#ffb35c;border-radius:12px;padding:8px 10px;font:600 13px/1.25 inherit;text-align:left;max-width:50%;cursor:pointer}
+.cvar{padding:0 14px 12px}
+.badge{margin-left:auto;font:600 12px inherit;border-radius:8px;padding:6px 8px;border:1px solid #7a5316;background:var(--warn);color:#ffb35c;text-align:center}
+.badge.ok{background:#0f2a22;border-color:#2a6a52;color:var(--ok)}
+[role=tablist]{display:flex;border-bottom:1px solid var(--line)}
+[role=tab]{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;background:none;border:0;border-bottom:3px solid transparent;color:var(--mut);font:600 12px inherit;padding:10px 2px;cursor:pointer}
+[role=tab][aria-selected=true]{color:var(--or);border-color:var(--or)}
+.panel{padding:14px;display:grid;gap:12px}
+.panel[hidden]{display:none}
+.box{background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:12px}
+.box h3{margin:0 0 6px;font-size:16px}
+.box p{margin:0;color:var(--mut);font-size:15px}
+.ctx{display:flex;flex-wrap:wrap;gap:8px}
+.ctx span{border:1px solid var(--line);border-radius:8px;padding:5px 10px;font-size:14px;background:var(--card2)}
+figure svg{width:100%;height:auto;display:block;background:var(--code);border:1px solid var(--line);border-radius:12px}
+.player{display:grid;grid-template-columns:56px 1fr 56px;gap:10px}
+.pbtn{min-height:48px;border-radius:12px;border:1px solid var(--line);background:var(--card2);color:var(--tx);font:500 38px/1 inherit;cursor:pointer;padding:0 0 4px}
+.pbtn.play{background:var(--or);border-color:var(--or);color:#1a0d00;font-size:16px}
+.slider{width:100%;height:36px;accent-color:var(--or);margin:0}
+.slider::-webkit-slider-thumb{height:28px;width:28px}
+.tjv{display:grid;gap:12px}
+.pass{display:flex;align-items:center;justify-content:space-between;background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.pass small{display:block;color:var(--mut);font-size:13px}
+.pass b{font-size:30px;line-height:1.1}
+.pass b i{font-style:normal;font-size:16px;color:var(--mut);font-weight:600}
+.tag{border:1px solid #1f4a78;background:#0f2236;color:var(--bl);border-radius:20px;padding:6px 12px;font:600 13px inherit}
+.tag.fin{border-color:#2a6a52;background:#0f2a22;color:var(--ok)}
+.kpis2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.kpis2>div{background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.kpis2 small{display:block;color:var(--mut);font-size:12px}
+.kpis2 b{font-size:17px}
+.legend{display:flex;flex-wrap:wrap;gap:8px 14px;font-size:13px;color:var(--mut)}
+.legend span{display:flex;align-items:center;gap:6px}
+.legend i{width:16px;height:4px;border-radius:2px;display:block}
+.legend i.dash{background:none;border-top:2px dashed var(--tx);height:0;opacity:.7}
+.alert.wide{max-width:100%;width:100%;margin-left:0;text-align:left;font-weight:500}
+.alert.wide span{flex:1}
+.sx{background:var(--code);border:1px solid var(--line);border-radius:12px;padding:12px;display:grid;gap:10px}
+.sx .lbl{font:12px "Segoe UI",sans-serif;color:var(--mut)}
+.toks{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.tk{min-height:48px;min-width:48px;padding:0 10px;border-radius:10px;border:1px solid #1f4a78;background:#0f2236;color:var(--bl);font:600 15px ui-monospace,Consolas,monospace;cursor:pointer}
+.tk.g{display:grid;place-items:center;border-color:var(--line);background:var(--card2);color:var(--or);cursor:default}
+.tk[aria-pressed=true]{background:var(--bl);border-color:var(--bl);color:#04121f}
+.cp{min-height:48px;border-radius:12px;border:1px solid var(--line);background:var(--card2);color:var(--tx);font:600 15px inherit;cursor:pointer}
+.pe{background:var(--card2);border:1px solid var(--bl);border-radius:12px;padding:12px;display:grid;gap:8px}
+.pe code{color:var(--bl);font:600 15px ui-monospace,Consolas,monospace}
+.plist{display:grid;gap:8px}
+.pcard{display:grid;grid-template-columns:84px 1fr;gap:10px;align-items:start;text-align:left;background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:12px;color:var(--tx);font:600 15px inherit;min-height:48px;cursor:pointer}
+.pcard code{color:var(--bl);font:600 14px ui-monospace,Consolas,monospace;background:#0e2236;border-radius:6px;padding:2px 6px;justify-self:start}
+.pcard small{display:block;color:var(--mut);font-weight:400;font-size:13px}
+.pcard[aria-pressed=true]{border-color:var(--bl);background:#0f2236}
+.sx pre{margin:0;font:14px/1.7 ui-monospace,Consolas,monospace;overflow-x:auto;white-space:pre}
+.sx .a{color:var(--or)}
+svg.th{width:100%;height:auto;display:block;background:var(--code);border:1px solid var(--line);border-radius:12px}
+.ln{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center}
+.cp.mini{min-width:72px;padding:0 10px}
+.step summary i{background:var(--or)}
+.search svg.i{color:var(--mut)}
+[hidden]{display:none!important}
+.apl{display:grid;gap:10px}
+.apl .t{display:flex;gap:12px;align-items:center}
+.apl .t svg.i{width:30px;height:30px;color:var(--bl)}
+.apl .t h3{margin:0;font-size:17px}
+.apl .t p{margin:2px 0 0;color:var(--mut);font-size:14px}
+.irow{display:flex;align-items:center;gap:12px;background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:14px 12px;color:var(--tx);font:600 16px inherit;width:100%;text-align:left;cursor:pointer}
+.irow svg.i{color:var(--bl);width:24px;height:24px}
+.irow .go{margin-left:auto;color:var(--mut)}
+.irow small{display:block;color:var(--mut);font-weight:400;font-size:14px}
+.irow.main{border-color:var(--bl);color:var(--bl);background:#0f2236}
+details summary svg.i{color:var(--bl);width:24px;height:24px}
+figcaption{font-size:12px;color:var(--mut);text-align:right;margin-top:4px}
+figure{margin:0}
+.code{position:relative;background:var(--code);border:1px solid var(--line);border-radius:12px;padding:12px;font:14px/1.7 ui-monospace,Consolas,monospace;overflow-x:auto;white-space:pre}
+.code .a{color:var(--or)}
+.code .lbl{display:block;font:12px "Segoe UI",sans-serif;color:var(--mut);margin-bottom:2px}
+.copy{position:absolute;right:8px;top:8px;background:var(--card2);border:1px solid var(--line);color:var(--tx);border-radius:8px;padding:4px 10px;font:600 12px "Segoe UI",sans-serif;cursor:pointer}
+.params{display:grid;gap:0}
+.params div{display:grid;grid-template-columns:92px 1fr;gap:10px;padding:10px 0;border-top:1px solid var(--line)}
+.params div:first-child{border-top:0}
+.params code{color:var(--bl);font:600 14px ui-monospace,Consolas,monospace;background:#0e2236;border-radius:6px;padding:2px 6px;align-self:start;justify-self:start}
+.params span small{display:block;color:var(--mut);font-size:13px}
+details{background:var(--card2);border:1px solid var(--line);border-radius:12px}
+summary{display:flex;gap:10px;align-items:center;padding:12px;cursor:pointer;list-style:none;font-weight:600}
+summary::-webkit-details-marker{display:none}
+summary i{width:28px;height:28px;border-radius:50%;background:var(--or);color:#1a0d00;display:grid;place-items:center;font-style:normal;font-weight:700}
+summary::after{content:"›";margin-left:auto;font-size:22px;color:var(--mut);transition:transform .2s}
+details[open] summary::after{transform:rotate(90deg)}
+details>div{padding:0 12px 12px;display:grid;gap:10px}
+.lines{display:grid;gap:8px}
+.line{display:grid;gap:2px;font-size:14px;color:var(--mut)}
+.line code{color:var(--tx);font:14px ui-monospace,Consolas,monospace}
+.warn{background:var(--warn);border:1px solid #7a5316;color:#ffb35c;border-radius:12px;padding:10px 12px;font-size:14px}
+.empty{text-align:center;color:var(--mut);padding:24px 8px}
+.rows{display:grid;gap:8px}
+.row{display:flex;justify-content:space-between;align-items:center;background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:12px;color:var(--tx);font:600 15px inherit;width:100%;text-align:left;cursor:pointer}
+.row span{color:var(--mut);font-weight:400;font-size:13px;display:block}
+nav{position:fixed;left:0;right:0;bottom:0;background:#0d1620;border-top:1px solid var(--line);display:flex;padding-bottom:env(safe-area-inset-bottom,0px)}
+nav a{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:9px 4px;color:var(--mut);font-size:13px;text-decoration:none;border-top:3px solid transparent}
+nav a[aria-current]{color:var(--or);border-color:var(--or)}
+.ctl{display:flex;gap:10px;align-items:center}.ctl input{flex:1;accent-color:var(--or)}
+:focus-visible{outline:2px solid var(--bl);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<main>
+<header><div class="brand"><i data-ic="logo"></i><b>Casillas</b></div><button class="iconbtn" type="button" aria-label="Configurações"><i data-ic="gear"></i></button></header>
+<h1>Guia CNC</h1>
+<div class="search"><i data-ic="search" style="color:var(--mut)"></i><input id="q" type="search" placeholder="Buscar código ou ciclo" aria-label="Buscar"></div>
+<div class="filters">
+<label><i data-ic="layers"></i><select id="fc" aria-label="Controle"><option>Fanuc</option><option>Siemens</option></select></label>
+<label><i data-ic="lathe"></i><select id="fm" aria-label="Máquina"><option>Torno</option><option>Centro</option></select></label>
+<label><i data-ic="thread"></i><select id="fo" aria-label="Operação"><option>Rosca</option><option>Desbaste</option></select></label>
+<button class="fbtn" type="button" aria-label="Mais filtros"><i data-ic="filter"></i></button>
+</div>
+<section id="out" aria-live="polite"></section>
+</main>
+<nav><a href="#"><i data-ic="home"></i>Início</a><a href="#"><i data-ic="calc"></i>Calculadoras</a><a href="#" aria-current="page"><i data-ic="book"></i>Guia CNC</a><a href="#"><i data-ic="lib"></i>Biblioteca</a></nav>
+<script>
+const CICLOS=[{
+ id:"g76",codigo:"G76",titulo:"Ciclo de rosqueamento",controle:"Fanuc",maquina:"Torno",operacao:"Rosca",termos:"rosca rosquear thread multiplos passes",
+ variantes:[
+  {id:"0itf-a",nome:"0i-TF · Sistema A",status:"em_revisao",
+   fonte:"Manual de programação Fanuc 0i-TF (conferir capítulo do ciclo de rosqueamento).",
+   contexto:["Plano G18","X em diâmetro","Unidades: mm"],
+   aplicacao:"Rosca externa ou interna em vários passes, com um único comando em dois blocos. O controle calcula a profundidade de cada passe.",
+   precond:["Rotação constante (G97) com a velocidade da rosca definida.","Ferramenta de rosca posicionada no ponto inicial, afastada do material.","Passo F igual ao passo real da rosca."],
+   obs:["Os dois blocos G76 são lidos em sequência. Não coloque outros comandos entre eles.","Valores P(k), Q(Δd) e Q(Δdmin) são inseridos em microns, sem ponto decimal.","Confira no manual da sua máquina o formato do primeiro bloco (P e Q)."],
+   sintaxe:[["Bloco 1","G76 P(m)(r)(a) Q(Δdmin) R(d)"],["Bloco 2","G76 X(u) Z(w) R(i) P(k) Q(Δd) F(l)"]],
+   params:[
+    ["P(m)","Número de passes de acabamento","01 a 99"],
+    ["P(r)","Chanfro de saída","00 a 99, em 0,1 × passo"],
+    ["P(a)","Ângulo da ponta da ferramenta","00, 29, 30, 55, 60 ou 80 graus"],
+    ["Q(Δdmin)","Profundidade mínima de corte","em microns"],
+    ["R(d)","Sobremetal para acabamento","em mm (raio)"],
+    ["X(u)","Diâmetro final do fundo da rosca","absoluto ou incremental"],
+    ["Z(w)","Posição final em Z","absoluto ou incremental"],
+    ["R(i)","Conicidade da rosca","0 para rosca reta"],
+    ["P(k)","Altura do filete","em microns"],
+    ["Q(Δd)","Profundidade do primeiro passe","em microns"],
+    ["F(l)","Passo da rosca","mm/rot"]],
+   passos:[
+    {t:"Preparação e estados iniciais",l:[["G18 G21 G97 S800 M03","Plano XZ, milímetros, rotação constante, fuso ligado."],["T0404","Chama a ferramenta de rosca."],["G00 X22.0 Z5.0","Aproxima do ponto inicial, fora do material."]]},
+    {t:"Definição do ciclo e do perfil",l:[["G76 P021060 Q100 R0.05","02 passes de acabamento, chanfro 1,0 × passo, ponta de 60°, corte mínimo 0,1 mm, sobremetal 0,05 mm."],["G76 X17.4 Z-30.0 R0 P1530 Q350 F2.5","Fundo da rosca em Ø17,4, até Z-30, rosca reta, filete de 1,530 mm, primeiro passe 0,35 mm, passo 2,5."]]},
+    {t:"Acabamento e encerramento",l:[["G00 X100.0 Z100.0","Retira a ferramenta para a posição segura."],["M05","Para o fuso."]]}],
+   cod:"G76 P021060 Q100 R0.05\nG76 X17.4 Z-30.0 R0 P1530 Q350 F2.5",calc:"Roscas (3 rolos)",traj:{k:1530,dd:350,dmin:100,d:50,m:2},cuid:{erros:["Passo F diferente do passo real da rosca.","Sem distância de entrada em Z (use cerca de 3 × passo): o primeiro filete sai irregular.","Q(Δd), Q(Δdmin) e P(k) digitados em mm em vez de microns.","Ponto inicial com X dentro do diâmetro da peça: a ferramenta bate na entrada.","Rotação variável (G96) durante a rosca. Use G97 com rotação constante.","Esquecer o R(i) no segundo bloco: a rosca sai cônica ou inesperada."],lim:["Exemplo de rosca externa reta, X em diâmetro, em mm.","Não cobre rosca interna, rosca cônica nem rosca de várias entradas.","Formato dos blocos conforme Fanuc 0i-TF Sistema A. Outros controles podem exigir outro formato."],rev:"Revisão técnica pendente. Responsável e data a definir antes de marcar como revisado."}},
+  {id:"31i-b",nome:"31i-B · Sistema B",status:"vazio"}
+ ]},
+ {id:"g71",codigo:"G71",titulo:"Desbaste longitudinal",controle:"Fanuc",maquina:"Torno",operacao:"Desbaste",termos:"desbaste",variantes:[{id:"x",nome:"0i-TF · Sistema A",status:"vazio"}]}];
+const ST={em_revisao:["Em revisão técnica",""],revisado:["Revisado","ok"]};
+const P={logo:'<circle cx="12" cy="12" r="3.5"/><path d="M12 2l1.5 2.5 3-.5 1 2.8 2.7 1.4-.8 3 .8 3-2.7 1.4-1 2.8-3-.5L12 22l-1.5-2.5-3 .5-1-2.8-2.7-1.4.8-3-.8-3 2.7-1.4 1-2.8 3 .5z"/>',doc:'<path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4M10 12h5M10 16h5"/>',path:'<path d="M4 18c4 0 3-12 8-12s3 12 8 12"/>',gear:'<circle cx="12" cy="12" r="3"/><path d="M12 2l1.5 2.5 3-.5 1 2.8 2.7 1.4-.8 3 .8 3-2.7 1.4-1 2.8-3-.5L12 22l-1.5-2.5-3 .5-1-2.8-2.7-1.4.8-3-.8-3 2.7-1.4 1-2.8 3 .5z"/>',bars:'<path d="M6 20V11M12 20V5M18 20v-7"/>',clip:'<rect x="6" y="4" width="12" height="17" rx="2"/><path d="M9 4h6v3H9zM9 12h6M9 16h6"/>',info:'<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/>',book:'<path d="M3 5c3-1 6-1 9 1v14c-3-2-6-2-9-1zM21 5c-3-1-6-1-9 1v14c3-2 6-2 9-1z"/>',target:'<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/>',chev:'<path d="M9 6l6 6-6 6"/>',warn:'<path d="M12 3l10 18H2z"/><path d="M12 10v5M12 18v.5"/>',search:'<circle cx="11" cy="11" r="6"/><path d="M20 20l-4-4"/>',layers:'<path d="M12 3l9 5-9 5-9-5z"/><path d="M3 13l9 5 9-5"/>',lathe:'<path d="M4 6v12M4 12h14M18 8v8"/>',thread:'<path d="M4 7c4-3 12 0 16-3M4 12c4-3 12 0 16-3M4 17c4-3 12 0 16-3"/>',filter:'<path d="M4 5h16l-6 8v6l-4-2v-4z"/>',home:'<path d="M4 11l8-7 8 7v9H4z"/><path d="M10 20v-6h4v6"/>',calc:'<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8M8 12h.5M12 12h.5M16 12h.5M8 16h.5M12 16h.5M16 16h.5"/>',lib:'<path d="M5 4v16M10 4v16M14 6l4 14M5 4h5"/>'};
+const ico=n=>`<svg class="${n==="logo"?"logo":"i"}" viewBox="0 0 24 24" aria-hidden="true">${P[n]}</svg>`;
+const chev=`<span class="go">${ico("chev")}</span>`;
+let sp=null;
+const todas=v=>v.passos.flatMap(p=>p.l.map(l=>l[0])).join("\n");
+const WP=`<rect x="30" y="52" width="40" height="46" fill="#3a4b5e"/><rect x="70" y="62" width="190" height="36" fill="#16304d" stroke="#4aa3ff"/><line x1="12" y1="98" x2="348" y2="98" stroke="#3a4b5e" stroke-dasharray="6 5"/>`;
+const TOOL=(x,y)=>`<polygon points="${x},${y} ${x+22},${y-6} ${x+22},${y-30} ${x+58},${y-30} ${x+58},${y-8} ${x+30},${y+4}" fill="#6b5a2a" stroke="#ffb35c"/>`;
+const thumb=i=>{const b=[`${WP}${TOOL(290,34)}<path d="M300 20H190" stroke="#ff7a1a" stroke-dasharray="5 4" fill="none"/><path d="M196 15l-8 5 8 5" stroke="#ff7a1a" fill="none"/><text x="12" y="20" fill="#93a4b6" font-size="11">Ferramenta fora do material</text>`,`${WP}<g stroke="#4aa3ff" fill="none"><path d="M150 62l5 -8 5 8M162 62l5 -8 5 8M174 62l5 -8 5 8M186 62l5 -8 5 8M198 62l5 -8 5 8M210 62l5 -8 5 8"/></g><path d="M250 40H100" stroke="#4aa3ff" stroke-width="2.5"/>${TOOL(240,48)}<text x="12" y="20" fill="#93a4b6" font-size="11">Passes do ciclo sobre o perfil</text>`,`${WP}<path d="M290 40V14H320" stroke="#ff7a1a" stroke-dasharray="5 4" fill="none"/>${TOOL(290,44)}<text x="12" y="20" fill="#93a4b6" font-size="11">Retirada para a posição segura</text>`][i];return `<svg class="th" viewBox="0 0 360 110" role="img" aria-label="Ilustração do passo ${i+1}">${b}</svg>`};
+const EXP={"P(m)":["Quantos passes de acabamento o controle faz no fundo da rosca, depois do desbaste, sem remover mais material.","Dois dígitos: 02 = dois passes. Em P021060, m = 02."],"P(r)":["Define a saída em chanfro no fim da rosca, para a ferramenta sair sem deixar marca.","Exemplo: 10 = 1,0 × passo. Em P021060, r = 10."],"P(a)":["Ângulo da ponta da ferramenta de rosca. Define o ângulo do filete.","Rosca métrica ISO usa 60. Em P021060, a = 60."],"Q(Δdmin)":["Profundidade mínima de corte por passe. Evita passes tão finos que só raspam o material.","Exemplo: 100 = 0,1 mm."],"R(d)":["Sobremetal deixado para os passes de acabamento.","No exemplo, 0.05 mm no raio. Confira o formato no manual da sua máquina."],"X(u)":["Diâmetro do fundo da rosca, onde o último passe termina.","No exemplo, fundo em Ø17,4."],"Z(w)":["Posição final da rosca em Z.","Valor negativo, para dentro da peça. No exemplo, Z-30."],"R(i)":["Diferença de raio entre o início e o fim da rosca. Serve para rosca cônica.","Use 0 para rosca reta."],"P(k)":["Altura do filete, medida no raio.","Exemplo: 1530 = 1,530 mm."],"Q(Δd)":["Profundidade do primeiro passe de desbaste.","Exemplo: 350 = 0,35 mm."],"F(l)":["Passo da rosca, em mm por rotação.","Deve ser igual ao passo real da rosca."]};
+const sxHtml=l=>l.split(" ").map(w=>{const m=w.match(/^([A-Z])((?:\([^)]+\))+)$/);if(!m)return `<span class="tk g">${w}</span>`;return m[2].match(/\([^)]+\)/g).map((g,i)=>{const k=m[1]+g;return `<button type="button" class="tk" data-p="${k}" aria-pressed="${sp===k}">${i?g:k}</button>`}).join("")}).join("");
+const pexpHtml=v=>{if(!sp)return `<p style="margin:0;color:var(--mut)">Toque num parâmetro do código ou da lista para ver a explicação.</p>`;const p=v.params.find(x=>x[0]===sp),e=EXP[sp];if(!p||!e)return "";return `<h3 style="margin:0"><code>${esc(p[0])}</code> ${p[1]}</h3><p style="margin:0;color:var(--tx)">${e[0]}</p><p style="margin:0;color:var(--mut)">${p[2]}. ${e[1]}</p>`};
+const paintP=()=>{const d=$("#pexp");if(d&&cur)d.innerHTML=pexpHtml(cur);document.querySelectorAll("[data-p]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.p===sp))};
+document.querySelectorAll("[data-ic]").forEach(e=>{e.outerHTML=ico(e.dataset.ic)});
+const $=s=>document.querySelector(s);
+const norm=s=>s.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
+const esc=s=>s.replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+const hl=s=>esc(s).replace(/\b([GMPQRXZFSTU])(?=[\d(\-.])/g,'<span class="a">$1</span>');
+const hlLine=s=>s.split("\n").map(hl).join("\n");
+let sel=null,vid=null,tab=0,pi=1,cur=null,timer=null;
+const mm=x=>(x/1000).toFixed(3).replace(".",",");
+function passes(t){const o=[],alvo=t.k-t.d;let prev=0;for(let n=1;prev<alvo&&n<200;n++){const d=Math.min(Math.max(t.dd*Math.sqrt(n),prev+t.dmin),alvo);o.push({d,inc:d-prev,tipo:"desbaste"});prev=d}for(let i=0;i<t.m;i++){o.push({d:t.k,inc:i?0:t.k-prev,tipo:"acabamento"});prev=t.k}return o}
+function stopPlay(){clearInterval(timer);timer=null;const b=$("#pl");if(b)b.textContent="Reproduzir"}
+function togglePlay(){if(timer){stopPlay();return}const N=passes(cur.traj).length;if(pi>=N)pi=1;$("#pl").textContent="Pausar";const tick=()=>{$("#sl").value=pi;drawTraj();if(pi>=N){stopPlay();return}pi++};tick();timer=setInterval(tick,700)}
+function drawTraj(){const el=$("#tjv");if(!el||!cur||!cur.traj)return;const t=cur.traj,P=passes(t),N=P.length;pi=Math.min(Math.max(pi,1),N);const p=P[pi-1],s=80,cx=180,y0=34;
+const tri=d=>{const h=d/1000*s,w=.577*h;return `${cx-w},${y0} ${cx+w},${y0} ${cx},${y0+h}`};
+let g="";for(let i=0;i<pi-1;i++)g+=`<polygon points="${tri(P[i].d)}" fill="none" stroke="#4aa3ff" stroke-opacity=".4"/>`;
+const ap=y0+p.d/1000*s,prev=pi>1?P[pi-2].d:0;
+const xs=`<svg viewBox="0 0 360 170" role="img" aria-label="Corte transversal do filete no passe ${pi}"><rect x="0" y="${y0}" width="360" height="${170-y0}" fill="#1c2e44"/><polygon points="${tri(p.d)}" fill="#ff7a1a66"/>${prev?`<polygon points="${tri(prev)}" fill="#060a0f"/>`:""}${g}<polygon points="${tri(p.d)}" fill="none" stroke="#ff7a1a" stroke-width="2"/><polygon points="${tri(t.k)}" fill="none" stroke="#eef3f8" stroke-dasharray="4 4" stroke-opacity=".6"/><line x1="0" x2="360" y1="${y0}" y2="${y0}" stroke="#93a4b6"/><polygon points="${cx},${ap} ${cx-18},${ap-32} ${cx+18},${ap-32}" fill="#ff7a1a"/><text x="8" y="18" fill="#93a4b6" font-size="11">Corte transversal do filete (ampliado)</text><text x="352" y="164" text-anchor="end" fill="#93a4b6" font-size="10">Tracejado: perfil final</text></svg>`;
+const dy=p.d/1000*20,yc=70+dy;
+const ps=`<svg viewBox="0 0 360 120" role="img" aria-label="Trajetória da ferramenta no passe ${pi}"><rect x="14" y="40" width="24" height="76" fill="#3a4b5e"/><rect x="38" y="70" width="302" height="46" fill="#1c2e44"/><rect x="80" y="70" width="240" height="${dy}" fill="#060a0f" stroke="#4aa3ff" stroke-opacity=".4"/><path d="M320 36V${yc}" stroke="#ff7a1a" stroke-dasharray="5 4" fill="none"/><path d="M320 ${yc}H80L66 48" stroke="#4aa3ff" stroke-width="2.5" fill="none"/><path d="M66 48V36H320" stroke="#ff7a1a" stroke-dasharray="5 4" fill="none"/><polygon points="320,${yc} 310,${yc-18} 330,${yc-18}" fill="#ff7a1a"/><text x="8" y="14" fill="#93a4b6" font-size="11">Vista lateral: trajetória da ferramenta</text><text x="14" y="34" fill="#93a4b6" font-size="10">Mandril</text><text x="130" y="62" fill="#4aa3ff" font-size="11">Corte com avanço F (para o mandril)</text><text x="130" y="30" fill="#ff7a1a" font-size="11">Retorno rápido</text></svg>`;
+el.innerHTML=`<div class="pass"><div><small>Passe</small><b>${pi}<i> de ${N}</i></b></div><span class="tag ${p.tipo==="acabamento"?"fin":""}">${p.tipo==="acabamento"?"Acabamento":"Desbaste"}</span></div>
+<div class="kpis2"><div><small>Profundidade acumulada</small><b>${mm(p.d)} mm</b></div><div><small>Este passe remove</small><b>${p.inc?mm(p.inc)+" mm":"nada (alívio)"}</b></div></div>
+<figure>${xs}</figure><figure>${ps}</figure>`;
+const sl=$("#sl");if(sl)sl.value=pi}
+document.addEventListener("input",e=>{if(e.target.id==="sl"){stopPlay();pi=+e.target.value;drawTraj()}});
+function matches(){const q=norm($("#q").value);return CICLOS.filter(c=>c.controle===$("#fc").value&&c.maquina===$("#fm").value&&c.operacao===$("#fo").value&&(!q||norm(c.codigo+" "+c.titulo+" "+c.termos).includes(q)))}
+function render(){clearInterval(timer);timer=null;
+ const list=matches();const c=list[0];
+ if(!c){$("#out").innerHTML='<p class="empty">Nenhum ciclo para esses filtros. Mude controle, máquina ou operação.</p>';return}
+ if(!vid||!c.variantes.find(v=>v.id===vid))vid=c.variantes[0].id;
+ const chips=`<div class="variant cvar">${c.variantes.map(v=>`<button class="chip" aria-pressed="${v.id===vid}" data-v="${v.id}">${v.nome}</button>`).join("")}</div>`;
+ const v=c.variantes.find(x=>x.id===vid);cur=v;
+ let h=`<article class="cycle"><div class="head"><span class="bar"></span><div><h2>${c.codigo}</h2><small>${c.titulo}</small>`;
+ if(v.status==="vazio"){$("#out").innerHTML=h+`</div></div>${chips}<p class="empty">Conteúdo desta variante ainda não foi escrito.<br>Use outra variante ou consulte o manual do fabricante.</p></article>`;return}
+ const s=ST[v.status];
+ h+=`<span class="rev ${s[1]}">${s[0]}</span></div>
+ <button class="alert" type="button" data-t="4">${ico("warn")}<span>Confira a variante do controle.</span>${ico("chev")}</button></div>${chips}
+ <div role="tablist">${[["Visão geral","doc"],["Trajetória","path"],["Parâmetros","gear"],["Exemplo","bars"]].map((n,i)=>`<button role="tab" aria-selected="${i===tab}" data-t="${i}">${ico(n[1])}${n[0]}</button>`).join("")}</div>`;
+ h+=`<div class="panel" ${tab?"hidden":""}>
+  <div class="ctx">${v.contexto.map(x=>`<span>${x}</span>`).join("")}</div>
+  <div class="box apl"><div class="t">${ico("target")}<div><h3>Aplicação</h3><p>${v.aplicacao}</p></div></div>
+  <figure><svg viewBox="0 0 360 170" role="img" aria-label="Eixo escalonado com trecho roscado">
+   <line x1="12" y1="85" x2="348" y2="85" stroke="#3a4b5e" stroke-dasharray="7 6"/>
+   <path d="M24 26H64V34H78V50H118V58L130 58V50L172 50V58H180V112H172V120H130V112H118V120H78V136H64V144H24Z" fill="#16304d" stroke="#4aa3ff"/>
+   <path d="M64 34V136M78 50V120M118 50V120M172 50V120" stroke="#4aa3ff" opacity=".55" fill="none"/>
+   <path d="M180 60V110" stroke="#4aa3ff" fill="none"/>
+   <path d="M180 62H280V108H180Z" fill="#16304d" stroke="#4aa3ff"/>
+   <g stroke="#4aa3ff" fill="none" opacity=".85">${Array.from({length:15},(_,i)=>`<path d="M${186+i*6.4} 62V108"/>`).join("")}</g>
+   <path d="M280 70H330V100H280Z" fill="#16304d" stroke="#4aa3ff"/>
+   <text x="348" y="160" text-anchor="end" fill="#93a4b6" font-size="10">Ilustração conceitual</text></svg></figure></div>
+  <button class="irow" type="button" data-d="pre">${ico("clip")}Pré-condições${chev}</button>
+  <button class="irow" type="button" data-d="obs">${ico("info")}Observações${chev}</button>
+  <button class="irow" type="button" data-d="fonte">${ico("book")}<span>Fonte e revisão<small>Revisão técnica pendente.</small></span>${chev}</button>
+  <div class="box" id="det" hidden></div>
+  <button class="irow main" type="button" data-go="1">${ico("doc")}Ver parâmetros${chev}</button>
+  <button class="irow" type="button" data-t="4">${ico("warn")}<span>Cuidados<small>Erros comuns e limitações</small></span>${chev}</button>
+  <button class="irow" type="button">${ico("calc")}<span>Calculadora relacionada<small>${v.calc}</small></span>${chev}</button>
+ </div>`;
+ h+=`<div class="panel" ${tab===1?"":"hidden"}>
+  <div class="player"><button class="pbtn" type="button" data-step="-1" aria-label="Passe anterior">‹</button><button class="pbtn play" id="pl" data-play="1" type="button">Reproduzir</button><button class="pbtn" type="button" data-step="1" aria-label="Próximo passe">›</button></div>
+  <input class="slider" id="sl" type="range" min="1" max="${passes(v.traj).length}" value="${pi}" aria-label="Número do passe">
+  <div id="tjv" class="tjv"></div>
+  <div class="legend"><span><i style="background:var(--bl)"></i>Corte</span><span><i style="background:var(--or)"></i>Aproximação e retorno</span><span><i class="dash"></i>Perfil final</span></div>
+  <button class="alert wide" type="button" data-t="4">${ico("warn")}<span>Divisão dos passes estimada por √n, respeitando Q(Δdmin) e R(d). O cálculo real do controle pode diferir.</span>${ico("chev")}</button>
+  <div class="box"><small style="color:var(--mut)">Dados do exemplo</small><div class="ctx" style="margin-top:6px"><span>P(k) 1,530</span><span>Q(Δd) 0,350</span><span>Q(Δdmin) 0,100</span><span>R(d) 0,050</span><span>2 passes de acabamento</span></div></div>
+  <button class="irow main" type="button" data-go="1">${ico("doc")}Ver parâmetros${chev}</button>
+  <button class="irow" type="button">${ico("calc")}<span>Calculadora relacionada<small>${v.calc}</small></span>${chev}</button></div>
+ <div class="panel" ${tab===2?"":"hidden"}>
+  <div class="alert wide" style="cursor:default">${ico("warn")}<span>P(k), Q(Δd) e Q(Δdmin) vão em microns, sem ponto decimal.</span></div>
+  ${v.sintaxe.map(x=>`<div class="sx"><span class="lbl">${x[0]}</span><div class="toks">${sxHtml(x[1])}</div><button class="cp" type="button" data-c="${esc(x[1])}">Copiar</button></div>`).join("")}
+  <div class="pe" id="pexp">${pexpHtml(v)}</div>
+  <div class="plist">${v.params.map(p=>`<button type="button" class="pcard" data-p="${esc(p[0])}" aria-pressed="${sp===p[0]}"><code>${esc(p[0])}</code><span>${p[1]}<small>${p[2]}</small></span></button>`).join("")}</div>
+  <button class="irow main" type="button" data-t="3">${ico("bars")}Ver exemplo comentado${chev}</button>
+  <button class="irow" type="button" data-t="4">${ico("warn")}<span>Cuidados<small>Erros comuns e limitações</small></span>${chev}</button></div>`;
+ h+=`<div class="panel" ${tab===3?"":"hidden"}>
+  <div class="ctx"><span>Rosca externa · passo 2,5</span>${v.contexto.map(x=>`<span>${x}</span>`).join("")}</div>
+  <div class="sx"><span class="lbl">Programa completo</span><pre>${hlLine(esc(todas(v)))}</pre><button class="cp" type="button" data-c="${esc(todas(v))}">Copiar programa</button></div>
+  <button class="alert wide" type="button" data-t="4">${ico("warn")}<span>Valores de exemplo. Ajuste ao seu material, ferramenta e máquina.</span>${ico("chev")}</button>
+  ${v.passos.map((p,i)=>`<details class="step" ${i===0?"open":""}><summary><i>${i+1}</i>${p.t}</summary><div class="lines">${thumb(i)}${p.l.map(l=>`<div class="ln"><div class="line"><code>${hl(l[0])}</code>${l[1]}</div><button class="cp mini" type="button" data-c="${esc(l[0])}" aria-label="Copiar linha">Copiar</button></div>`).join("")}<button class="cp" type="button" data-c="${esc(p.l.map(l=>l[0]).join("\n"))}">Copiar passo ${i+1}</button></div></details>`).join("")}
+  <button class="irow" type="button" data-t="4">${ico("warn")}<span>Cuidados<small>Erros comuns e limitações</small></span>${chev}</button>
+  <button class="irow" type="button">${ico("calc")}<span>Calculadora relacionada<small>${v.calc}</small></span>${chev}</button>
+ </div><div class="panel" ${tab===4?"":"hidden"}>
+  <div class="warn">Confira controle, variante e pré-condições antes de rodar.</div>
+  <details open><summary>Erros comuns</summary><div>${v.cuid.erros.map(x=>`<p style="margin:0;color:var(--mut)">• ${x}</p>`).join("")}</div></details>
+  <details><summary>Limitações do exemplo</summary><div>${v.cuid.lim.map(x=>`<p style="margin:0;color:var(--mut)">• ${x}</p>`).join("")}</div></details>
+  <details><summary>Fonte documental</summary><div><p style="margin:0;color:var(--mut)">${v.fonte}</p></div></details>
+  <details><summary>Revisão técnica</summary><div><p style="margin:0;color:var(--mut)">${v.cuid.rev}</p></div></details>
+  <button class="row" type="button">Calculadora relacionada<span>${v.calc}</span></button>
+ </div></article>`;
+ $("#out").innerHTML=h;drawTraj();
+}
+document.addEventListener("click",e=>{
+ const t=e.target.closest("[data-t],[data-v],[data-c],[data-go],[data-play],[data-d],[data-step],[data-p]");if(!t)return;if(t.dataset.play){togglePlay();return}
+ if(t.dataset.p){sp=sp===t.dataset.p?null:t.dataset.p;paintP();return}
+ if(t.dataset.step){stopPlay();pi+=+t.dataset.step;drawTraj();return}
+ if(t.dataset.d){const d=$("#det"),k=t.dataset.d;if(!d)return;if(d.dataset.k===k&&!d.hidden){d.hidden=true;return}
+  const L=k==="pre"?cur.precond:k==="obs"?cur.obs:[cur.fonte,"Revisão técnica pendente."];
+  d.dataset.k=k;d.innerHTML=L.map(x=>`<p style="margin:0 0 6px;color:var(--mut)">${k==="fonte"?"":"• "}${x}</p>`).join("");d.hidden=false;return}
+ if(t.dataset.t){tab=+t.dataset.t;render()}
+ else if(t.dataset.v){vid=t.dataset.v;tab=0;render()}
+ else if(t.dataset.go){tab=2;render()}
+ else if(t.dataset.c){const txt=t.dataset.c.replace(/&lt;/g,"<").replace(/&gt;/g,">").replace(/&amp;/g,"&");try{navigator.clipboard.writeText(txt)}catch(_){}t.textContent="Copiado";setTimeout(()=>t.textContent="Copiar",1500)}
+});
+["#q","#fc","#fm","#fo"].forEach(s=>$(s).addEventListener("input",()=>{tab=0;render()}));
+render();
+</script>
+</body>
+</html>

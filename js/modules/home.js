@@ -30,12 +30,13 @@ const MODULE_GROUPS = [
     title: 'Guias e suporte',
     modules: [
       { key: 'guia', name: 'Guia de Programação', description: 'Consulta de comandos e ciclos.' },
-      { key: 'consult', name: 'Consultoria', description: 'Suporte técnico para sua usinagem.' }
+      { key: 'consult', name: 'Biblioteca', description: 'Contato, serviços, cursos e licença.' }
     ]
   }
 ];
 
-const QUICK_ACCESS = ['trig', 'rosca', 'potencia', 'prog'];
+const QUICK_ACCESS = ['trig', 'coni', 'poly', 'furos'];
+const LAST_DAYS_LIMIT = 3;
 const MODULES_BY_KEY = new Map(
   MODULE_GROUPS.flatMap((group) => group.modules).map((module) => [module.key, module])
 );
@@ -52,11 +53,15 @@ function getAccessPresentation(accessStatus) {
   }
 
   if (accessStatus?.ok === true && Number.isFinite(accessStatus.daysLeft)) {
+    const last = accessStatus.daysLeft <= LAST_DAYS_LIMIT;
     return {
       kind: 'trial',
+      last,
       icon: '◷',
       title: 'Período de teste',
-      description: 'Seu período de teste está em andamento.',
+      description: last
+        ? (accessStatus.daysLeft <= 1 ? 'Último dia! Ative agora.' : `Últimos ${accessStatus.daysLeft} dias! Ative agora.`)
+        : 'Seu período de teste está em andamento.',
       daysLeft: accessStatus.daysLeft
     };
   }
@@ -100,7 +105,7 @@ function createModuleCard(module, compact = false) {
   const arrow = document.createElement('span');
   arrow.className = 'home-module-arrow';
   arrow.setAttribute('aria-hidden', 'true');
-  arrow.textContent = '↗';
+  arrow.textContent = '›';
 
   button.append(icon, copy, arrow);
   return button;
@@ -126,7 +131,7 @@ function createSectionHeading(kicker, title, id) {
 
 function createAccessCard(access) {
   const card = document.createElement('section');
-  card.className = `home-access-card is-${access.kind}`;
+  card.className = `home-access-card is-${access.kind}${access.last ? ' is-last' : ''}`;
   card.setAttribute('aria-label', `Status da conta: ${access.title}`);
   card.setAttribute('role', 'status');
 
@@ -201,22 +206,38 @@ export function render(container, accessStatus) {
   hero.className = 'home-hero';
   hero.setAttribute('aria-labelledby', 'home-title');
 
-  const eyebrow = document.createElement('span');
-  eyebrow.className = 'home-eyebrow';
-  eyebrow.textContent = 'Casillas';
-
   const title = document.createElement('h2');
   title.className = 'home-title';
   title.id = 'home-title';
-  title.textContent = 'Calculadora Técnica de Usinagem';
+  title.textContent = 'O que vamos resolver?';
 
   const lead = document.createElement('p');
   lead.className = 'home-lead';
-  lead.textContent = 'Ferramentas técnicas para consultar medidas, calcular operações e apoiar sua rotina de usinagem.';
+  lead.textContent = 'Calcule, consulte e encontre informações técnicas.';
 
   const heroCopy = document.createElement('div');
-  heroCopy.append(eyebrow, title, lead);
+  heroCopy.append(title, lead);
   hero.append(heroCopy);
+
+  const consultor = document.createElement('section');
+  consultor.className = 'home-consultor';
+  consultor.setAttribute('aria-labelledby', 'home-consultor-title');
+
+  const consultorTitle = document.createElement('h2');
+  consultorTitle.className = 'home-consultor-title';
+  consultorTitle.id = 'home-consultor-title';
+  consultorTitle.textContent = 'Consultor Técnico';
+
+  const consultorText = document.createElement('p');
+  consultorText.className = 'home-consultor-text';
+  consultorText.textContent = 'Pergunte. O Casillas encontra o caminho técnico.';
+
+  const consultorButton = document.createElement('button');
+  consultorButton.className = 'home-consultor-btn';
+  consultorButton.type = 'button';
+  consultorButton.dataset.module = 'consultor-tecnico';
+  consultorButton.textContent = 'Consultar';
+  consultor.append(consultorTitle, consultorText, consultorButton);
 
   const quickSection = document.createElement('section');
   quickSection.className = 'home-quick-section';
@@ -241,7 +262,7 @@ export function render(container, accessStatus) {
   });
 
   const accessCard = createAccessCard(access);
-  view.append(hero, accessCard, quickSection, catalog);
+  view.append(accessCard, hero, consultor, quickSection, catalog);
   view.addEventListener('click', (event) => {
     const card = event.target.closest('button[data-module]');
     if (!card || !view.contains(card)) return;

@@ -53,8 +53,8 @@ function desenharPoligono(n, R) {
   return svg;
 }
 
-function resultRow(label, value) {
-  return createElementSafe('div', { class: 'result-row' }, [
+function resultRow(label, value, primary = false) {
+  return createElementSafe('div', { class: primary ? 'result-row result-row--primary' : 'result-row' }, [
     createElementSafe('span', { class: 'result-label', text: label }),
     createElementSafe('span', { class: 'result-value', text: value })
   ]);
@@ -94,7 +94,7 @@ function renderResults(res) {
   }
   wrap.appendChild(resultRow('Número de lados (n)', String(res.n)));
   wrap.appendChild(resultRow('Raio circunscrito (R)', formatNumber(res.R, 4) + ' mm'));
-  wrap.appendChild(resultRow('Lado (a)', formatNumber(res.lado, 4) + ' mm'));
+  wrap.appendChild(resultRow('Lado (a)', formatNumber(res.lado, 4) + ' mm', true));
   wrap.appendChild(resultRow('Apótema', formatNumber(res.apotema, 4) + ' mm'));
   wrap.appendChild(resultRow('Ângulo interno', formatNumber(res.anguloInternoGraus, 4) + '°'));
   wrap.appendChild(resultRow('Ângulo central', formatNumber(res.anguloCentralGraus, 4) + '°'));

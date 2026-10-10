@@ -88,6 +88,9 @@
   <!-- Conteúdo dos módulos -->
   <main id="app-content" class="app-content" aria-live="polite"></main>
 
+  <!-- Navegação inferior -->
+  <nav id="bottom-nav" class="bottom-nav" aria-label="Navegação principal"></nav>
+
   <!-- Overlay do menu -->
   <div id="menu-overlay" class="menu-overlay hidden" role="presentation"></div>
 
@@ -108,6 +111,10 @@
             <li data-module="home" class="menu-item">
               <span class="menu-icon" aria-hidden="true">⌂</span>
               <span class="menu-label">Visão geral</span>
+            </li>
+            <li data-module="calculadoras" class="menu-item">
+              <span class="menu-icon" aria-hidden="true">🧮</span>
+              <span class="menu-label">Calculadoras</span>
             </li>
           </ul>
         </div>
@@ -179,7 +186,7 @@
             </li>
             <li data-module="consult" class="menu-item">
               <span class="menu-icon" aria-hidden="true" data-icon="consult"></span>
-              <span class="menu-label">Consultoria</span>
+              <span class="menu-label">Biblioteca</span>
             </li>
             <li class="menu-item" id="menu-share" data-action="share">
               <span class="menu-icon" aria-hidden="true">📤</span>
@@ -203,15 +210,17 @@
   <!-- Tela de ativação -->
   <div id="activation-screen" class="activation-screen hidden">
     <div class="activation-card">
-      <h2 class="activation-title">Ativação</h2>
+      <h2 class="activation-title">Ativar licença</h2>
       <p class="activation-sub">
         Seu período de teste terminou. Cole o código de ativação para
         continuar usando o Casillas App.
       </p>
       <div class="input-group">
+        <label class="input-label" for="activation-code">Código de ativação</label>
         <input id="activation-code" class="input" type="text"
                placeholder="XXXX-XXXX-XXXX-XXXX" autocomplete="off"
-               spellcheck="false" maxlength="19">
+               autocapitalize="characters" spellcheck="false" maxlength="19">
+        <p class="activation-hint">O código vem na licença que você recebeu.</p>
       </div>
       <button id="btn-submit-activation" class="btn btn-primary" type="button">
         Ativar

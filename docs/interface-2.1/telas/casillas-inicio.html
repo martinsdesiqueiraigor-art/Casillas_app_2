@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Casillas · Início</title>
+<style>
+:root{--bg:#0b1118;--card:#111b27;--card2:#16232f;--line:#24364a;--tx:#eef3f8;--mut:#93a4b6;--or:#ff7a1a;--bl:#4aa3ff;--ok:#6fd3a6;--okbg:#0f2a22;--okline:#2a6a52;--bad:#ff8a80;--badbg:#2a1414;--badline:#7a2b2b;--wn:#ffb35c;--wnbg:#3a2a10;--wnline:#7a5316;--orbg:#2a1a0c;--orline:#8a4a14;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.45 "Segoe UI",Roboto,system-ui,sans-serif;padding-bottom:calc(5.5rem + env(safe-area-inset-bottom,0px))}
+main{max-width:480px;margin:0 auto;padding:.75rem 1rem;display:grid;grid-template-columns:minmax(0,1fr);gap:1rem}
+header{display:flex;align-items:center;justify-content:space-between}
+.brand{display:flex;align-items:center;gap:.625rem}.brand b{font-size:1.375rem}
+.iconbtn{background:none;border:0;color:var(--mut);min-width:48px;min-height:48px;display:grid;place-items:center;border-radius:12px;cursor:pointer}
+svg.i{width:24px;height:24px;display:block;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+h1{font-size:1.75rem;line-height:1.15;margin:.25rem 0 0}
+h2{font-size:1.125rem;margin:.25rem 0 0;display:flex;justify-content:space-between;align-items:center}
+h2 a{color:var(--bl);text-decoration:none;font-weight:600;font-size:.9375rem;min-height:48px;display:flex;align-items:center}
+p{margin:0}.mut{color:var(--mut);font-size:.9375rem}
+.pills{display:flex;flex-wrap:wrap;gap:.5rem}
+.pill{display:inline-flex;align-items:center;gap:.375rem;border-radius:20px;padding:.3125rem .75rem;font-weight:600;font-size:.875rem;border:1px solid var(--line);background:var(--card);color:var(--mut)}
+.pill svg{width:16px;height:16px}
+.pill.ok{border-color:var(--okline);background:var(--okbg);color:var(--ok)}
+.pill.tr{border-color:var(--orline);background:var(--orbg);color:var(--or)}
+.pill.bad{border-color:var(--badline);background:var(--badbg);color:var(--bad)}
+.pill.rev{border-color:var(--wnline);background:var(--wnbg);color:var(--wn)}
+.band{display:flex;align-items:center;gap:.75rem;border-radius:12px;padding:.75rem;font-size:.9375rem}
+.band span{flex:1}
+.band.tr{background:var(--orbg);border:1px solid var(--orline);color:#ffc08a}
+.band.bad{background:var(--badbg);border:1px solid var(--badline);color:var(--bad)}
+.band .btn{width:auto;padding:0 1.25rem}
+.hero{background:linear-gradient(145deg,#f08a3c,#d8651f);color:#1a0d00;border-radius:16px;padding:1rem;display:grid;gap:.75rem}
+.hero b{font-size:1.25rem}
+.hero input{background:#0000002e;border:1px solid #0003;border-radius:12px;padding:0 .875rem;min-height:52px;font:inherit;color:#1a0d00;width:100%}
+.hero input::placeholder{color:#3a1d05}
+.hero input:focus-visible{outline:3px solid #1a0d00}
+.btn{min-height:52px;display:flex;align-items:center;justify-content:center;width:100%;text-align:center;text-decoration:none;border:0;border-radius:12px;font-family:inherit;font-weight:700;font-size:1.0625rem;cursor:pointer;background:var(--or);color:#1a0d00}
+.btn.dark{background:#060a0f;color:var(--tx)}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.625rem}
+.tile{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:.875rem;color:var(--tx);text-decoration:none;font-weight:600;display:grid;gap:.25rem;min-height:104px;align-content:start}
+.tile:active,.row:active{background:var(--card2)}
+.tile .ic{width:48px;height:48px;border-radius:12px;background:#0f2236;border:1px solid #1f4a78;color:var(--bl);display:grid;place-items:center;margin-bottom:.375rem}
+.tile small,.row small{display:block;color:var(--mut);font-weight:400;font-size:.875rem}
+.row{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:.75rem .875rem;color:var(--tx);text-decoration:none;font-weight:600;display:flex;align-items:center;gap:.875rem;min-height:72px}
+.row .ic{width:48px;height:48px;border-radius:12px;background:var(--orbg);border:1px solid var(--orline);color:var(--or);display:grid;place-items:center;flex:none}
+.row .go{margin-left:auto;color:var(--mut)}
+.demo{border:1px dashed var(--line);border-radius:12px;padding:.25rem .75rem;color:var(--mut);font-size:.875rem}
+.demo summary{min-height:48px;display:flex;align-items:center;cursor:pointer}
+.sit{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.5rem;margin:.25rem 0 .75rem}
+.sitb{min-height:48px;border-radius:10px;border:1px solid var(--line);background:var(--card2);color:var(--tx);font-family:inherit;font-size:.875rem;cursor:pointer}
+.sitb[aria-pressed=true]{border-color:var(--bl);color:var(--bl)}
+nav{position:fixed;left:0;right:0;bottom:0;background:#0d1620;border-top:1px solid var(--line);display:flex;padding-bottom:env(safe-area-inset-bottom,0px)}
+nav a{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:.5rem .25rem;color:var(--mut);font-size:.8125rem;text-decoration:none;border-top:3px solid transparent;min-height:56px}
+nav a[aria-current]{color:var(--or);border-color:var(--or)}
+[hidden]{display:none!important}
+:focus-visible{outline:3px solid var(--bl);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <div class="brand"><span id="logo"></span><b>Casillas</b></div>
+    <button class="iconbtn" type="button" aria-label="Configurações"><i data-ic="cog"></i></button>
+  </header>
+
+  <div class="pills" id="pills"></div>
+  <div class="band" id="band" hidden role="status"><i data-ic="info"></i><span id="bandt"></span><button class="btn" type="button" id="bandb" hidden>Ativar</button></div>
+
+  <div><h1>O que vamos resolver?</h1><p class="mut" style="margin-top:.25rem">Calcule, consulte e encontre informações técnicas.</p></div>
+
+  <form class="hero" id="ask" onsubmit="return false">
+    <div><b>Consultor Técnico</b><p>Pergunte. O Casillas encontra o caminho técnico.</p></div>
+    <input placeholder="Digite sua dúvida de usinagem ou CNC..." aria-label="Pergunta">
+    <button class="btn dark" type="submit">Consultar</button>
+  </form>
+
+  <h2>Acesso rápido <a href="#">Ver todas</a></h2>
+  <div class="grid2" id="quick"></div>
+
+  <h2>Guia CNC</h2>
+  <a class="row" href="#"><span class="ic"><i data-ic="book"></i></span><span>Consultar ciclos CNC<small>Referências locais para Fanuc e Siemens.</small></span><span class="go"><i data-ic="chev"></i></span></a>
+
+  <details class="demo">
+    <summary>Demonstração: situação do acesso</summary>
+    <div class="sit">
+      <button class="sitb" type="button" data-s="lic" aria-pressed="true">Licença ativa</button>
+      <button class="sitb" type="button" data-s="t18" aria-pressed="false">Teste, 18 dias</button>
+      <button class="sitb" type="button" data-s="t3" aria-pressed="false">Teste, 3 dias</button>
+    </div>
+  </details>
+</main>
+<nav aria-label="Navegação principal">
+  <a href="#" aria-current="page"><i data-ic="home"></i>Início</a>
+  <a href="#"><i data-ic="calc"></i>Calculadoras</a>
+  <a href="#"><i data-ic="book"></i>Guia CNC</a>
+  <a href="#"><i data-ic="lib"></i>Biblioteca</a>
+</nav>
+<script>
+// Mapa único de ícones (o mesmo das Calculadoras). Trocar o conjunto = trocar este mapa.
+const ICONS={
+ home:'<path d="M4 11l8-7 8 7v9H4z"/><path d="M10 20v-6h4v6"/>',
+ calc:'<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8M8 12h.01M12 12h.01M16 12h.01M8 16h.01M12 16h.01M16 16h.01"/>',
+ book:'<path d="M3 5c3-1 6-1 9 1v14c-3-2-6-2-9-1zM21 5c-3-1-6-1-9 1v14c3-2 6-2 9-1z"/>',
+ lib:'<path d="M5 4v16M10 4v16M14 6l4 14M5 4h5"/>',
+ cog:'<circle cx="12" cy="12" r="3"/><path d="M12 2l1.5 2.5 3-.5 1 2.8 2.7 1.4-.8 3 .8 3-2.7 1.4-1 2.8-3-.5L12 22l-1.5-2.5-3 .5-1-2.8-2.7-1.4.8-3-.8-3 2.7-1.4 1-2.8 3 .5z"/>',
+ chev:'<path d="M9 6l6 6-6 6"/>',
+ info:'<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/>',
+ warn:'<path d="M12 3l10 18H2z"/><path d="M12 10v5M12 18v.5"/>',
+ ok:'<circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/>',
+ clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+ offl:'<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8M8 12h.01M12 12h.01M16 12h.01"/>',
+ trig:'<path d="M4 4v16h16z"/><path d="M4 16h4v4"/>',
+ cone:'<path d="M3 8l18-3v14L3 16z"/><path d="M3 12h2M8 12h2M13 12h2M18 12h3"/>',
+ poly:'<path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/>',
+ holes:'<circle cx="12" cy="12" r="8" stroke-dasharray="2 3"/><circle cx="12" cy="4" r="2"/><circle cx="19" cy="16" r="2"/><circle cx="5" cy="16" r="2"/>'
+};
+const ico=n=>`<svg class="i" viewBox="0 0 24 24" aria-hidden="true">${ICONS[n]}</svg>`;
+const hydrate=()=>document.querySelectorAll("[data-ic]").forEach(e=>{e.outerHTML=ico(e.dataset.ic)});
+document.getElementById("logo").innerHTML='<svg width="32" height="32" viewBox="0 0 100 100" aria-hidden="true"><path d="M73.0,69.3 A31 31 0 1 1 73.0,30.7" fill="none" stroke="#ff7a1a" stroke-width="15"/><polygon points="72,50 84,40 96,50 84,60" fill="#4aa3ff" transform="translate(-2 0)"/></svg>';
+const Q=[["trig","Trigonometria","Triângulos e ângulos"],["cone","Conicidade","Cones e conicidades"],["poly","Polígonos","Cálculos geométricos"],["holes","Furação circular","Padrões de furos"]];
+document.getElementById("quick").innerHTML=Q.map(q=>`<a class="tile" href="#"><span class="ic">${ico(q[0])}</span>${q[1]}<small>${q[2]}</small></a>`).join("");
+const $=s=>document.querySelector(s);
+function sit(s){
+ document.querySelectorAll(".sitb").forEach(b=>b.setAttribute("aria-pressed",b.dataset.s===s));
+ const p=(c,i,t)=>`<span class="pill ${c}">${ico(i)}${t}</span>`;
+ let h="",band=null;
+ if(s==="lic")h=p("ok","ok","Licença ativa")+p("","offl","Cálculos locais");
+ else if(s==="t18"){h=p("tr","clock","Período de teste · 18 dias")+p("","offl","Cálculos locais");band=["tr","Período de teste — 18 dias restantes",false]}
+ else{h=p("bad","clock","Período de teste · 3 dias")+p("","offl","Cálculos locais");band=["bad","Últimos 3 dias! Ative agora.",true]}
+ $("#pills").innerHTML=h;
+ const b=$("#band");b.hidden=!band;
+ if(band){b.className="band "+band[0];b.setAttribute("role",band[2]?"alert":"status");$("#bandt").textContent=band[1];$("#bandb").hidden=!band[2]}
+}
+document.querySelectorAll(".sitb").forEach(b=>b.addEventListener("click",()=>sit(b.dataset.s)));
+hydrate();sit("lic");
+</script>
+</body>
+</html>
