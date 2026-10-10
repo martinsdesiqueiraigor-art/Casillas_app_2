@@ -15,6 +15,7 @@ import { startAccessLifecycle, LEASE_KEY } from './auth.js';
 import { initKeyboard, bindInputsToKeyboard, hideKeyboard } from './keyboard.js';
 import {initMenu, setActiveMenuItem, initOptionsMenu, closeOptionsMenu, initShareButton, renderMenuIcons } from './menu.js';
 import { ICONS } from './icons.js';
+import { initBottomNav, setBottomNavActive } from './bottom-nav.js';
 import { supabase } from './supabase.bundle.js';
 import { getCurrentUser, onAuthStateChange, signOut } from './auth.js';
 
@@ -128,6 +129,7 @@ async function loadModule(key) {
     }, 100);
 
     setActiveMenuItem(key);
+    setBottomNavActive(key);
     appState.currentModule = key;
     await persistCurrentModule(key);
   } catch (err) {
@@ -318,6 +320,7 @@ async function boot() {
 
   await loadInitialState();
   initMenu(loadModule);
+  initBottomNav(loadModule);
   renderMenuIcons();
   initShareButton();
   initOptionsMenu();
