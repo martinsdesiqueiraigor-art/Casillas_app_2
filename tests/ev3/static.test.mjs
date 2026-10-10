@@ -8,7 +8,7 @@ const root=resolve(import.meta.dirname,'../..'),read=p=>readFileSync(resolve(roo
 function files(dir){return readdirSync(resolve(root,dir),{withFileTypes:true}).flatMap(e=>e.isDirectory()?files(dir+'/'+e.name):[dir+'/'+e.name]);}
 const runtime=[...files('js/core'),...files('js/modules/consultor'),...files('js/modules/guia')].filter(p=>p.endsWith('.js'));
 test('precache contém todo runtime EV3 e nenhum path ausente',()=>{
- const sw=read('service-worker.js');assert.match(sw,/casillas-v19/);
+ const sw=read('service-worker.js');assert.match(sw,/casillas-v20/);
  const assets=[...sw.match(/const CACHE_ASSETS = \[([\s\S]*?)\];/)[1].matchAll(/'([^']+)'/g)].map(m=>m[1]);
  for(const path of assets)assert.ok(existsSync(resolve(root,path)),path);
  for(const path of runtime)assert.ok(assets.includes('./'+path),path+' ausente no precache');

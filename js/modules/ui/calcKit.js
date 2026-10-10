@@ -47,10 +47,10 @@ export function segTabs(modes, current, onSelect) {
 }
 
 /**
- * Campo numérico com unidade. @param {{id:string,label:string,unit?:string,prefix?:string,value?:string,onInput?:()=>void}} o
+ * Campo numérico com unidade. @param {{id:string,label:string,unit?:string,prefix?:string,value?:string,placeholder?:string,onInput?:()=>void}} o
  */
 export function field(o) {
-  const input = h('input', { id: o.id, type: 'text', inputmode: 'decimal', autocomplete: 'off', spellcheck: 'false', placeholder: '0', 'data-native-keyboard': '1' });
+  const input = h('input', { id: o.id, type: 'text', inputmode: 'decimal', autocomplete: 'off', spellcheck: 'false', placeholder: o.placeholder || '0', 'data-native-keyboard': '1' });
   if (o.value) /** @type {HTMLInputElement} */ (input).value = o.value;
   if (o.onInput) input.addEventListener('input', o.onInput);
   const box = h('span', { class: 'ck-fld' },
@@ -101,18 +101,110 @@ export function resultPanel(note) {
   return {
     el,
     hide() { el.hidden = true; state.text = ''; },
-    /** @param {{kpis:{label:string,value:string,unit?:string,main?:boolean}[],details?:[string,string][],copy:string}} d */
+    /** @param {{kpis:{label:string,value:string,unit?:string,main?:boolean}[],details?:[string,string][],table?:{title:string,head:string[],rows:string[][]},copy:string}} d */
     show(d) {
-      body.replaceChildren(
+      body.replaceChildren(...[
         h('div', { class: 'ck-kpis' }, ...d.kpis.map((k) => h('div', { class: 'ck-kpi' + (k.main ? ' ck-kpi-main' : '') },
           h('small', { text: k.label }),
           h('b', { text: k.value }, k.unit ? h('span', { text: ' ' + k.unit }) : null)))),
         d.details && d.details.length
           ? h('details', { class: 'ck-det', open: true }, h('summary', { text: 'Resultados detalhados' }),
             ...d.details.map(([l, v]) => h('div', { class: 'ck-rw' }, h('span', { text: l }), h('b', { text: v }))))
-          : null);
+          : null,
+        d.table
+          ? h('details', { class: 'ck-det', open: true }, h('summary', { text: d.table.title }),
+            h('div', { class: 'ck-tablewrap' }, h('table', { class: 'ck-table' },
+              h('thead', {}, h('tr', {}, ...d.table.head.map((t) => h('th', { text: t })))),
+              h('tbody', {}, ...d.table.rows.map((r) => h('tr', {}, ...r.map((c) => h('td', { text: c }))))))))
+          : null].filter(Boolean));
       state.text = d.copy;
       el.hidden = false;
     }
   };
+}
+
+/**
+ * Tela de calculadora completa (interface 2.1). Calcula ao digitar.
+ * cfg.modes: [{key,label,sub,fields:[{id,label,unit,prefix,options}]}] (um modo sem abas se houver só um)
+ * cfg.compute(modeKey, v) → null (incompleto) | {error,ids} | {kpis,details,copy,figure}
+ * `v` mapeia id → número (NaN se vazio) ou texto (campos com `options`).
+ * @param {HTMLElement} container
+ * @param {{title:string,modes:{key:string,label:string,sub?:string,fields:{id:string,label:string,unit?:string,prefix?:string,placeholder?:string,options?:{value:string,label:string}[],value?:string}[]}[],figure?:()=>{el:Element,update:(r:any)=>void},compute:(mode:string,v:Record<string,any>)=>any,note?:string,initialMode?:string,onMode?:(key:string)=>void}} cfg
+ */
+export function mountCalc(container, cfg) {
+  while (container.firstChild) container.removeChild(container.firstChild);
+  let mode = cfg.initialMode && cfg.modes.some((m) => m.key === cfg.initialMode) ? cfg.initialMode : cfg.modes[0].key;
+  /** @type {Record<string,Record<string,string>>} */
+  const saved = {};
+  const sub = h('p', { class: 'ck-sub' });
+  const form = h('form', { class: 'ck-form', novalidate: true, onsubmit: (e) => e.preventDefault() });
+  const fig = cfg.figure ? cfg.figure() : null;
+  const aviso = alertBox();
+  const dica = h('div', { class: 'ck-hint', hidden: true });
+  const painel = resultPanel(cfg.note || 'Confira o resultado com o desenho da peça.');
+  const parts = [topBar(cfg.title), sub];
+  if (cfg.modes.length > 1) {
+    parts.push(segTabs(cfg.modes.map((m) => ({ key: m.key, label: m.label })), mode, (key) => { mode = key; if (cfg.onMode) cfg.onMode(key); montar(); }));
+  }
+  if (fig) parts.push(h('div', { class: 'ck-fig' }, fig.el));
+  parts.push(form, dica, aviso.el, painel.el);
+  container.append(h('div', { class: 'ck-view' }, ...parts));
+
+  function modo() { return /** @type {NonNullable<typeof cfg.modes[0]>} */ (cfg.modes.find((m) => m.key === mode)); }
+
+  function montar() {
+    const m = modo();
+    sub.textContent = m.sub || '';
+    sub.hidden = !m.sub;
+    const salvo = saved[mode] || (saved[mode] = {});
+    const campos = m.fields.map((f) => {
+      if (f.options) {
+        const sel = h('select', { id: f.id, class: 'ck-select' }, ...f.options.map((o) => h('option', { value: o.value, text: o.label })));
+        /** @type {HTMLSelectElement} */ (sel).value = salvo[f.id] ?? f.value ?? f.options[0].value;
+        sel.addEventListener('change', () => { salvo[f.id] = /** @type {HTMLSelectElement} */ (sel).value; calcular(); });
+        return h('label', { class: 'ck-field' }, h('span', { text: f.label }), h('span', { class: 'ck-fld' }, sel));
+      }
+      return field({ id: f.id, label: f.label, unit: f.unit, prefix: f.prefix, placeholder: f.placeholder, value: salvo[f.id] ?? f.value ?? '', onInput: () => {
+        salvo[f.id] = /** @type {HTMLInputElement} */ (document.getElementById(f.id)).value;
+        calcular();
+      } });
+    });
+    /** @type {Element[]} */
+    const linhas = [];
+    for (let i = 0; i < campos.length; i += 2) {
+      linhas.push(i + 1 < campos.length ? h('div', { class: 'ck-row' }, campos[i], campos[i + 1]) : campos[i]);
+    }
+    form.replaceChildren(...linhas);
+    calcular();
+  }
+
+  function valores() {
+    /** @type {Record<string,any>} */
+    const v = {};
+    for (const f of modo().fields) {
+      const el = /** @type {HTMLInputElement|HTMLSelectElement|null} */ (document.getElementById(f.id));
+      if (!el) { v[f.id] = NaN; continue; }
+      if (f.options) v[f.id] = el.value;
+      else { const s = String(el.value).trim().replace(',', '.'); const n = s === '' ? NaN : Number(s); v[f.id] = Number.isFinite(n) ? n : NaN; }
+    }
+    return v;
+  }
+
+  function calcular() {
+    aviso.hide(); markErrors([]);
+    const r = cfg.compute(mode, valores());
+    dica.hidden = true;
+    if (r && r.hint) { dica.className = 'ck-hint ck-hint-' + r.hint.tone; dica.textContent = r.hint.text; dica.hidden = false; }
+    if (!r) { painel.hide(); if (fig) fig.update(null); return; }
+    if (r.error) { aviso.show(r.error); markErrors(r.ids || []); painel.hide(); if (fig) fig.update(null); return; }
+    if (fig) fig.update(r.figure ?? null);
+    painel.show(r);
+  }
+
+  montar();
+}
+
+/** Texto para copiar: título, KPIs e detalhes. */
+export function copiar(titulo, kpis, details) {
+  return [titulo, ...kpis.map((k) => k.label + ': ' + k.value + (k.unit ? ' ' + k.unit : '')), ...(details || []).map((r) => r[0] + ': ' + r[1])].join('\n');
 }
