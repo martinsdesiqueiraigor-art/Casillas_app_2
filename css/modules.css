@@ -2029,3 +2029,62 @@
 .cs-results .card h3 { margin: 0; font-size: var(--fs-lg); }
 .cs-feedback { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-2); }
 .cs-feedback .btn { min-height: 48px; }
+
+/* ---------- Calculadoras 2.1 (kit compartilhado) ---------- */
+.ck-view { display: grid; grid-template-columns: minmax(0, 1fr); gap: 1rem; }
+.ck-top { display: flex; align-items: center; gap: .25rem; }
+.ck-h1 { flex: 1; margin: 0; font-size: 1.5rem; }
+.ck-iconbtn { display: grid; place-items: center; min-width: 48px; min-height: 48px; margin-left: -.5rem; color: var(--text-primary); background: none; border: 0; border-radius: 12px; cursor: pointer; }
+.ck-ico { display: block; flex: none; }
+.ck-sub { margin: 0; color: var(--text-secondary); font-size: .9375rem; }
+.ck-tabs { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: .375rem; padding: .25rem; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 14px; }
+.ck-tab { min-height: 48px; min-width: 0; padding: 0 .25rem; color: var(--text-secondary); background: none; border: 0; border-radius: 10px; font: inherit; font-weight: 600; font-size: .9375rem; cursor: pointer; }
+.ck-tab[aria-selected="true"] { color: var(--accent-secondary); background: #0f2236; box-shadow: inset 0 0 0 1px #1f4a78; }
+.ck-fig { padding: .5rem; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; }
+.ck-fig svg { display: block; width: 100%; height: auto; }
+.ck-fig-txt { fill: var(--text-primary); font: 600 13px var(--font-sans); paint-order: stroke; stroke: var(--bg-card); stroke-width: 4px; }
+.ck-fig-dim { fill: none; stroke: var(--accent-secondary); stroke-width: 1.5; }
+.ck-fig-body { fill: var(--bg-elevated); stroke: var(--accent-primary); stroke-width: 2.5; stroke-linejoin: round; }
+.ck-fig-ax { stroke: var(--text-secondary); stroke-width: 1; stroke-dasharray: 6 4; }
+.ck-form { display: grid; gap: .75rem; margin: 0; }
+.ck-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .75rem; }
+.ck-field { display: grid; min-width: 0; gap: .375rem; font-weight: 600; font-size: .9375rem; }
+.ck-fld { display: flex; align-items: center; min-height: 52px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; }
+.ck-fld:focus-within { border-color: var(--accent-secondary); }
+.ck-fld.ck-err { border-color: var(--danger-line); }
+.ck-fld input { flex: 1; width: 100%; min-width: 0; min-height: 50px; padding: .5rem .75rem; color: var(--text-primary); background: none; border: 0; outline: none; font: inherit; font-size: 1.125rem; }
+.ck-unit { padding-right: .75rem; color: var(--text-secondary); font-weight: 600; }
+.ck-pre { padding-left: .75rem; color: var(--text-secondary); font-weight: 700; }
+.ck-btn { display: flex; align-items: center; justify-content: center; gap: .5rem; width: 100%; min-height: 52px; color: #1a0d00; background: var(--accent-primary); border: 1px solid var(--accent-primary); border-radius: 12px; font: inherit; font-weight: 700; font-size: 1.0625rem; cursor: pointer; }
+.ck-btn-out { min-height: 48px; color: var(--text-primary); background: none; border-color: var(--border-color); font-weight: 600; }
+.ck-alert { display: flex; gap: .75rem; align-items: flex-start; padding: .75rem; color: #ff8a80; background: #2a1414; border: 1px solid #7a2b2b; border-radius: 12px; font-size: .9375rem; }
+.ck-alert .ck-ico { margin-top: 2px; }
+.ck-res { display: grid; gap: .75rem; padding: .875rem; background: var(--bg-card); border: 1px solid #2a6a52; border-radius: 16px; }
+.ck-res-h { display: flex; align-items: center; gap: .375rem; margin: 0; color: var(--success); font-size: .875rem; }
+.ck-kpis { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .625rem; }
+.ck-kpi { display: grid; gap: .125rem; padding: .625rem .75rem; background: var(--bg-elevated); border: 1px solid var(--border-color); border-radius: 12px; }
+.ck-kpi small { color: var(--text-secondary); font-size: .875rem; }
+.ck-kpi b { font-size: 1.5rem; }
+.ck-kpi b span { color: var(--text-secondary); font-size: 1rem; font-weight: 600; }
+.ck-kpi-main { grid-column: 1 / -1; background: #0f2a22; border-color: #2a6a52; }
+.ck-det { margin-top: .625rem; background: var(--bg-elevated); border: 1px solid var(--border-color); border-radius: 12px; }
+.ck-det summary { display: flex; align-items: center; min-height: 48px; padding: 0 .75rem; font-weight: 600; cursor: pointer; }
+.ck-rw { display: flex; justify-content: space-between; gap: .75rem; padding: .625rem .75rem; border-top: 1px solid var(--border-color); font-size: .9375rem; }
+.ck-rw span { color: var(--text-secondary); }
+.ck-rw b { text-align: right; }
+.ck-note { margin: 0; color: var(--text-secondary); font-size: .8125rem; }
+.ck-view [hidden] { display: none !important; }
+.ck-select { flex: 1; width: 100%; min-width: 0; min-height: 50px; padding: .5rem .75rem; color: var(--text-primary); background: none; border: 0; outline: none; font: inherit; font-size: 1.0625rem; }
+.ck-select option { color: #eef3f8; background: #16232f; }
+.ck-fig svg text { fill: var(--text-primary); font: 600 12px var(--font-sans); }
+.ck-sub[hidden] { display: none; }
+.ck-tablewrap { overflow-x: auto; border-top: 1px solid var(--border-color); }
+.ck-table { width: 100%; border-collapse: collapse; font-size: .9375rem; }
+.ck-table th, .ck-table td { padding: .5rem .75rem; text-align: right; border-bottom: 1px solid var(--border-color); white-space: nowrap; }
+.ck-table th { color: var(--text-secondary); font-weight: 600; }
+.ck-table th:first-child, .ck-table td:first-child { text-align: left; }
+.ck-hint { padding: .625rem .75rem; color: var(--accent-secondary); background: var(--accent-secondary-soft); border: 1px solid var(--accent-secondary-line); border-radius: 12px; font-size: .875rem; }
+.ck-hint-ok { color: var(--success); background: var(--success-soft); border-color: var(--success-line); }
+.ck-hint-warn { color: var(--warning); background: rgba(255, 179, 92, 0.10); border-color: rgba(255, 179, 92, 0.40); }
+.ck-hint-bad { color: #ff8a80; background: var(--danger-soft); border-color: var(--danger-line); }
+.ck-hint[hidden] { display: none; }

@@ -385,10 +385,10 @@ body {
 }
 
 /* Telas sem indicadores: a faixa de KPIs só aparece nos módulos de cálculo. */
-body:is([data-module="home"], [data-module="calculadoras"], [data-module="consult"], [data-module="guia"], [data-module="consultor-tecnico"]) {
+body:is([data-module="home"], [data-module="calculadoras"], [data-module="consult"], [data-module="guia"], [data-module="consultor-tecnico"], [data-module="coni"], [data-module="trig"], [data-module="poly"], [data-module="furos"], [data-module="rosca"], [data-module="tol"], [data-module="potencia"], [data-module="chaveta"], [data-module="conicpad"]) {
   --kpi-height: 0px;
 }
 
-body:is([data-module="home"], [data-module="calculadoras"], [data-module="consult"], [data-module="guia"], [data-module="consultor-tecnico"]) .kpi-strip {
+body:is([data-module="home"], [data-module="calculadoras"], [data-module="consult"], [data-module="guia"], [data-module="consultor-tecnico"], [data-module="coni"], [data-module="trig"], [data-module="poly"], [data-module="furos"], [data-module="rosca"], [data-module="tol"], [data-module="potencia"], [data-module="chaveta"], [data-module="conicpad"]) .kpi-strip {
   display: none;
 }

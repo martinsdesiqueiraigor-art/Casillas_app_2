@@ -1,171 +1,61 @@
-// potencia.js (module) — UI do módulo Potência de Corte
+// potencia.js (module) — UI do módulo Potência de Corte (interface 2.1)
 
 import {
-  calcularRPM, potenciaTorneamento, potenciaFresamento,
-  potenciaFuração, potenciaRoscamento
+  potenciaTorneamento, potenciaFresamento, potenciaFuração, potenciaRoscamento
 } from '../calc/potencia.js';
-import { formatNumber, parseInput, createElementSafe, showToast } from '../utils.js';
-import { updateKPIs, updateHeader } from '../state.js';
+import { formatNumber } from '../utils.js';
+import { updateHeader } from '../state.js';
+import { mountCalc, copiar } from './ui/calcKit.js';
 
 let currentOp = 'torneamento';
 
-function resultRow(label, value, primary = false) {
-  return createElementSafe('div', { class: primary ? 'result-row result-row--primary' : 'result-row' }, [
-    createElementSafe('span', { class: 'result-label', text: label }),
-    createElementSafe('span', { class: 'result-value', text: value })
-  ]);
-}
+const KC = { id: 'p-kc', label: 'Força específica (Kc)', unit: 'N/mm²', placeholder: '2000' };
+const EFF = { id: 'p-eff', label: 'Eficiência (0 a 1, opcional)', placeholder: '0,8' };
 
-function inputGroup(label, id, placeholder) {
-  const g = createElementSafe('div', { class: 'input-group' }, [
-    createElementSafe('label', { for: id, text: label })
-  ]);
-  const wrap = createElementSafe('div', { class: 'input-with-clear' }, [
-    createElementSafe('input', {
-      id, class: 'input', type: 'text', inputmode: 'decimal',
-      placeholder: placeholder || '0', autocomplete: 'off', spellcheck: 'false'
-    }),
-    createElementSafe('button', {
-      type: 'button', class: 'clear-btn', 'aria-label': 'Limpar', text: '✕',
-      onclick: () => {
-        const el = document.getElementById(id);
-        if (el) { el.value = ''; el.dispatchEvent(new Event('input', { bubbles: true })); }
-      }
-    })
-  ]);
-  g.appendChild(wrap);
-  return g;
-}
-
-function getVal(id) {
-  const el = document.getElementById(id);
-  return el ? parseInput(el.value) : NaN;
-}
+const OPS = {
+  torneamento: { label: 'Torneamento', sub: 'Informe ap, f, Vc e Kc para estimar a potência.',
+    req: [{ id: 'p-ap', label: 'Profundidade (ap)', unit: 'mm' }, { id: 'p-f', label: 'Avanço (f)', unit: 'mm/rev' }, { id: 'p-vc', label: 'Velocidade de corte (Vc)', unit: 'm/min' }, KC],
+    calc: (v, e) => potenciaTorneamento(v['p-ap'], v['p-f'], v['p-vc'], v['p-kc'], e) },
+  fresamento: { label: 'Fresamento', sub: 'Informe ap, ae, Vf e Kc para estimar a potência.',
+    req: [{ id: 'p-ap', label: 'Profundidade (ap)', unit: 'mm' }, { id: 'p-ae', label: 'Largura (ae)', unit: 'mm' }, { id: 'p-vf', label: 'Avanço da mesa (Vf)', unit: 'mm/min' }, KC],
+    calc: (v, e) => potenciaFresamento(v['p-ap'], v['p-ae'], v['p-vf'], v['p-kc'], e) },
+  furacao: { label: 'Furação', sub: 'Informe d, f, Vc e Kc para estimar a potência.',
+    req: [{ id: 'p-d', label: 'Diâmetro (d)', unit: 'mm' }, { id: 'p-f', label: 'Avanço (f)', unit: 'mm/rev' }, { id: 'p-vc', label: 'Velocidade de corte (Vc)', unit: 'm/min' }, KC],
+    calc: (v, e) => potenciaFuração(v['p-d'], v['p-f'], v['p-vc'], v['p-kc'], e) },
+  roscamento: { label: 'Roscamento', sub: 'Informe d, P, n e Kc para estimar a potência.',
+    req: [{ id: 'p-d', label: 'Diâmetro (d)', unit: 'mm' }, { id: 'p-passo', label: 'Passo (P)', unit: 'mm', placeholder: '1,5' }, { id: 'p-n', label: 'Rotação (n)', unit: 'rpm' }, KC],
+    calc: (v, e) => potenciaRoscamento(v['p-d'], v['p-passo'], v['p-n'], v['p-kc'], e) }
+};
 
 export function render(container) {
-  while (container.firstChild) container.removeChild(container.firstChild);
-  updateHeader('Potência de Corte', '⚡');
-
-  const card = createElementSafe('div', { class: 'card' });
-  card.appendChild(createElementSafe('h2', { class: 'card-title', text: 'Potência de Corte' }));
-
-  const tabs = createElementSafe('div', { class: 'rosca-tabs' });
-  const tabList = [
-    { key: 'torneamento', label: 'Torneamento' },
-    { key: 'fresamento',  label: 'Fresamento' },
-    { key: 'furacao',     label: 'Furação' },
-    { key: 'roscamento',  label: 'Roscamento' }
-  ];
-  tabList.forEach((t) => {
-    const btn = createElementSafe('button', {
-      type: 'button',
-      class: 'rosca-tab' + (currentOp === t.key ? ' active' : ''),
-      text: t.label,
-      onclick: (ev) => {
-        currentOp = t.key;
-        ev.target.parentElement.querySelectorAll('.rosca-tab').forEach((b) => b.classList.remove('active'));
-        ev.target.classList.add('active');
-        renderFields();
-      }
-    });
-    tabs.appendChild(btn);
+  updateHeader('Potência de Corte', '');
+  mountCalc(container, {
+    title: 'Potência de corte',
+    initialMode: currentOp,
+    onMode: (key) => { currentOp = key; },
+    note: 'Estimativa. Use os dados do fabricante da ferramenta e do material.',
+    modes: Object.entries(OPS).map(([key, o]) => ({ key, label: o.label, sub: o.sub, fields: [...o.req, EFF] })),
+    compute(mode, v) {
+      const o = OPS[mode];
+      const ids = o.req.map((f) => f.id);
+      if (ids.some((id) => Number.isNaN(v[id]))) return null;
+      const neg = ids.filter((id) => v[id] <= 0);
+      if (neg.length) return { error: 'Use valores maiores que zero.', ids: neg };
+      const e = Number.isFinite(v['p-eff']) && v['p-eff'] > 0 && v['p-eff'] <= 1 ? v['p-eff'] : 0.8;
+      const r = o.calc(v, e);
+      if (!r) return { error: 'Não foi possível calcular com esses valores. Confira os campos.', ids };
+      const kpis = [
+        { label: 'Potência no motor', value: formatNumber(r.potenciaMotor, 4), unit: 'kW', main: true },
+        { label: 'Potência de corte', value: formatNumber(r.potenciaCorte, 4), unit: 'kW' },
+        { label: 'Eficiência aplicada', value: formatNumber(r.eficiencia, 2) }
+      ];
+      const details = [['Operação', r.operacao]];
+      if (Number.isFinite(r.rpm)) details.push(['Rotação sugerida', formatNumber(r.rpm, 1) + ' rpm']);
+      if (Number.isFinite(r.forcaCorte)) details.push(['Força de corte', formatNumber(r.forcaCorte, 1) + ' N']);
+      if (Number.isFinite(r.forca)) details.push(['Força', formatNumber(r.forca, 1) + ' N']);
+      if (Number.isFinite(r.torque)) details.push(['Torque', formatNumber(r.torque, 3) + ' N·m']);
+      if (Number.isFinite(r.taxaRemocao)) details.push(['Taxa de remoção', formatNumber(r.taxaRemocao, 2) + ' cm³/min']);
+      return { kpis, details, copy: copiar('Potência de corte (' + o.label + ')', kpis, details) };
+    }
   });
-  card.appendChild(tabs);
-
-  const fieldsWrap = createElementSafe('div');
-  card.appendChild(fieldsWrap);
-
-  card.appendChild(createElementSafe('button', {
-    type: 'button', class: 'btn btn-primary', text: 'Calcular',
-    onclick: calcular
-  }));
-
-  const resultWrap = createElementSafe('div');
-  card.appendChild(resultWrap);
-
-  container.appendChild(card);
-
-  function renderFields() {
-    while (fieldsWrap.firstChild) fieldsWrap.removeChild(fieldsWrap.firstChild);
-
-    if (currentOp === 'torneamento') {
-      fieldsWrap.appendChild(inputGroup('Profundidade ap (mm)', 'p-ap'));
-      fieldsWrap.appendChild(inputGroup('Avanço f (mm/rev)', 'p-f'));
-      fieldsWrap.appendChild(inputGroup('Velocidade de corte Vc (m/min)', 'p-vc'));
-      fieldsWrap.appendChild(inputGroup('Força específica Kc (N/mm²)', 'p-kc', '2000'));
-      fieldsWrap.appendChild(inputGroup('Eficiência (0–1)', 'p-eff', '0.8'));
-    } else if (currentOp === 'fresamento') {
-      fieldsWrap.appendChild(inputGroup('Profundidade ap (mm)', 'p-ap'));
-      fieldsWrap.appendChild(inputGroup('Largura ae (mm)', 'p-ae'));
-      fieldsWrap.appendChild(inputGroup('Avanço da mesa Vf (mm/min)', 'p-vf'));
-      fieldsWrap.appendChild(inputGroup('Força específica Kc (N/mm²)', 'p-kc', '2000'));
-      fieldsWrap.appendChild(inputGroup('Eficiência (0–1)', 'p-eff', '0.8'));
-    } else if (currentOp === 'furacao') {
-      fieldsWrap.appendChild(inputGroup('Diâmetro d (mm)', 'p-d'));
-      fieldsWrap.appendChild(inputGroup('Avanço f (mm/rev)', 'p-f'));
-      fieldsWrap.appendChild(inputGroup('Velocidade de corte Vc (m/min)', 'p-vc'));
-      fieldsWrap.appendChild(inputGroup('Força específica Kc (N/mm²)', 'p-kc', '2000'));
-      fieldsWrap.appendChild(inputGroup('Eficiência (0–1)', 'p-eff', '0.8'));
-    } else {
-      fieldsWrap.appendChild(inputGroup('Diâmetro d (mm)', 'p-d'));
-      fieldsWrap.appendChild(inputGroup('Passo P (mm)', 'p-passo', '1.5'));
-      fieldsWrap.appendChild(inputGroup('Rotação n (rpm)', 'p-n'));
-      fieldsWrap.appendChild(inputGroup('Força específica Kc (N/mm²)', 'p-kc', '2000'));
-      fieldsWrap.appendChild(inputGroup('Eficiência (0–1)', 'p-eff', '0.8'));
-    }
-  }
-
-  function getEff() {
-    const e = getVal('p-eff');
-    return Number.isFinite(e) && e > 0 && e <= 1 ? e : 0.8;
-  }
-
-  function calcular() {
-    let res = null;
-
-    if (currentOp === 'torneamento') {
-      const ap = getVal('p-ap'), f = getVal('p-f'), vc = getVal('p-vc'), kc = getVal('p-kc');
-      if (![ap, f, vc, kc].every(Number.isFinite)) { showToast('Preencha ap, f, Vc, Kc', 'warning'); return; }
-      res = potenciaTorneamento(ap, f, vc, kc, getEff());
-    } else if (currentOp === 'fresamento') {
-      const ap = getVal('p-ap'), ae = getVal('p-ae'), vf = getVal('p-vf'), kc = getVal('p-kc');
-      if (![ap, ae, vf, kc].every(Number.isFinite)) { showToast('Preencha ap, ae, Vf, Kc', 'warning'); return; }
-      res = potenciaFresamento(ap, ae, vf, kc, getEff());
-    } else if (currentOp === 'furacao') {
-      const d = getVal('p-d'), f = getVal('p-f'), vc = getVal('p-vc'), kc = getVal('p-kc');
-      if (![d, f, vc, kc].every(Number.isFinite)) { showToast('Preencha d, f, Vc, Kc', 'warning'); return; }
-      res = potenciaFuração(d, f, vc, kc, getEff());
-    } else {
-      const d = getVal('p-d'), passo = getVal('p-passo'), n = getVal('p-n'), kc = getVal('p-kc');
-      if (![d, passo, n, kc].every(Number.isFinite)) { showToast('Preencha d, P, n, Kc', 'warning'); return; }
-      res = potenciaRoscamento(d, passo, n, kc, getEff());
-    }
-
-    if (!res) { showToast('Dados inválidos', 'error'); return; }
-
-    while (resultWrap.firstChild) resultWrap.removeChild(resultWrap.firstChild);
-    resultWrap.appendChild(resultRow('Operação', res.operacao));
-    if (Number.isFinite(res.rpm)) resultWrap.appendChild(resultRow('Rotação sugerida', formatNumber(res.rpm, 1) + ' rpm'));
-    if (Number.isFinite(res.forcaCorte)) resultWrap.appendChild(resultRow('Força de corte', formatNumber(res.forcaCorte, 1) + ' N'));
-    if (Number.isFinite(res.forca)) resultWrap.appendChild(resultRow('Força', formatNumber(res.forca, 1) + ' N'));
-    if (Number.isFinite(res.torque)) resultWrap.appendChild(resultRow('Torque', formatNumber(res.torque, 3) + ' N·m'));
-    if (Number.isFinite(res.taxaRemocao)) resultWrap.appendChild(resultRow('Taxa de remoção', formatNumber(res.taxaRemocao, 2) + ' cm³/min'));
-    resultWrap.appendChild(resultRow('Potência de corte', formatNumber(res.potenciaCorte, 4) + ' kW'));
-    resultWrap.appendChild(resultRow('Potência no motor', formatNumber(res.potenciaMotor, 4) + ' kW', true));
-    resultWrap.appendChild(resultRow('Eficiência aplicada', formatNumber(res.eficiencia, 2)));
-
-    updateKPIs([
-      { label: 'P corte', value: formatNumber(res.potenciaCorte, 3) + ' kW' },
-      { label: 'P motor', value: formatNumber(res.potenciaMotor, 3) + ' kW' },
-      { label: 'η',       value: formatNumber(res.eficiencia, 2) }
-    ]);
-    showToast('Potência calculada', 'success');
-  }
-
-  renderFields();
-  updateKPIs([
-    { label: 'P corte', value: '—' },
-    { label: 'P motor', value: '—' },
-    { label: 'η', value: '—' }
-  ]);
 }
