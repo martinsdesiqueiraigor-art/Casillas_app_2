@@ -109,7 +109,7 @@ export function render(container) {
   updateHeader('Polígonos', '⬡');
 
   const card = createElementSafe('div', { class: 'card' });
-  card.appendChild(createElementSafe('h2', { class: 'card-title', text: '⬡ Polígonos Regulares' }));
+  card.appendChild(createElementSafe('h2', { class: 'card-title', text: 'Polígonos Regulares' }));
 
   const modesWrap = createElementSafe('div', { class: 'rosca-tabs' });
   const modes = [

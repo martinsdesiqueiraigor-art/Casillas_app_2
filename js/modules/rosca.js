@@ -87,7 +87,7 @@ export function render(container) {
   updateHeader('Roscas', '🌀');
 
   const card = createElementSafe('div', { class: 'card' });
-  card.appendChild(createElementSafe('h2', { class: 'card-title', text: '🌀 Roscas' }));
+  card.appendChild(createElementSafe('h2', { class: 'card-title', text: 'Roscas' }));
 
   // Tabs
   const tabs = createElementSafe('div', { class: 'rosca-tabs' });

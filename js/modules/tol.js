@@ -56,7 +56,7 @@ export function render(container) {
   const classes = listarClasses();
 
   const card = createElementSafe('div', { class: 'card' });
-  card.appendChild(createElementSafe('h2', { class: 'card-title', text: '📊 Tolerâncias ISO 286' }));
+  card.appendChild(createElementSafe('h2', { class: 'card-title', text: 'Tolerâncias ISO 286' }));
 
   const tabs = createElementSafe('div', { class: 'rosca-tabs' });
   const tabList = [

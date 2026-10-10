@@ -94,7 +94,7 @@ export function render(container) {
   updateHeader('Chaveta DIN 6885', '🔧');
 
   const card = createElementSafe('div', { class: 'card' });
-  card.appendChild(createElementSafe('h2', { class: 'card-title', text: '🔧 Chaveta DIN 6885' }));
+  card.appendChild(createElementSafe('h2', { class: 'card-title', text: 'Chaveta DIN 6885' }));
 
   card.appendChild(inputGroup('Diâmetro do eixo (mm)', 'ch-d'));
   card.appendChild(inputGroup('Torque transmitido (N·m)', 'ch-t', '50'));

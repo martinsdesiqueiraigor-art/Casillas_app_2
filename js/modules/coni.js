@@ -65,7 +65,7 @@ export function render(container) {
   updateHeader('Conicidade', '📏');
 
   const card = createElementSafe('div', { class: 'card' });
-  card.appendChild(createElementSafe('h2', { class: 'card-title', text: '📏 Conicidade' }));
+  card.appendChild(createElementSafe('h2', { class: 'card-title', text: 'Conicidade' }));
 
   const modesWrap = createElementSafe('div', { class: 'rosca-tabs' });
   const modes = [

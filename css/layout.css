@@ -263,6 +263,11 @@ body {
   left: var(--sp-3);
   bottom: calc(var(--safe-bottom) + var(--bottom-nav-height, 72px) + var(--sp-3));
   z-index: 150;
+  width: auto;
+  max-width: calc(100vw - 2 * var(--sp-3));
+  min-height: 44px;
+  padding: 0 var(--sp-4);
+  background: var(--bg-card);
   box-shadow: var(--shadow-strong);
 }
 
