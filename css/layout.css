@@ -385,10 +385,10 @@ body {
 }
 
 /* Telas sem indicadores: a faixa de KPIs só aparece nos módulos de cálculo. */
-body:is([data-module="home"], [data-module="calculadoras"], [data-module="consult"], [data-module="guia"], [data-module="consultor-tecnico"]) {
+body:is([data-module="home"], [data-module="calculadoras"], [data-module="consult"], [data-module="guia"], [data-module="consultor-tecnico"], [data-module="coni"]) {
   --kpi-height: 0px;
 }
 
-body:is([data-module="home"], [data-module="calculadoras"], [data-module="consult"], [data-module="guia"], [data-module="consultor-tecnico"]) .kpi-strip {
+body:is([data-module="home"], [data-module="calculadoras"], [data-module="consult"], [data-module="guia"], [data-module="consultor-tecnico"], [data-module="coni"]) .kpi-strip {
   display: none;
 }
