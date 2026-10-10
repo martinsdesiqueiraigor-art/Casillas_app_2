@@ -22,6 +22,12 @@
   --accent-secondary: #4aa3ff;
   --accent-primary-soft: rgba(255, 122, 26, 0.10);
   --accent-primary-line: rgba(255, 122, 26, 0.40);
+  --accent-secondary-soft: rgba(74, 163, 255, 0.10);
+  --accent-secondary-line: rgba(74, 163, 255, 0.30);
+  --success-soft: rgba(111, 211, 166, 0.10);
+  --success-line: rgba(111, 211, 166, 0.30);
+  --danger-soft: rgba(248, 81, 73, 0.12);
+  --danger-line: rgba(248, 81, 73, 0.40);
 
   /* Feedback */
   --success: #6fd3a6;
