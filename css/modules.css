@@ -2021,6 +2021,7 @@
 .cs-lead { margin: 0 0 var(--sp-3); color: var(--text-secondary); }
 .cs-form { display: grid; gap: var(--sp-2); }
 .cs-label { font-weight: 600; }
+.cs-form .input { font-family: inherit; }
 .cs-form .input, .cs-form .btn { min-height: 48px; width: 100%; }
 .cs-status { min-height: 1.4em; margin: var(--sp-3) 0 var(--sp-2); color: var(--text-secondary); }
 .cs-results { display: grid; gap: var(--sp-3); }

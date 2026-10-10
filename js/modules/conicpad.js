@@ -44,7 +44,7 @@ export function render(container) {
   updateHeader('Conicidades Padrão', '🎯');
 
   const card = createElementSafe('div', { class: 'card' });
-  card.appendChild(createElementSafe('h2', { class: 'card-title', text: '🎯 Conicidades Padrão' }));
+  card.appendChild(createElementSafe('h2', { class: 'card-title', text: 'Conicidades Padrão' }));
 
   // Tabs
   const tabs = createElementSafe('div', { class: 'rosca-tabs' });

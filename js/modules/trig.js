@@ -166,7 +166,7 @@ export function render(container) {
   updateHeader('Trigonometria', '📐');
 
   const card = createElementSafe('div', { class: 'card' });
-  card.appendChild(createElementSafe('h2', { class: 'card-title', text: '📐 Trigonometria' }));
+  card.appendChild(createElementSafe('h2', { class: 'card-title', text: 'Trigonometria' }));
 
   // Seleção de modo
   const modesWrap = createElementSafe('div', { class: 'rosca-tabs' });

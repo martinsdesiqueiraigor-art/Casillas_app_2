@@ -115,7 +115,7 @@ export function render(container) {
   updateHeader('Furação Circular', '⚫');
 
   const card = createElementSafe('div', { class: 'card' });
-  card.appendChild(createElementSafe('h2', { class: 'card-title', text: '⚫ Furação Circular' }));
+  card.appendChild(createElementSafe('h2', { class: 'card-title', text: 'Furação Circular' }));
 
   card.appendChild(inputGroup('Diâmetro do círculo de furos (mm)', 'furos-D'));
   card.appendChild(inputGroup('Número de furos (n)', 'furos-n'));

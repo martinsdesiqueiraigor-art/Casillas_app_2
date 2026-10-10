@@ -47,7 +47,7 @@ export function render(container) {
   updateHeader('Potência de Corte', '⚡');
 
   const card = createElementSafe('div', { class: 'card' });
-  card.appendChild(createElementSafe('h2', { class: 'card-title', text: '⚡ Potência de Corte' }));
+  card.appendChild(createElementSafe('h2', { class: 'card-title', text: 'Potência de Corte' }));
 
   const tabs = createElementSafe('div', { class: 'rosca-tabs' });
   const tabList = [
