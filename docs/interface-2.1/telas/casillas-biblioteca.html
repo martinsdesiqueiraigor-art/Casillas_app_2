@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Casillas · Biblioteca</title>
+<style>
+:root{--bg:#0b1118;--card:#111b27;--card2:#16232f;--line:#24364a;--tx:#eef3f8;--mut:#93a4b6;--or:#ff7a1a;--bl:#4aa3ff;--ok:#6fd3a6;--okbg:#0f2a22;--okline:#2a6a52;--orbg:#2a1a0c;--orline:#8a4a14;--wn:#ffb35c;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.45 "Segoe UI",Roboto,system-ui,sans-serif;padding-bottom:calc(5.5rem + env(safe-area-inset-bottom,0px))}
+main{max-width:480px;margin:0 auto;padding:.75rem 1rem;display:grid;grid-template-columns:minmax(0,1fr);gap:1rem}
+header{display:flex;align-items:center;justify-content:space-between}
+.brand{display:flex;align-items:center;gap:.625rem}.brand b{font-size:1.375rem}
+.iconbtn{background:none;border:0;color:var(--mut);min-width:48px;min-height:48px;display:grid;place-items:center;border-radius:12px;cursor:pointer}
+svg.i{width:24px;height:24px;display:block;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+h1{font-size:1.75rem;margin:.25rem 0 0}
+h2{font-size:1.125rem;margin:.5rem 0 0}
+p{margin:0}.mut{color:var(--mut);font-size:.9375rem}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.625rem}
+.btn{min-height:52px;display:flex;align-items:center;justify-content:center;gap:.5rem;width:100%;text-align:center;text-decoration:none;border:1px solid var(--or);border-radius:12px;font-family:inherit;font-weight:700;font-size:1rem;cursor:pointer;background:var(--or);color:#1a0d00;padding:0 .5rem}
+.btn.out{background:none;border-color:var(--line);color:var(--tx);font-weight:600}
+.btn svg{width:22px;height:22px}
+.list{display:grid;gap:.5rem}
+details.it{background:var(--card);border:1px solid var(--line);border-radius:14px}
+details.it summary{list-style:none;display:flex;align-items:center;gap:.875rem;min-height:64px;padding:.5rem .875rem;cursor:pointer;font-weight:600}
+details.it summary::-webkit-details-marker{display:none}
+details.it .ic{width:44px;height:44px;border-radius:12px;background:#0f2236;border:1px solid #1f4a78;color:var(--bl);display:grid;place-items:center;flex:none}
+details.it summary small{display:block;color:var(--mut);font-weight:400;font-size:.875rem}
+details.it .chev{margin-left:auto;color:var(--mut);transition:transform .15s}
+details.it[open] .chev{transform:rotate(90deg)}
+details.it .body{padding:0 .875rem .875rem 4.375rem;color:var(--mut);font-size:.9375rem}
+.lic{background:var(--card);border:1px solid var(--orline);border-radius:16px;padding:1rem;display:grid;gap:.75rem}
+.lic .hd{display:flex;align-items:center;gap:.625rem}
+.lic .hd .ic{width:44px;height:44px;border-radius:12px;background:var(--orbg);border:1px solid var(--orline);color:var(--or);display:grid;place-items:center}
+.lic h2{margin:0}
+.price s{color:var(--mut)}
+.price b{font-size:1.75rem}
+.tag{display:inline-block;border:1px solid var(--okline);background:var(--okbg);color:var(--ok);border-radius:20px;padding:.1875rem .625rem;font-weight:600;font-size:.8125rem}
+.note{color:var(--mut);font-size:.8125rem}
+nav{position:fixed;left:0;right:0;bottom:0;background:#0d1620;border-top:1px solid var(--line);display:flex;padding-bottom:env(safe-area-inset-bottom,0px)}
+nav a{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:.5rem .25rem;color:var(--mut);font-size:.8125rem;text-decoration:none;border-top:3px solid transparent;min-height:56px}
+nav a[aria-current]{color:var(--or);border-color:var(--or)}
+:focus-visible{outline:3px solid var(--bl);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <div class="brand"><span id="logo"></span><b>Casillas</b></div>
+    <button class="iconbtn" type="button" aria-label="Configurações"><i data-ic="cog"></i></button>
+  </header>
+  <h1>Biblioteca</h1>
+
+  <h2>Contato</h2>
+  <div class="grid2">
+    <a class="btn" href="#"><i data-ic="chat"></i>WhatsApp</a>
+    <a class="btn out" href="#"><i data-ic="group"></i>Entrar no grupo</a>
+    <a class="btn out" href="#"><i data-ic="insta"></i>Instagram</a>
+    <a class="btn out" href="#"><i data-ic="play"></i>YouTube</a>
+  </div>
+  <p class="note">Os links reais entram na versão final.</p>
+
+  <h2>Serviços de usinagem</h2>
+  <div class="list" id="serv"></div>
+
+  <h2>Cursos</h2>
+  <div class="list" id="cur"></div>
+
+  <section class="lic" aria-label="Licença">
+    <div class="hd"><span class="ic"><i data-ic="key"></i></span><h2>Licença</h2><span class="tag" style="margin-left:auto">Licença vitalícia</span></div>
+    <p class="price"><s>R$ 49,90</s> &nbsp;<b>R$ 19,90</b></p>
+    <p class="mut">Preço promocional. Pagamento único, sem mensalidade e sem limite de aparelhos.</p>
+    <p class="mut">O app que você ativou é seu para sempre. Para receber os recursos novos de versões futuras, renove a licença.</p>
+    <button class="btn" type="button">Ativar com código</button>
+    <button class="btn out" type="button">Comprar licença</button>
+  </section>
+
+  <p class="note">Casillas App · Calculadora Técnica de Usinagem. Cálculos feitos no aparelho, funcionam offline, seguindo normas ISO, DIN e práticas de oficina.</p>
+</main>
+<nav aria-label="Navegação principal">
+  <a href="#"><i data-ic="home"></i>Início</a>
+  <a href="#"><i data-ic="calc"></i>Calculadoras</a>
+  <a href="#"><i data-ic="book"></i>Guia CNC</a>
+  <a href="#" aria-current="page"><i data-ic="lib"></i>Biblioteca</a>
+</nav>
+<script>
+const ICONS={
+ home:'<path d="M4 11l8-7 8 7v9H4z"/><path d="M10 20v-6h4v6"/>',
+ calc:'<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8M8 12h.01M12 12h.01M16 12h.01M8 16h.01M12 16h.01M16 16h.01"/>',
+ book:'<path d="M3 5c3-1 6-1 9 1v14c-3-2-6-2-9-1zM21 5c-3-1-6-1-9 1v14c3-2 6-2 9-1z"/>',
+ lib:'<path d="M5 4v16M10 4v16M14 6l4 14M5 4h5"/>',
+ cog:'<circle cx="12" cy="12" r="3"/><path d="M12 2l1.5 2.5 3-.5 1 2.8 2.7 1.4-.8 3 .8 3-2.7 1.4-1 2.8-3-.5L12 22l-1.5-2.5-3 .5-1-2.8-2.7-1.4.8-3-.8-3 2.7-1.4 1-2.8 3 .5z"/>',
+ chev:'<path d="M9 6l6 6-6 6"/>',
+ chat:'<path d="M4 20l1.2-4A8 8 0 1 1 8 18.8z"/>',
+ group:'<circle cx="9" cy="8" r="3"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><circle cx="17" cy="9" r="2.5"/><path d="M17 14c2.5 0 4 1.8 4 4.5"/>',
+ insta:'<rect x="4" y="4" width="16" height="16" rx="5"/><circle cx="12" cy="12" r="3.5"/><path d="M16.5 7.5h.01"/>',
+ play:'<rect x="3" y="6" width="18" height="12" rx="4"/><path d="M10 9.5v5l4.5-2.5z"/>',
+ key:'<circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M16 7l3 3"/>',
+ lathe:'<rect x="3" y="8" width="12" height="8" rx="1"/><path d="M15 12h6M6 8V5M6 19v-3"/>',
+ mill:'<path d="M12 3v10M9 13h6l-1 8h-4z"/><path d="M5 21h14"/>',
+ code:'<path d="M8 7l-5 5 5 5M16 7l5 5-5 5"/>',
+ teach:'<path d="M3 9l9-5 9 5-9 5z"/><path d="M7 11.5V16c0 1.5 2.2 3 5 3s5-1.5 5-3v-4.5"/>',
+ cam:'<path d="M4 18l5-9 4 6 3-4 4 7z"/>',
+ cube:'<path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M12 12l8-4.5M12 12v9M12 12L4 7.5"/>',
+ param:'<path d="M5 6h4M5 12h6M5 18h3M15 6h4M13 12h6M12 18h7"/>'
+};
+const ico=n=>`<svg class="i" viewBox="0 0 24 24" aria-hidden="true">${ICONS[n]}</svg>`;
+const item=(i,t,d,sub)=>`<details class="it"><summary><span class="ic">${ico(i)}</span><span>${t}${sub?`<small>${sub}</small>`:""}</span><span class="chev">${ico("chev")}</span></summary><div class="body">${d}</div></details>`;
+document.getElementById("serv").innerHTML=[["lathe","Torneamento CNC","Programação, otimização de ciclos e cálculo de parâmetros."],["mill","Fresamento CNC","Estratégias de desbaste, acabamento e fixação."],["code","Programação CNC","Fanuc Macro B, Siemens, Mach3 e ajustes finos."],["teach","Treinamento","Aulas in-company para operadores e programadores."]].map(s=>item(s[0],s[1],s[2])).join("");
+document.getElementById("cur").innerHTML=[["cam","Programação CAM","Mastercam, Fusion 360 e estratégias de usinagem."],["cube","SolidWorks","Modelagem 3D, montagem e desenho técnico."],["param","Programação parametrizada","Fanuc Macro B, variáveis e subprogramas."]].map(s=>item(s[0],s[1],s[2],"Sob consulta")).join("");
+document.querySelectorAll("[data-ic]").forEach(e=>{e.outerHTML=ico(e.dataset.ic)});
+document.getElementById("logo").innerHTML='<svg width="32" height="32" viewBox="0 0 100 100" aria-hidden="true"><path d="M73.0,69.3 A31 31 0 1 1 73.0,30.7" fill="none" stroke="#ff7a1a" stroke-width="15"/><polygon points="72,50 84,40 96,50 84,60" fill="#4aa3ff" transform="translate(-2 0)"/></svg>';
+</script>
+</body>
+</html>

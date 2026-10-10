@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Casillas · Configurações</title>
+<style>
+:root{--bg:#0b1118;--card:#111b27;--card2:#16232f;--line:#24364a;--tx:#eef3f8;--mut:#93a4b6;--or:#ff7a1a;--bl:#4aa3ff;--ok:#6fd3a6;--warn:#3a2a10;--bw:1px;color-scheme:dark}
+:root[data-hc="1"]{--bg:#000;--card:#0a0a0a;--card2:#111;--line:#8aa0b6;--tx:#fff;--mut:#d5dde6;--or:#ffa24d;--bl:#7cc0ff;--ok:#8ff0c4;--bw:2px}
+*{box-sizing:border-box}
+html{font-size:16px}
+body{margin:0;background:var(--bg);color:var(--tx);font:1rem/1.45 "Segoe UI",Roboto,system-ui,sans-serif;padding-bottom:calc(5.5rem + env(safe-area-inset-bottom,0px))}
+main{max-width:480px;margin:0 auto;padding:.75rem 1rem}
+header{display:flex;align-items:center;gap:.75rem;padding:.25rem 0 .5rem}
+header b{font-size:1.375rem}
+.back{background:none;border:0;color:var(--tx);padding:.5rem;margin-left:-.5rem;border-radius:.75rem;cursor:pointer;min-width:48px;min-height:48px;display:grid;place-items:center}
+h1{font-size:1.75rem;margin:.5rem 0 .75rem}
+h2{font-size:1rem;color:var(--mut);margin:1.25rem 0 .5rem;font-weight:600}
+svg.i{width:1.5rem;height:1.5rem;display:block;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.card{background:var(--card);border:var(--bw) solid var(--line);border-radius:1rem;padding:.875rem;display:grid;gap:.75rem}
+.opts{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:.5rem}
+.opt{min-height:48px;border-radius:.75rem;border:var(--bw) solid var(--line);background:var(--card2);color:var(--tx);font:600 1rem inherit;cursor:pointer;padding:.5rem}
+.opt[aria-pressed=true]{border-color:var(--bl);background:#0f2236;color:var(--bl)}
+:root[data-hc="1"] .opt[aria-pressed=true]{background:#00243f}
+.sample{background:var(--card2);border:var(--bw) solid var(--line);border-radius:.75rem;padding:.75rem;color:var(--mut)}
+.sample b{color:var(--tx)}
+.sw{display:flex;align-items:center;justify-content:space-between;gap:1rem;min-height:48px}
+.sw small{display:block;color:var(--mut);font-size:.875rem}
+.tog{position:relative;width:56px;height:32px;border-radius:16px;border:var(--bw) solid var(--line);background:var(--card2);cursor:pointer;flex:none;padding:0}
+.tog::after{content:"";position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:var(--mut);transition:transform .15s}
+.tog[aria-checked=true]{background:var(--or);border-color:var(--or)}
+.tog[aria-checked=true]::after{transform:translateX(24px);background:#1a0d00}
+.pill{display:inline-block;border-radius:1.25rem;padding:.25rem .75rem;font:600 .875rem inherit;border:var(--bw) solid #2a6a52;background:#0f2a22;color:var(--ok)}
+.kv{display:grid;gap:.5rem}
+.kv div{display:flex;justify-content:space-between;gap:1rem;color:var(--mut)}
+.kv b{color:var(--tx);text-align:right}
+.irow{display:flex;align-items:center;gap:.75rem;background:var(--card2);border:var(--bw) solid var(--line);border-radius:.75rem;padding:.875rem .75rem;color:var(--tx);font:600 1rem inherit;width:100%;text-align:left;min-height:48px;cursor:pointer}
+.irow svg.i{color:var(--bl)}
+.irow .go{margin-left:auto;color:var(--mut)}
+.note{color:var(--mut);font-size:.875rem;margin:.5rem 0 0}
+nav{position:fixed;left:0;right:0;bottom:0;background:#0d1620;border-top:var(--bw) solid var(--line);display:flex;padding-bottom:env(safe-area-inset-bottom,0px)}
+:root[data-hc="1"] nav{background:#000}
+nav a{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:.5rem .25rem;color:var(--mut);font-size:.8125rem;text-decoration:none;border-top:3px solid transparent;min-height:56px}
+:focus-visible{outline:3px solid var(--bl);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<main>
+<header><button class="back" type="button" aria-label="Voltar" data-i-aria="back"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button><b data-i="title">Configurações</b></header>
+
+<h2 data-i="lang">Idioma</h2>
+<section class="card">
+  <div class="opts" role="group" aria-label="Idioma">
+    <button class="opt" type="button" data-lang="pt" aria-pressed="true">Português</button>
+    <button class="opt" type="button" data-lang="en" aria-pressed="false">English</button>
+  </div>
+</section>
+
+<h2 data-i="font">Tamanho da fonte</h2>
+<section class="card">
+  <div class="opts" role="group" aria-label="Tamanho da fonte">
+    <button class="opt" type="button" data-fs="16" aria-pressed="true" data-i="fs1">Normal</button>
+    <button class="opt" type="button" data-fs="19" aria-pressed="false" data-i="fs2">Grande</button>
+    <button class="opt" type="button" data-fs="22" aria-pressed="false" data-i="fs3">Muito grande</button>
+  </div>
+  <div class="sample"><b data-i="sampleT">Ciclo G76</b><br><span data-i="sampleB">Passo F igual ao passo real da rosca.</span></div>
+</section>
+
+<h2 data-i="contrast">Alto contraste</h2>
+<section class="card">
+  <div class="sw"><div><b data-i="hcT">Alto contraste</b><small data-i="hcB">Texto, bordas e botões mais fortes, para uso sob luz forte.</small></div><button class="tog" type="button" role="switch" aria-checked="false" aria-label="Alto contraste" id="hc"></button></div>
+</section>
+
+<h2 data-i="access">Acesso e licença</h2>
+<section class="card">
+  <div><span class="pill" data-i="licOk">Licença ativa</span></div>
+  <div class="kv">
+    <div><span data-i="offl">Validação offline</span><b data-i="offv">válida até 16/10/2026</b></div>
+    <div><span data-i="plan">Plano</span><b data-i="planv">Licença vitalícia</b></div>
+    <div style="display:grid;gap:.125rem;justify-content:stretch"><span data-i="newf">Recursos novos</span><b data-i="newfv" style="text-align:left;font-weight:600">Incluídos até a sua versão. Renove para receber os próximos.</b></div>
+  </div>
+  <button class="irow" type="button"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4M10 12h5M10 16h5"/></svg><span data-i="manage">Gerenciar licença</span><span class="go"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></span></button>
+</section>
+<p class="note" data-i="offNote">Sem internet, o app continua funcionando até a data da validação. Depois disso, conecte-se para validar.</p>
+
+<h2 data-i="about">Sobre</h2>
+<section class="card">
+  <div class="kv">
+    <div><span data-i="ver">Versão</span><b>2.1 (protótipo)</b></div>
+    <div><span data-i="ctt">Contato</span><b data-i="cttv">Biblioteca, Contato</b></div>
+  </div>
+</section>
+<p class="note" data-i="local">Suas escolhas ficam guardadas só neste aparelho.</p>
+</main>
+<nav aria-label="Navegação principal">
+  <a href="#"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11l8-7 8 7v9H4z"/><path d="M10 20v-6h4v6"/></svg><span data-i="n1">Início</span></a>
+  <a href="#"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8M8 12h.5M12 12h.5M16 12h.5M8 16h.5M12 16h.5M16 16h.5"/></svg><span data-i="n2">Calculadoras</span></a>
+  <a href="#"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5c3-1 6-1 9 1v14c-3-2-6-2-9-1zM21 5c-3-1-6-1-9 1v14c3-2 6-2 9-1z"/></svg><span data-i="n3">Guia CNC</span></a>
+  <a href="#"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4v16M10 4v16M14 6l4 14M5 4h5"/></svg><span data-i="n4">Biblioteca</span></a>
+</nav>
+<script>
+const T={pt:{title:"Configurações",lang:"Idioma",font:"Tamanho da fonte",fs1:"Normal",fs2:"Grande",fs3:"Muito grande",sampleT:"Ciclo G76",sampleB:"Passo F igual ao passo real da rosca.",contrast:"Alto contraste",hcT:"Alto contraste",hcB:"Texto, bordas e botões mais fortes, para uso sob luz forte.",access:"Acesso e licença",licOk:"Licença ativa",offl:"Validação offline",offv:"válida até 16/10/2026",plan:"Plano",planv:"Licença vitalícia",newf:"Recursos novos",newfv:"Incluídos até a sua versão. Renove para receber os próximos.",manage:"Gerenciar licença",offNote:"Sem internet, o app continua funcionando até a data da validação. Depois disso, conecte-se para validar.",about:"Sobre",ver:"Versão",ctt:"Contato",cttv:"Biblioteca, Contato",local:"Suas escolhas ficam guardadas só neste aparelho.",n1:"Início",n2:"Calculadoras",n3:"Guia CNC",n4:"Biblioteca",back:"Voltar"},
+en:{title:"Settings",lang:"Language",font:"Font size",fs1:"Normal",fs2:"Large",fs3:"Extra large",sampleT:"Cycle G76",sampleB:"Feed F equal to the real thread pitch.",contrast:"High contrast",hcT:"High contrast",hcB:"Stronger text, borders and buttons, for use in bright light.",access:"Access and license",licOk:"License active",offl:"Offline validation",offv:"valid until 10/16/2026",plan:"Plan",planv:"Lifetime license",newf:"New features",newfv:"Included up to your version. Renew to get the next ones.",manage:"Manage license",offNote:"Without internet the app keeps working until the validation date. After that, connect to validate.",about:"About",ver:"Version",ctt:"Contact",cttv:"Library, Contact",local:"Your choices are stored on this device only.",n1:"Home",n2:"Calculators",n3:"CNC Guide",n4:"Library",back:"Back"}};
+const root=document.documentElement,$=s=>document.querySelector(s),$$=s=>document.querySelectorAll(s);
+const KEY="casillas-prefs";let S={lang:"pt",fs:16,hc:false};
+try{Object.assign(S,JSON.parse(localStorage.getItem(KEY)||"{}"))}catch(_){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(_){}}
+function apply(){
+ root.lang=S.lang==="en"?"en":"pt-BR";root.style.fontSize=S.fs+"px";
+ if(S.hc)root.setAttribute("data-hc","1");else root.removeAttribute("data-hc");
+ $$("[data-i]").forEach(e=>{e.textContent=T[S.lang][e.dataset.i]});
+ $$("[data-i-aria]").forEach(e=>e.setAttribute("aria-label",T[S.lang][e.dataset.iAria]));
+ $$("[data-lang]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.lang===S.lang));
+ $$("[data-fs]").forEach(b=>b.setAttribute("aria-pressed",+b.dataset.fs===S.fs));
+ $("#hc").setAttribute("aria-checked",S.hc);
+}
+document.addEventListener("click",e=>{
+ const l=e.target.closest("[data-lang]"),f=e.target.closest("[data-fs]"),h=e.target.closest("#hc");
+ if(l)S.lang=l.dataset.lang;else if(f)S.fs=+f.dataset.fs;else if(h)S.hc=!S.hc;else return;
+ save();apply();
+});
+apply();
+</script>
+</body>
+</html>

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Casillas · Calculadoras</title>
+<style>
+:root{--bg:#0b1118;--card:#111b27;--card2:#16232f;--line:#24364a;--tx:#eef3f8;--mut:#93a4b6;--or:#ff7a1a;--bl:#4aa3ff;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.45 "Segoe UI",Roboto,system-ui,sans-serif;padding-bottom:calc(5.5rem + env(safe-area-inset-bottom,0px))}
+main{max-width:480px;margin:0 auto;padding:.75rem 1rem;display:grid;gap:1rem}
+header{display:flex;align-items:center;justify-content:space-between}
+.brand{display:flex;align-items:center;gap:.625rem}.brand b{font-size:1.375rem}
+.iconbtn{background:none;border:0;color:var(--mut);min-width:48px;min-height:48px;display:grid;place-items:center;border-radius:12px;cursor:pointer}
+svg.i{width:24px;height:24px;display:block;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+h1{font-size:1.75rem;margin:.25rem 0 0}
+.search{display:flex;align-items:center;gap:.5rem;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:0 .75rem;min-height:52px;color:var(--mut)}
+.search:focus-within{border-color:var(--bl)}
+.search input{flex:1;min-width:0;background:none;border:0;color:var(--tx);font:inherit;outline:none;min-height:50px}
+.chips{display:flex;gap:.5rem;overflow-x:auto;padding-bottom:.25rem;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;min-height:48px;border-radius:24px;border:1px solid var(--line);background:var(--card);color:var(--mut);font-family:inherit;font-weight:600;font-size:1rem;padding:0 1.125rem;cursor:pointer;white-space:nowrap}
+.chip[aria-pressed=true]{border-color:var(--bl);color:var(--bl);background:#0f2236}
+.list{display:grid;gap:.625rem}
+.item{display:flex;align-items:center;gap:.875rem;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:.75rem .875rem;color:var(--tx);text-decoration:none;min-height:72px}
+.item:active{background:var(--card2)}
+.ic{width:48px;height:48px;border-radius:12px;background:#0f2236;border:1px solid #1f4a78;color:var(--bl);display:grid;place-items:center;flex:none}
+.item b{display:block;font-size:1.0625rem}
+.item small{display:block;color:var(--mut);font-size:.875rem}
+.item .go{margin-left:auto;color:var(--mut)}
+.empty{text-align:center;color:var(--mut);padding:1.5rem .5rem;display:grid;gap:.25rem}
+.cnt{color:var(--mut);font-size:.875rem;margin:0}
+nav{position:fixed;left:0;right:0;bottom:0;background:#0d1620;border-top:1px solid var(--line);display:flex;padding-bottom:env(safe-area-inset-bottom,0px)}
+nav a{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:.5rem .25rem;color:var(--mut);font-size:.8125rem;text-decoration:none;border-top:3px solid transparent;min-height:56px}
+nav a[aria-current]{color:var(--or);border-color:var(--or)}
+[hidden]{display:none!important}
+:focus-visible{outline:3px solid var(--bl);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <div class="brand"><span id="logo"></span><b>Casillas</b></div>
+    <button class="iconbtn" type="button" aria-label="Configurações"><i data-ic="cog"></i></button>
+  </header>
+  <h1>Calculadoras</h1>
+  <label class="search"><i data-ic="search"></i><input id="q" type="search" placeholder="Buscar: roscas, furos, tolerância" aria-label="Buscar calculadoras" autocomplete="off"></label>
+  <div class="chips" role="group" aria-label="Categorias" id="cats"></div>
+  <p class="cnt" id="cnt" aria-live="polite"></p>
+  <div class="list" id="list"></div>
+</main>
+<nav aria-label="Navegação principal">
+  <a href="#"><i data-ic="home"></i>Início</a>
+  <a href="#" aria-current="page"><i data-ic="calc"></i>Calculadoras</a>
+  <a href="#"><i data-ic="book"></i>Guia CNC</a>
+  <a href="#"><i data-ic="lib"></i>Biblioteca</a>
+</nav>
+<script>
+// Ícones: mapa único. Para trocar o conjunto (por exemplo, pela Lucide), basta mudar este mapa.
+const ICONS={
+ home:'<path d="M4 11l8-7 8 7v9H4z"/><path d="M10 20v-6h4v6"/>',
+ calc:'<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8M8 12h.01M12 12h.01M16 12h.01M8 16h.01M12 16h.01M16 16h.01"/>',
+ book:'<path d="M3 5c3-1 6-1 9 1v14c-3-2-6-2-9-1zM21 5c-3-1-6-1-9 1v14c3-2 6-2 9-1z"/>',
+ lib:'<path d="M5 4v16M10 4v16M14 6l4 14M5 4h5"/>',
+ cog:'<circle cx="12" cy="12" r="3"/><path d="M12 2l1.5 2.5 3-.5 1 2.8 2.7 1.4-.8 3 .8 3-2.7 1.4-1 2.8-3-.5L12 22l-1.5-2.5-3 .5-1-2.8-2.7-1.4.8-3-.8-3 2.7-1.4 1-2.8 3 .5z"/>',
+ search:'<circle cx="11" cy="11" r="6"/><path d="M20 20l-4-4"/>',
+ chev:'<path d="M9 6l6 6-6 6"/>',
+ trig:'<path d="M4 4v16h16z"/><path d="M4 16h4v4"/>',
+ cone:'<path d="M3 8l18-3v14L3 16z"/><path d="M3 12h2M8 12h2M13 12h2M18 12h3"/>',
+ poly:'<path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/>',
+ holes:'<circle cx="12" cy="12" r="8" stroke-dasharray="2 3"/><circle cx="12" cy="4" r="2"/><circle cx="19" cy="16" r="2"/><circle cx="5" cy="16" r="2"/>',
+ thread:'<rect x="7" y="3" width="10" height="18" rx="1"/><path d="M7 7l10 2M7 11l10 2M7 15l10 2"/>',
+ tol:'<path d="M3 8h18v8H3z"/><path d="M7 8v4M11 8v3M15 8v4M19 8v3"/>',
+ key:'<circle cx="12" cy="12" r="9"/><rect x="9.5" y="3" width="5" height="6" rx=".5"/>',
+ code:'<path d="M8 7l-5 5 5 5M16 7l5 5-5 5"/>',
+ gauge:'<path d="M4 17a8 8 0 0 1 16 0"/><path d="M12 17l4-5"/><path d="M3 20h18"/>'
+};
+const ico=n=>`<svg class="i" viewBox="0 0 24 24" aria-hidden="true">${ICONS[n]}</svg>`;
+document.querySelectorAll("[data-ic]").forEach(e=>{e.outerHTML=ico(e.dataset.ic)});
+// Logo provisório (modelo 3, C com ferramenta). Será substituído.
+document.getElementById("logo").innerHTML='<svg width="32" height="32" viewBox="0 0 100 100" aria-hidden="true"><path d="M73.0,69.3 A31 31 0 1 1 73.0,30.7" fill="none" stroke="#ff7a1a" stroke-width="15"/><polygon points="72,50 84,40 96,50 84,60" fill="#4aa3ff" transform="translate(-2 0)"/></svg>';
+const CATS=["Todas","Geometria","Roscas e ajustes","Usinagem"];
+const CALCS=[
+ {t:"Trigonometria",s:"Ângulos e relações do triângulo.",c:"Geometria",i:"trig"},
+ {t:"Conicidade",s:"Cálculos de cones e ângulos.",c:"Geometria",i:"cone"},
+ {t:"Polígonos",s:"Geometria de perfis poligonais.",c:"Geometria",i:"poly"},
+ {t:"Furação Circular",s:"Coordenadas para padrões circulares.",c:"Geometria",i:"holes"},
+ {t:"Roscas",s:"Cálculos de roscas métricas.",c:"Roscas e ajustes",i:"thread"},
+ {t:"Tolerâncias ISO",s:"Ajustes e tolerâncias dimensionais.",c:"Roscas e ajustes",i:"tol"},
+ {t:"Chaveta DIN 6885",s:"Dimensões normalizadas de chavetas.",c:"Roscas e ajustes",i:"key"},
+ {t:"Programação CNC",s:"Gerador de código G Fanuc.",c:"Usinagem",i:"code"},
+ {t:"Potência de Corte",s:"Apoio ao planejamento de corte.",c:"Usinagem",i:"gauge"}
+];
+const norm=s=>s.normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase();
+let cat="Todas";
+function renderCats(){document.getElementById("cats").innerHTML=CATS.map(c=>`<button class="chip" type="button" data-cat="${c}" aria-pressed="${c===cat}">${c}</button>`).join("")}
+function renderList(){
+ const q=norm(document.getElementById("q").value.trim());
+ const L=CALCS.filter(x=>(cat==="Todas"||x.c===cat)&&(!q||norm(x.t+" "+x.s).includes(q)));
+ document.getElementById("cnt").textContent=L.length===1?"1 calculadora":L.length+" calculadoras";
+ document.getElementById("list").innerHTML=L.length?L.map(x=>`<a class="item" href="#"><span class="ic">${ico(x.i)}</span><span><b>${x.t}</b><small>${x.s}</small></span><span class="go">${ico("chev")}</span></a>`).join(""):`<div class="empty"><b>Nenhuma calculadora encontrada</b><span>Tente outras palavras ou mude a categoria.</span></div>`;
+}
+document.getElementById("cats").addEventListener("click",e=>{const b=e.target.closest("[data-cat]");if(!b)return;cat=b.dataset.cat;renderCats();renderList()});
+document.getElementById("q").addEventListener("input",renderList);
+renderCats();renderList();
+</script>
+</body>
+</html>
