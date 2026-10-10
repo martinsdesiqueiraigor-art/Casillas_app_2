@@ -135,12 +135,12 @@ export function render(container) {
     void atualizar();
   }
 
-  /** @type {ReturnType<typeof setTimeout>|undefined} */
+  /** @type {number|undefined} */
   let debounce;
   busca.addEventListener('input', () => {
     filtros.texto = busca.value;
-    clearTimeout(debounce);
-    debounce = setTimeout(() => { void atualizar(); }, 200);
+    window.clearTimeout(debounce);
+    debounce = window.setTimeout(() => { void atualizar(); }, 200);
   });
 
   container.append(h('div', { class: 'gx-view' },
@@ -151,7 +151,7 @@ export function render(container) {
     resultados));
 
   // O teclado numérico do app pode ter aplicado inputmode="none": a busca usa o teclado nativo.
-  setTimeout(() => {
+  window.setTimeout(() => {
     busca.setAttribute('inputmode', 'text');
     busca.removeAttribute('data-kbd-bound');
   }, 200);

@@ -82,13 +82,13 @@ export function renderCycleView(container, cycle, target, abaInicial) {
   const painel = /** @type {Record<string, HTMLElement>} */ ({});
   const botoes = /** @type {Record<string, HTMLElement>} */ ({});
   let ativa = abas.includes(abaInicial || '') ? /** @type {string} */ (abaInicial) : abas[0];
-  /** @type {ReturnType<typeof setInterval>|null} */
+  /** @type {number|null} */
   let relogio = null;
   let passeAtual = 1;
   let parametroSel = '';
 
   function pararReproducao() {
-    if (relogio) clearInterval(relogio);
+    if (relogio) window.clearInterval(relogio);
     relogio = null;
     const b = view.querySelector('[data-play]');
     if (b) b.textContent = 'Reproduzir';
@@ -194,7 +194,7 @@ export function renderCycleView(container, cycle, target, abaInicial) {
         passeAtual++;
       };
       passo();
-      relogio = setInterval(passo, 700);
+      relogio = window.setInterval(passo, 700);
     };
     slider.addEventListener('input', () => { pararReproducao(); passeAtual = Number(slider.value); desenhar(); });
     const t = extra.traj;
