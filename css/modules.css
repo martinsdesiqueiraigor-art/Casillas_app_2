@@ -2015,3 +2015,16 @@
   border: 1px solid #7a5316;
   border-radius: var(--radius-md);
 }
+
+/* ---------- Consultor Técnico (2.1) ---------- */
+.cs-title { margin: 0 0 var(--sp-2); font-size: var(--fs-xl); }
+.cs-lead { margin: 0 0 var(--sp-3); color: var(--text-secondary); }
+.cs-form { display: grid; gap: var(--sp-2); }
+.cs-label { font-weight: 600; }
+.cs-form .input, .cs-form .btn { min-height: 48px; width: 100%; }
+.cs-status { min-height: 1.4em; margin: var(--sp-3) 0 var(--sp-2); color: var(--text-secondary); }
+.cs-results { display: grid; gap: var(--sp-3); }
+.cs-results .card { display: grid; gap: var(--sp-3); padding: var(--sp-4); border-radius: var(--radius-lg); }
+.cs-results .card h3 { margin: 0; font-size: var(--fs-lg); }
+.cs-feedback { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-2); }
+.cs-feedback .btn { min-height: 48px; }

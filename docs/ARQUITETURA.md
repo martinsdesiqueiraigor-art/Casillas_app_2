@@ -32,7 +32,7 @@ As migrations definem `products`, `profiles`, `trials`, `licenses`, `entitlement
 
 ## PWA e offline
 
-`manifest.json` define `start_url: ./index.html`, `scope: ./`, `display: standalone`, orientação `portrait` e ícones 192×192 e 512×512. `js/app.js` registra `service-worker.js`; o escopo efetivo decorre da localização do script, no diretório raiz. O Service Worker atual usa `casillas-v16`, pré-cacheia os recursos do PWA e usa rede primeiro para navegação com fallback para `offline.html`; recursos GET locais usam cache primeiro.
+`manifest.json` define `start_url: ./index.html`, `scope: ./`, `display: standalone`, orientação `portrait` e ícones 192×192 e 512×512. `js/app.js` registra `service-worker.js`; o escopo efetivo decorre da localização do script, no diretório raiz. O Service Worker atual usa `casillas-v17`, pré-cacheia os recursos do PWA e usa rede primeiro para navegação com fallback para `offline.html`; recursos GET locais usam cache primeiro.
 
 Os cálculos permanecem locais. Auth e RPCs comerciais dependem de comunicação com Supabase quando precisam de validação remota. Em G4.2.2b foi validada sessão já autenticada com SW v12, reload offline, cálculos de Trigonometria e Roscas, Guia CNC offline e retorno normal ao online. Isso não significa que um usuário novo consiga autenticar ou obter autorização comercial pela primeira vez sem rede.
 

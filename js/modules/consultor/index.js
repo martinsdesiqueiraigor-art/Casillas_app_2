@@ -10,15 +10,15 @@ export function render(container,accessStatus,context){
  const agent=new ConsultorAgent(),cards=new ResultCard();
  const queue=new SyncQueue(outboxStore,sessionOwner,createTransport()),telemetry=new Telemetry(context.ownerUserId,queue);
  container.replaceChildren();
- const heading=document.createElement('h2');heading.textContent='Consultor Técnico';
- const description=document.createElement('p');description.textContent='Consulta local aos ciclos disponíveis. Exemplo: rosca torno fanuc';
- const form=document.createElement('form'),label=document.createElement('label'),input=document.createElement('input');
+ const heading=document.createElement('h2');heading.textContent='Consultor Técnico';heading.className='cs-title';
+ const description=document.createElement('p');description.textContent='Consulta local aos ciclos disponíveis. Exemplo: rosca torno fanuc';description.className='cs-lead';
+ const form=document.createElement('form');form.className='cs-form';const label=document.createElement('label'),input=document.createElement('input');
  input.id='consultor-pergunta';input.className='input';input.dataset.nativeKeyboard='1';input.setAttribute('inputmode','text');input.required=true;
- label.htmlFor=input.id;label.textContent='Sua consulta';
+ label.className='cs-label';input.placeholder='Ex.: rosca torno fanuc';label.htmlFor=input.id;label.textContent='Sua consulta';
  const submit=document.createElement('button');submit.type='submit';submit.className='btn btn-primary';submit.textContent='Consultar';
  const reset=document.createElement('button');reset.type='button';reset.className='btn btn-outline';reset.textContent='Nova consulta';
- const status=document.createElement('p');status.setAttribute('role','status');status.setAttribute('aria-live','polite');
- const results=document.createElement('div');form.append(label,input,submit,reset);container.append(heading,description,form,status,results);
+ const status=document.createElement('p');status.className='cs-status';status.setAttribute('role','status');status.setAttribute('aria-live','polite');
+ const results=document.createElement('div');results.className='cs-results';form.append(label,input,submit,reset);container.append(heading,description,form,status,results);
  let busy=false;
  /** @param {unknown} error */
  function storageError(error){console.warn('[EV3] Persistência pendente',error);status.textContent='Resultado local disponível. Não foi possível salvar; tente novamente.';}
@@ -32,7 +32,7 @@ export function render(container,accessStatus,context){
    }else if(agent.result.outcome==='no_match')status.textContent='Nenhum ciclo encontrado na base local. Inicie uma nova consulta.';
    else{
     status.textContent='Resultado encontrado na base local.';results.append(cards.render(agent.result.candidates[0]));
-    const feedback=document.createElement('div'),buttons=[];
+    const feedback=document.createElement('div');feedback.className='cs-feedback';const buttons=[];
     for(const [text,helpful] of /** @type {[string,boolean][]} */([['Útil',true],['Não útil',false]])){
      const button=document.createElement('button');button.type='button';button.className='btn btn-outline';button.textContent=text;buttons.push(button);
      button.addEventListener('click',async()=>{
