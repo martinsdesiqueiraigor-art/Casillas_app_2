@@ -6,8 +6,8 @@ import { updateKPIs, updateHeader } from '../state.js';
 
 let currentGrupo = 'morse';
 
-function resultRow(label, value) {
-  return createElementSafe('div', { class: 'result-row' }, [
+function resultRow(label, value, primary = false) {
+  return createElementSafe('div', { class: primary ? 'result-row result-row--primary' : 'result-row' }, [
     createElementSafe('span', { class: 'result-label', text: label }),
     createElementSafe('span', { class: 'result-value', text: value })
   ]);
@@ -116,7 +116,7 @@ export function render(container) {
     resultWrap.appendChild(resultRow('Diâmetro menor d', formatNumber(item.d, 4) + ' mm'));
     resultWrap.appendChild(resultRow('Diâmetro maior D', formatNumber(item.D, 4) + ' mm'));
     resultWrap.appendChild(resultRow('Comprimento L', formatNumber(item.L, 3) + ' mm'));
-    resultWrap.appendChild(resultRow('Relação de conicidade', item.relacao));
+    resultWrap.appendChild(resultRow('Relação de conicidade', item.relacao, true));
     const dif = item.D - item.d;
     resultWrap.appendChild(resultRow('Diferença (D - d)', formatNumber(dif, 4) + ' mm'));
 

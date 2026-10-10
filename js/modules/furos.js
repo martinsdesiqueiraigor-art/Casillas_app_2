@@ -52,8 +52,8 @@ function desenharFuros(res) {
   return svg;
 }
 
-function resultRow(label, value) {
-  return createElementSafe('div', { class: 'result-row' }, [
+function resultRow(label, value, primary = false) {
+  return createElementSafe('div', { class: primary ? 'result-row result-row--primary' : 'result-row' }, [
     createElementSafe('span', { class: 'result-label', text: label }),
     createElementSafe('span', { class: 'result-value', text: value })
   ]);
@@ -151,7 +151,7 @@ export function render(container) {
     resultWrap.appendChild(resultRow('Diâmetro', formatNumber(D, 3) + ' mm'));
     resultWrap.appendChild(resultRow('Raio', formatNumber(res.R, 3) + ' mm'));
     resultWrap.appendChild(resultRow('Número de furos', String(n)));
-    resultWrap.appendChild(resultRow('Passo angular', formatNumber(res.passoAngular, 4) + '°'));
+    resultWrap.appendChild(resultRow('Passo angular', formatNumber(res.passoAngular, 4) + '°', true));
     resultWrap.appendChild(resultRow('Ângulo inicial', formatNumber(a, 4) + '°'));
     resultWrap.appendChild(resultRow('Corda entre furos', formatNumber(distanciaEntreFuros(D, n), 4) + ' mm'));
     resultWrap.appendChild(renderTabela(res));

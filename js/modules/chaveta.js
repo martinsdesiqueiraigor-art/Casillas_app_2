@@ -56,8 +56,8 @@ function desenharChaveta(dim) {
   return svg;
 }
 
-function resultRow(label, value) {
-  return createElementSafe('div', { class: 'result-row' }, [
+function resultRow(label, value, primary = false) {
+  return createElementSafe('div', { class: primary ? 'result-row result-row--primary' : 'result-row' }, [
     createElementSafe('span', { class: 'result-label', text: label }),
     createElementSafe('span', { class: 'result-value', text: value })
   ]);
@@ -137,7 +137,7 @@ export function render(container) {
     resultWrap.appendChild(resultRow('Profundidade no cubo t2', formatNumber(dim.t2, 2) + ' mm'));
     resultWrap.appendChild(resultRow('Faixa do eixo', `${dim.faixaEixo.min}–${dim.faixaEixo.max} mm`));
     resultWrap.appendChild(resultRow('Comprimento sugerido (mm)',
-      formatNumber(dim.comprimentoMin, 1) + ' – ' + formatNumber(dim.comprimentoMax, 1)));
+      formatNumber(dim.comprimentoMin, 1) + ' – ' + formatNumber(dim.comprimentoMax, 1), true));
 
     // Verificações
     if (Number.isFinite(torque) && torque > 0 && Number.isFinite(L) && L > 0) {

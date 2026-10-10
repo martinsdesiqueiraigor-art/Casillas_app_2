@@ -6,8 +6,8 @@ import { updateKPIs, updateHeader } from '../state.js';
 
 let currentTab = 'simples';
 
-function resultRow(label, value) {
-  return createElementSafe('div', { class: 'result-row' }, [
+function resultRow(label, value, primary = false) {
+  return createElementSafe('div', { class: primary ? 'result-row result-row--primary' : 'result-row' }, [
     createElementSafe('span', { class: 'result-label', text: label }),
     createElementSafe('span', { class: 'result-value', text: value })
   ]);
@@ -131,7 +131,7 @@ export function render(container) {
       resultWrap.appendChild(resultRow('Af. superior (es)', formatNumber(res.es, 2) + ' µm'));
       resultWrap.appendChild(resultRow('Mínimo', formatNumber(res.minimo, 4) + ' mm'));
       resultWrap.appendChild(resultRow('Máximo', formatNumber(res.maximo, 4) + ' mm'));
-      resultWrap.appendChild(resultRow('Tolerância', formatNumber(res.tolerancia, 4) + ' mm'));
+      resultWrap.appendChild(resultRow('Tolerância', formatNumber(res.tolerancia, 4) + ' mm', true));
       resultWrap.appendChild(resultRow('Tolerância (µm)', formatNumber(res.toleranciaUm, 2)));
 
       updateKPIs([
@@ -153,7 +153,7 @@ export function render(container) {
         formatNumber(res.eixo.minimo, 4) + ' / ' + formatNumber(res.eixo.maximo, 4)));
       resultWrap.appendChild(resultRow('Folga mínima (mm)', formatNumber(res.folgaMin, 4)));
       resultWrap.appendChild(resultRow('Folga máxima (mm)', formatNumber(res.folgaMax, 4)));
-      resultWrap.appendChild(resultRow('Tipo de ajuste', res.tipoAjuste));
+      resultWrap.appendChild(resultRow('Tipo de ajuste', res.tipoAjuste, true));
 
       updateKPIs([
         { label: 'Folga mín', value: formatNumber(res.folgaMin, 3) },

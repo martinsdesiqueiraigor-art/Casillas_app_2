@@ -9,8 +9,8 @@ import { updateKPIs, updateHeader } from '../state.js';
 
 let currentOp = 'torneamento';
 
-function resultRow(label, value) {
-  return createElementSafe('div', { class: 'result-row' }, [
+function resultRow(label, value, primary = false) {
+  return createElementSafe('div', { class: primary ? 'result-row result-row--primary' : 'result-row' }, [
     createElementSafe('span', { class: 'result-label', text: label }),
     createElementSafe('span', { class: 'result-value', text: value })
   ]);
@@ -151,7 +151,7 @@ export function render(container) {
     if (Number.isFinite(res.torque)) resultWrap.appendChild(resultRow('Torque', formatNumber(res.torque, 3) + ' N·m'));
     if (Number.isFinite(res.taxaRemocao)) resultWrap.appendChild(resultRow('Taxa de remoção', formatNumber(res.taxaRemocao, 2) + ' cm³/min'));
     resultWrap.appendChild(resultRow('Potência de corte', formatNumber(res.potenciaCorte, 4) + ' kW'));
-    resultWrap.appendChild(resultRow('Potência no motor', formatNumber(res.potenciaMotor, 4) + ' kW'));
+    resultWrap.appendChild(resultRow('Potência no motor', formatNumber(res.potenciaMotor, 4) + ' kW', true));
     resultWrap.appendChild(resultRow('Eficiência aplicada', formatNumber(res.eficiencia, 2)));
 
     updateKPIs([
