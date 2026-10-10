@@ -225,6 +225,30 @@
   border-bottom: none;
 }
 
+/* Valor principal do calculo (classe opcional; sem ela a linha nao muda) */
+.result-row--primary {
+  align-items: center;
+  padding: var(--sp-3);
+  margin-bottom: var(--sp-2);
+  background: var(--accent-primary-soft);
+  border: 1px solid var(--accent-primary-line);
+  border-radius: var(--radius-md);
+}
+
+.result-row--primary:last-child {
+  border-bottom: 1px solid var(--accent-primary-line);
+}
+
+.result-row--primary .result-label {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.result-row--primary .result-value {
+  color: var(--accent-primary);
+  font-size: var(--fs-xl);
+}
+
 .result-label {
   font-size: var(--fs-sm);
   color: var(--text-secondary);

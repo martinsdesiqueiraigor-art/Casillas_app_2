@@ -20,6 +20,8 @@
   /* Acentos */
   --accent-primary: #ff7a1a;
   --accent-secondary: #4aa3ff;
+  --accent-primary-soft: rgba(255, 122, 26, 0.10);
+  --accent-primary-line: rgba(255, 122, 26, 0.40);
 
   /* Feedback */
   --success: #6fd3a6;
