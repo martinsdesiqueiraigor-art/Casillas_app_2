@@ -968,3 +968,127 @@
 .guia-vazio-btns .btn {
   width: 100%;
 }
+
+/* ---------- Lista de Calculadoras ---------- */
+.calc-view {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--sp-3);
+}
+
+.calc-title {
+  margin: 0;
+  font-size: var(--fs-xl);
+}
+
+.calc-search {
+  width: 100%;
+  font-family: inherit;
+}
+
+.calc-chips {
+  display: flex;
+  gap: var(--sp-2);
+  overflow-x: auto;
+  padding-bottom: var(--sp-1);
+  scrollbar-width: none;
+}
+
+.calc-chips::-webkit-scrollbar {
+  display: none;
+}
+
+.calc-chip {
+  flex: none;
+  min-height: 48px;
+  padding: 0 var(--sp-4);
+  font-weight: 600;
+  white-space: nowrap;
+  color: var(--text-secondary);
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 24px;
+  cursor: pointer;
+}
+
+.calc-chip[aria-pressed="true"] {
+  color: var(--accent-secondary);
+  background: var(--accent-secondary-soft);
+  border-color: var(--accent-secondary);
+}
+
+.calc-chip:focus-visible,
+.calc-item:focus-visible {
+  outline: 3px solid var(--accent-secondary);
+  outline-offset: 2px;
+}
+
+.calc-count {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: var(--fs-sm);
+}
+
+.calc-list {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 10px;
+}
+
+.calc-item {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr) 14px;
+  align-items: center;
+  gap: 14px;
+  min-height: 72px;
+  padding: 12px 14px;
+  color: var(--text-primary);
+  text-align: left;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+}
+
+.calc-item:active {
+  background: var(--bg-elevated);
+}
+
+.calc-item-icon {
+  width: 48px;
+  height: 48px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent-secondary);
+  background: var(--accent-secondary-soft);
+  border: 1px solid var(--accent-secondary-line);
+  border-radius: var(--radius-md);
+}
+
+.calc-item-copy {
+  display: grid;
+  min-width: 0;
+}
+
+.calc-item-name {
+  font-size: 1.0625rem;
+  font-weight: 700;
+}
+
+.calc-item-description {
+  color: var(--text-secondary);
+  font-size: var(--fs-sm);
+}
+
+.calc-item-arrow {
+  color: var(--text-secondary);
+}
+
+.calc-empty {
+  display: grid;
+  gap: 4px;
+  padding: var(--sp-5) var(--sp-2);
+  text-align: center;
+  color: var(--text-secondary);
+}

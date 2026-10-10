@@ -67,6 +67,7 @@ const CACHE_ASSETS = [
   './js/modules/guia.js',
   './js/modules/consult.js',
   './js/modules/home.js',
+  './js/modules/calculadoras.js',
   './dados/guia_cnc.json',
   './icons/icon-192.png',
   './icons/icon-512.png',

@@ -21,6 +21,7 @@ import { getCurrentUser, onAuthStateChange, signOut } from './auth.js';
 // Registro dos módulos (carregamento dinâmico)
 const MODULE_LOADERS = {
   home:      () => import('./modules/home.js'),
+  calculadoras: () => import('./modules/calculadoras.js'),
   trig:      () => import('./modules/trig.js'),
   coni:      () => import('./modules/coni.js'),
   poly:      () => import('./modules/poly.js'),
@@ -38,6 +39,7 @@ const MODULE_LOADERS = {
 
 const MODULE_TITLES = {
   home:     { name: 'Visão geral',        icon: '⌂' },
+  calculadoras: { name: 'Calculadoras',   icon: '🧮' },
   trig:     { name: 'Trigonometria',      icon: '📐' },
   coni:     { name: 'Conicidade',         icon: '📏' },
   poly:     { name: 'Polígonos',          icon: '⬡' },
