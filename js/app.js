@@ -114,7 +114,8 @@ async function loadModule(key) {
         const svg = new DOMParser().parseFromString(iconFn(20), 'image/svg+xml').documentElement;
         headerIcon.replaceChildren(document.importNode(svg, true));
       } else {
-        headerIcon.textContent = title.icon;
+        // Sem ícone SVG próprio, não exibe emoji de apoio (visual 2.1).
+        headerIcon.textContent = '';
       }
     }
 
@@ -130,6 +131,7 @@ async function loadModule(key) {
 
     setActiveMenuItem(key);
     setBottomNavActive(key);
+    if (document.body) document.body.dataset.module = key;
     appState.currentModule = key;
     await persistCurrentModule(key);
   } catch (err) {
