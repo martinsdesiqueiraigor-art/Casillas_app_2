@@ -1,6 +1,6 @@
-# Arquitetura do Casillas 2.0
+# Arquitetura do Casillas
 
-Estado do código local na branch `casillas-2.0`, referência `629ebe3` (29/09/2026). Esta descrição deriva dos arquivos cliente e migrations versionadas; não confirma por si só o estado implantado.
+Atualizado em 2026-10-10: produção em `casillas-2.0` (`c115a3e`, Service Worker `casillas-v20`). O fluxo de acesso abaixo foi descrito em 29/09/2026 (`629ebe3`); o limitador de ativação e a continuidade offline posteriores estão em `BANCO-DADOS.md` e `DECISOES.md`. Componentes de interface compartilhados ficam em `js/modules/ui/calcKit.js`. Esta descrição deriva dos arquivos cliente e migrations versionadas; não confirma por si só o estado implantado.
 
 ## Componentes
 

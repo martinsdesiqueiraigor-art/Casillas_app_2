@@ -10,6 +10,8 @@ Cada ferramenta será usada somente quando resolver um problema concreto.
 **GPT — execução técnica e orquestração das ferramentas.**
 **Ferramentas —** cada uma possui função definida e atua dentro do escopo autorizado.
 
+> **Nota de precedência (2026-10-10).** Para a trilha de interface (CAS-UI), o Claude executa sob os mesmos gates (CAS-UI-D11). Autorizações de commit, push, PR, merge e deploy seguem `AGENTS.md` §14. A hierarquia de autoridade está em `AGENTS.md` §15. Esta política ainda não foi reconciliada por inteiro com a CAS-UI: onde divergir de `AGENTS.md`, vale `AGENTS.md`. Os procedimentos da linha `casillas-2.2` (Coordenação, Mission Supervisor) permanecem preservados; não foi decidido que sejam obrigatórios na CAS-UI.
+
 ## 3. Gatilhos de ferramentas
 **Context7 — obrigatório** quando a decisão depende de documentação atual de API, biblioteca, serviço ou ferramenta.
 **Superpowers — obrigatório** em debug, análise de causa raiz e verificação antes de declarar conclusão.

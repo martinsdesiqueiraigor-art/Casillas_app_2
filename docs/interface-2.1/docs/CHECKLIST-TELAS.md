@@ -1,24 +1,34 @@
 # Checklist de telas
 
-Atualizado em: 2026-10-10. Status: aprovada, em avaliação, a refazer, não iniciada.
+Atualizado em: 2026-10-10 (CAS-DOC-RECONCILIACAO-01). Os arquivos de protótipo ficam em `docs/interface-2.1/telas/`.
 
-| Tela | Status | Arquivo ou local | Observação |
-|---|---|---|---|
-| Guia, Visão geral (G76) | aprovada | `guia-cnc-g76-novo.html` | Nova versão sobre cópia do protótipo |
-| Guia, Trajetória | aprovada | `guia-cnc-g76-novo.html` | Refinar depois a vista lateral e os textos das figuras |
-| Guia, Parâmetros | aprovada | `guia-cnc-g76-novo.html` | Toque para explicar. Ajustar a fonte no futuro |
-| Guia, Exemplo | aprovada | `guia-cnc-g76-novo.html` | Toque para explicar no código ficou fora. Conferir X17.4 contra P(k) 1530 |
-| Guia, Cuidados | aceita como está | `guia-cnc-g76-novo.html` | Usuário disse que já está pronto. Mantém o visual do protótipo. Sem botão Voltar |
-| Início | aprovada | `casillas-inicio.html` | Cabeçalho e ícones novos, faixa de acesso com os estados aprovados (demonstração alterna). Sem selo "Em revisão técnica" (a versão anterior não tinha). Botões sem destino ainda |
-| Calculadoras (lista) | aprovada | `casillas-calculadoras.html` | 9 calculadoras, busca e categorias. Descrições e agrupamento são texto provisório. Logo provisório |
-| Conicidade | aprovada, modelo das calculadoras | `casillas-conicidade.html` | Abre com valores e mostra resultado ao vivo (cartões, resultados detalhados, figura proporcional, copiar). Abas D·d·L, Ângulo, Inclinação. Cópia para a área de transferência não testada |
-| Biblioteca | aprovada | `casillas-biblioteca.html` | Contato, Serviços, Cursos, Licença vitalícia com aviso de renovação para recursos novos. Links, preços e textos de serviços e cursos vêm da versão anterior, sem conferência. Botões sem destino |
-| Configurações | aprovada | `casillas-configuracoes.html` | Reduzir a fonte depois. Licença vitalícia e linha "Recursos novos" aplicadas e aprovadas em 2026-10-10 (texto sem valor de renovação). "Biblioteca, Contato" é texto provisório |
-| Login (abas Entrar e Criar conta) | aprovada | `casillas-login.html` | Inclui esqueci a senha e a mensagem Verifique seu e-mail como faixas na própria tela, como na v2 |
-| Nova senha (após o link do e-mail) | aprovada | `casillas-nova-senha.html` | Textos da v2. Mensagem "Não foi possível redefinir a senha" depende do servidor |
-| Ativação por código | aprovada | `casillas-ativacao.html` | Na v2 é a mesma tela do fim do teste e da validação necessária, só muda a frase. Tem botão de contato por WhatsApp |
-| Estados de acesso (trial, licença, offline) | aprovada | `casillas-estados-acesso.html` | Laranja acima de 3 dias, vermelho nos últimos 3 (limite da v2) |
-| Fim do teste (bloqueio total) | aprovada, junto com a Ativação | `casillas-ativacao.html` | Decisão D10: nada disponível até ativar. Mesma tela da Ativação, com outra frase |
-| Consultor com resultado | aprovada | `casillas-consultor.html` | Desenhado sem guardar o texto das buscas. Decisão de telemetria segue pendente. Busca da demonstração é só ilustrativa |
-| English (seletor de idioma) | feita em Configurações | `casillas-configuracoes.html` | Tela English do canvas deixa de ser necessária |
-| Primeiro uso e splash | não iniciada | | Baixa prioridade |
+## Estados (obrigatoriamente separados)
+
+- **Protótipo aprovado**: a proposta visual foi aprovada pelo Product Owner.
+- **Implementação concluída**: o código correspondente foi integrado (etapa e SHA em `00-ESTADO-ATUAL.md`).
+- **Fidelidade validada**: a interface real foi comparada com o protótipo e aprovada pelo Product Owner. Registro exigido: data, SHA e a aprovação.
+
+Uma tela implementada não é considerada validada visualmente. Até esta data **nenhuma tela tem fidelidade validada registrada**.
+
+| Tela | Protótipo aprovado | Implementação | Fidelidade validada | Observações |
+|---|---|---|---|---|
+| Início | Sim (`casillas-inicio.html`) | **Parcial** (2.3, 2.10) | Não registrada | Falta: cabeçalho com logo e engrenagem (o atual é o legado), campo do Consultor no cartão, ícones SVG no lugar de `✓` e `◷` |
+| Calculadoras (lista) | Sim (`casillas-calculadoras.html`) | Sim (2.5) | Não registrada | 9 calculadoras, busca e categorias. Descrições e agrupamento são texto provisório |
+| Conicidade | Sim (`casillas-conicidade.html`), modelo das calculadoras | Sim (2.13) | Não registrada | Abre com valores, resultado ao vivo, cartões, detalhes, figura proporcional, copiar. Cópia para a área de transferência não testada. Números com ponto decimal |
+| Demais 8 calculadoras | Seguem o modelo da Conicidade | Sim (2.14) | Não registrada | Trigonometria, Polígonos, Furação, Roscas, Tolerâncias, Potência, Chaveta, Conicidades Padrão. Cálculos inalterados |
+| Guia, Visão geral (G76) | Sim (`guia-cnc-g76-novo.html`) | Sim (2.9) | Não registrada | Conteúdo estendido só do G76, com selo "Em revisão técnica" |
+| Guia, Trajetória | Sim | Sim (2.9) | Não registrada | Refinar depois a vista lateral e os textos das figuras |
+| Guia, Parâmetros | Sim | Sim (2.9) | Não registrada | Ajustar a fonte no futuro |
+| Guia, Exemplo | Sim | Sim (2.9) | Não registrada | Conferir `X17.4` contra `P(k)` 1530 |
+| Guia, Cuidados | Aceita como está | Sim (2.9) | Não registrada | Mantém o visual do protótipo |
+| Consultor com resultado | Sim (`casillas-consultor.html`) | Sim (2.11), sem busca livre | Não registrada | A busca da demonstração é ilustrativa |
+| Biblioteca | Sim (`casillas-biblioteca.html`) | Sim (2.8) | Não registrada | Contato, Serviços, Cursos, Licença. Links, preços e textos vêm da versão anterior, sem conferência. Interface preservada (CAS-UI-D15) |
+| Configurações | Sim (`casillas-configuracoes.html`) | **Não** | — | Sem módulo no código. Seletor de idioma só após a revisão do inglês |
+| Login (Entrar, Criar conta) | Sim (`casillas-login.html`) | Sim (2.7) | Não registrada | Recuperar senha e "Verifique seu e-mail" como faixas na própria tela |
+| Nova senha | Sim (`casillas-nova-senha.html`) | Sim (2.7) | Não registrada | Mensagens dependem do servidor |
+| Ativação por código | Sim (`casillas-ativacao.html`) | Sim (2.7) | Não registrada | Serve também de Fim do teste (CAS-UI-D10) |
+| Estados de acesso | Sim (`casillas-estados-acesso.html`) | **Parcial** (2.3) | Não registrada | Faixas de dias no cartão da Início; o banner global do teste não foi alterado |
+| Fim do teste (bloqueio total) | Sim, junto com a Ativação | Sim (2.7) | Não registrada | Mesma tela da Ativação, com outra frase |
+| Seletor de idioma (English) | Sim, dentro de Configurações | **Não** | — | Depende de Configurações e da revisão do inglês |
+| Logos | Referência provisória (`casillas-logos.html`) | Não | — | Modelo 3 provisório; logo definitivo pendente |
+| Primeiro uso e splash | Não iniciado | Não | — | Baixa prioridade |

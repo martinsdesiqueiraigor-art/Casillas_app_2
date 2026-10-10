@@ -1,6 +1,8 @@
-# Regras de trabalho com o Claude
+# Regras de trabalho com o Claude (DOCUMENTO HISTÓRICO)
 
-Definidas pelo usuário. Valem para toda sessão do projeto Casillas 2.1.
+> **Histórico, sem autoridade.** Substituído em 2026-10-10 (CAS-DOC-RECONCILIACAO-01). As regras oficiais estão em `AGENTS.md` (autorizações §14, hierarquia §15, núcleo protegido §16) e `CLAUDE.md` (protocolo de sessão). Em particular, as regras de commit e push abaixo foram substituídas por CAS-UI-D21 (veja `01-DECISOES-2.1.md`). Mantido apenas para registro.
+
+Definidas pelo usuário. Valiam para as sessões do projeto Casillas 2.1 até 2026-10-10.
 
 ## Como trabalhar
 1. Antes de qualquer proposta, ler `00-ESTADO-ATUAL.md` e o checklist de telas.
