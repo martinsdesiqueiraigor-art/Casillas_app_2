@@ -38,7 +38,7 @@ function filtrar(itens, f) {
   });
 }
 
-/** @param {{id:string,codigo:string,titulo:string,comando:string,maquina:string,categoria:string}} item */
+/** @param {{id:string,codigo:string,titulo:string,comando:string,maquina:string,categoria:string}} item @returns {HTMLElement} */
 function cartao(item) {
   const extra = CONTEUDO_V2.ciclos[item.id];
   return h('button', {
@@ -116,7 +116,7 @@ export function render(container) {
         h('button', { type: 'button', class: 'btn btn-outline', text: 'Limpar filtros', onclick: limpar }),
         h('button', { type: 'button', class: 'btn btn-primary', text: 'Falar no WhatsApp', onclick: () => window.open(WHATSAPP_AJUDA, '_blank', 'noopener') })));
     } else {
-      resultados.replaceChildren(...itens.map(cartao));
+      resultados.replaceChildren(...itens.map((it) => cartao(it)));
     }
     updateKPIs([
       { label: 'Resultados', value: String(itens.length) },

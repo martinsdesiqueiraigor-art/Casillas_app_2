@@ -262,7 +262,7 @@ export function renderCycleView(container, cycle, target, abaInicial) {
       ? extra.sintaxe.map(([rotulo, txt]) => h('div', { class: 'gx-sx' }, h('span', { class: 'gx-lbl', text: rotulo }), h('div', { class: 'gx-toks' }, ...tokens(txt)), botaoCopiar(txt)))
       : [h('div', { class: 'gx-sx' }, h('pre', { text: sintaxeBanco?.texto || '' }), botaoCopiar(sintaxeBanco?.texto || ''))];
     const sintaxeDet = h('details', { class: 'gx-det', 'data-accordion-id': 'sintaxe' }, h('summary', { text: 'Sintaxe' }), h('div', { class: 'gx-det-body' }, ...blocosSintaxe));
-    sintaxeDet.open = abrirSintaxe;
+    /** @type {HTMLDetailsElement} */ (sintaxeDet).open = abrirSintaxe;
 
     const listaParams = extra
       ? extra.params.map((p) => h('button', { type: 'button', class: 'gx-pcard', 'data-p': p[0], 'aria-pressed': 'false', onclick: () => escolher(p[0]) },
@@ -270,7 +270,7 @@ export function renderCycleView(container, cycle, target, abaInicial) {
       : (paramsBanco?.parametros || []).map((p) => h('div', { class: 'gx-pcard gx-pcard-static' }, h('code', { text: p.nome }), h('span', { text: p.desc })));
     const paramsDet = h('details', { class: 'gx-det', 'data-accordion-id': 'parametros' }, h('summary', { text: 'Parâmetros' }),
       h('div', { class: 'gx-det-body' }, extra ? explicacao : null, h('div', { class: 'gx-plist' }, ...listaParams)));
-    paramsDet.open = target.accordionId === 'parametros' || !!extra;
+    /** @type {HTMLDetailsElement} */ (paramsDet).open = target.accordionId === 'parametros' || !!extra;
 
     painel.referencia = h('div', { class: 'gx-panel', 'data-tab-id': 'referencia', hidden: ativa !== 'referencia' },
       extra ? aviso(extra.avisoMicron) : null,
