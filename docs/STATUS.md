@@ -1,8 +1,10 @@
-# STATUS — CASILLAS 2.0
+# STATUS — Casillas
 
-## Casillas 2.1 — redesenho da interface em fatias (candidato a release, 2026-10-10)
+> **Nota (2026-10-10).** Produção atual: `casillas-2.0` em `c115a3e` (merge do PR #11; deploy run 38078685051 com sucesso; Service Worker `casillas-v20`). O quadro da frente de interface (CAS-UI) fica abaixo; o estado detalhado e a próxima atividade estão em `docs/interface-2.1/docs/00-ESTADO-ATUAL.md`. As seções a partir de "Estado do projeto" são registros históricos de 01 a 06/10/2026 e não descrevem o estado atual de branches ou SHAs.
 
-Branch `casillas-2.1-fatia-2` (a partir de `casillas-2.0` em `1b3082e`). Só apresentação: login, licença, Supabase, cálculos (`js/calc/`) e testes de acesso não mudaram. Service Worker `casillas-v20`.
+## Frente CAS-UI — redesenho da interface em fatias (integrado em `casillas-2.0`, 2026-10-10)
+
+Etapas 2.1 a 2.14 integradas por PRs #7 a #11 (a branch `casillas-2.1-fatia-2` tem árvore idêntica à produção). Só apresentação: login, licença, Supabase, cálculos (`js/calc/`) e testes de acesso não mudaram. Service Worker `casillas-v20`.
 
 | Etapa | Conteúdo |
 |---|---|
@@ -15,12 +17,15 @@ Branch `casillas-2.1-fatia-2` (a partir de `casillas-2.0` em `1b3082e`). Só apr
 | 2.8 | Biblioteca (antigo módulo Consultoria, `js/modules/consult.js`). |
 | 2.9 | Guia CNC no design 2.1: lista com busca e filtros, abas Visão geral, Trajetória, Parâmetros, Exemplo e Cuidados. Conteúdo estendido do G76 em `js/modules/guia/conteudo2.js` (schema_version 2), rascunho com selo "Em revisão técnica". Banco canônico e rotas do Consultor preservados. |
 | 2.10 | Moldura: faixa de KPIs só nos módulos de cálculo (some em Início, Calculadoras, Guia, Biblioteca e Consultor) e sem emoji no indicador do cabeçalho. |
+| 2.11 a 2.14 | Etapas posteriores integradas pelos PRs #9 (2.11, SW v16–v17), #10 (2.12, SW v18) e #11 (2.13 e 2.14, SW v19–v20). Detalhe e correspondência com o plano original em `00-ESTADO-ATUAL.md` §3. |
 
-Não incluído nesta candidata: Configurações novas e idioma (aguarda revisão do inglês), Guia dos demais ciclos (só o G76 tem conteúdo estendido), Consultor com busca livre, renovação de licença (exige migration revisada). Validação em aparelho real ainda não feita; testes que exigem Docker e pacotes extras (`test:ev3` parcial) devem rodar no computador do Igor.
+PRs: #7 (2.1–2.8), #8 (2.9–2.10), #9, #10 e #11, todos com o check Casillas baseline em sucesso.
 
-Atualizado em 2026-10-04.
+Não incluído até esta data: Configurações novas e idioma (aguarda revisão do inglês), Guia dos demais ciclos (só o G76 tem conteúdo estendido), Consultor com busca livre, renovação de licença (exige migration revisada). Validação em aparelho real ainda não feita; testes que exigem Docker e pacotes extras (`test:ev3` parcial) devem rodar no computador do Igor.
 
-## Estado do projeto
+Quadro atualizado em 2026-10-10 (CAS-DOC-RECONCILIACAO-01). Conferir o estado real com `git` antes de agir.
+
+## Estado do projeto (histórico de 04/10/2026)
 
 - Branch real: `casillas-2.0-hardening`
 - Último commit: consultar `git log -1 --oneline`

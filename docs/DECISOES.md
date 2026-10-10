@@ -2,6 +2,8 @@
 
 Este documento resume decisões presentes no código e nos registros atuais. Marcos históricos permanecem preservados em seus arquivos.
 
+> **Precedência (2026-10-10).** As decisões da frente de interface (CAS-UI) são registradas em `docs/interface-2.1/docs/01-DECISOES-2.1.md`; a hierarquia de autoridade está em `AGENTS.md` §15. Decisões de segurança, autoridade comercial, licença, offline e publicação deste documento continuam vigentes. Regras de interface anteriores, como a da Sprint 6C abaixo, valem apenas no escopo em que foram escritas e não bloqueiam propostas visuais posteriormente aprovadas.
+
 ## Autoridade comercial
 
 Supabase Auth identifica a conta. RPCs no Supabase avaliam entitlement, trial e ativação; o frontend apresenta o resultado e controla a navegação, sem decidir autoridade comercial por conta própria.
@@ -89,7 +91,7 @@ Validação da Camada 1:
 ## 04/10/2026 — Sprint 6C: decisões de refinamento
 
 - O Guia de Programação CNC desta etapa fica oficialmente restrito a FANUC e Siemens; novos comandos ficam para evolução futura com validação técnica própria.
-- O refinamento prioriza evolução incremental da interface existente, sem reconstrução visual ampla.
+- O refinamento prioriza evolução incremental da interface existente, sem reconstrução visual ampla. *(Escopo da Sprint 6C. Superada para a interface por CAS-UI-D1 e D20 em 2026-10-10; veja `docs/interface-2.1/docs/01-DECISOES-2.1.md`.)*
 - Acessibilidade inclui operação por teclado, estados ARIA, foco previsível e zoom do navegador permitido.
 - Em telas de até 420 px, controles críticos recebem área de toque ampliada; em telas extremamente estreitas, informações secundárias podem ser ocultadas para preservar os controles principais.
 - Compartilhamento não deve ser classificado como validado a partir do servidor HTTP em rede local; a validação funcional fica pendente para contexto HTTPS/seguro.

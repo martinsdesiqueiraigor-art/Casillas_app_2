@@ -1,64 +1,97 @@
-# Estado atual do Casillas 2.1
+# Estado atual — CAS-UI (Modernização da Interface)
 
-Atualizado em: 2026-10-10. Ler este arquivo antes de qualquer proposta. Atualizar ao fim de cada tela aprovada.
+Atualizado em: 2026-10-10 (missão CAS-DOC-RECONCILIACAO-01). Fonte oficial de estado e próxima atividade. Os SHAs abaixo foram conferidos com `git fetch` e `git ls-remote` nesta data; **reconfirme no Git antes de agir** (veja `CLAUDE.md`).
 
-## Fase
-Definir e aprovar a interface, uma tela por vez. Nenhum código do app 2.1 até a aprovação das telas.
+CAS-UI é a frente de modernização da interface. Não é a release `v2.1.0` (a produção anterior, `1b3082e`).
 
-## Fonte de verdade visual
-1. Protótipos anteriores aprovados: `casillas-app.html` (Início, Calculadoras, Biblioteca) e `guia-cnc-g76.html` (Guia CNC 2.0, original intacto).
-2. Referências do usuário (imagens): tela Visão geral do G76 e painel "Guia CNC 2.0" com telas complementares.
-3. `guia-cnc-g76-novo.html`: cópia do protótipo com a nova Visão geral do G76. Visão geral, Trajetória, Parâmetros e Exemplo aprovadas em 2026-10-10. Cuidados aceita como está (visual do protótipo). Guia concluído. Configurações aprovada em 2026-10-10. Fonte da aba Parâmetros pode ser ajustada no futuro. Refinamento da vista lateral da Trajetória fica para depois.
-4. O canvas "Casillas 2.1 Telas" é apoio para telas que os protótipos não cobrem. Não é fonte de verdade.
+## 1. Branches e SHAs
 
-## Pronto
-- Docs 2.1 em rascunho (índice, decisões, produto e navegação, plano da fatia 2), relatório de regras impeditivas e inventário de arquivos.
-- Commit local `141adf3` (tokens de design em `css/variables.css`), branch `casillas-2.1-ui-tokens`. Sem push.
-- Canvas: Início, Estados de acesso, Calculadoras, Conicidade e Guia (Visão geral, Trajetória, Parâmetros, Exemplo) no estilo dos protótipos antigos.
-- Visão geral do G76 nova, em `guia-cnc-g76-novo.html`: cabeçalho com logo e configurações, filtros com ícone e funil, card com barra laranja e alerta de variante, 4 abas com ícone, Aplicação com ilustração, linhas com ícone, navegação de 4 itens.
+| Branch | SHA | Papel | Observação |
+|---|---|---|---|
+| `casillas-2.0` | `c115a3e` | **Produção** (referência) | Merge do PR 11. Deploy bem-sucedido (run 38078685051) |
+| `casillas-2.1-fatia-2` | `f585ef0` | Desenvolvimento da CAS-UI | Árvore idêntica à produção. Aparece "5 commits atrás" só pelos merges dos PRs 7 a 11 |
+| `casillas-2.1-ui-tokens` | `d91cdbd` | Tokens e protótipos | Ancestral de `fatia-2`, sem conteúdo novo |
+| `casillas-2.2` | `88b1183` | Linha de governança e desenvolvimento | **Pendente de integração.** 4 commits documentais de 06/10, 29 atrás de `casillas-2.0`. Preservada; não encerrada, não mesclada |
+| `casillas-2.0-hardening`, `feature/cas21-ev3-01`, `audit/security-review`, `main` | — | Históricas | `main` é o legado v1 |
 
-## Em andamento
-- Consultor aprovado (`casillas-consultor.html`). Calculadoras (lista) aprovada em 2026-10-10 (`casillas-calculadoras.html`). Conicidade aprovada em 2026-10-10 (`casillas-conicidade.html`) como modelo das demais calculadoras: abre com valores, resultado ao vivo, cartões, resultados detalhados, figura proporcional, copiar. Demais calculadoras seguem esse padrão. Início aprovado em 2026-10-10 (`casillas-inicio.html`). Biblioteca aprovada em 2026-10-10 (`casillas-biblioteca.html`), com a Configurações atualizada para licença vitalícia e renovação para recursos novos. Telas principais todas aprovadas. Resta Primeiro uso e splash (baixa prioridade).
-- (concluído) Telas de acesso: Login aprovado (`casillas-login.html`), com abas Entrar e Criar conta como na v2. Recuperar senha e Verifique seu e-mail são faixas na própria tela, como na v2. Nova senha aprovada (`casillas-nova-senha.html`). Ativação por código aprovada (`casillas-ativacao.html`, serve também de Fim do teste). Estados do acesso aprovados (`casillas-estados-acesso.html`). Telas de acesso concluídas.
+Tag `v2.1.0` = `1b3082e` (release homologada anterior à CAS-UI).
 
-## Próximos passos, nesta ordem
-1. Definir o próximo passo com o usuário: Primeiro uso e splash, ícones (Lucide ou conjunto próprio), logo definitivo, ajustes visuais para depois e decisões pendentes. Histórico, favoritos e alternância mm/pol ficam para a fatia seguinte.
+## 2. Produção
 
-## Onde estão os arquivos das telas
-Os HTML das telas aprovadas (`casillas-*.html`, `guia-cnc-g76-novo.html`) ficam na pasta de saídas da sessão e foram enviados ao usuário. Não estão no Project nem no repositório. Se a sessão acabar, o usuário tem os arquivos que recebeu. Guardar uma cópia no Project ou no Git depende de decisão do usuário.
+- Service worker `casillas-v20`. Endereço: https://martinsdesiqueiraigor-art.github.io/Casillas_app_2/
+- Deploys por workflow manual (`static.yml`, aprovação do environment `github-pages` pelo Product Owner). Bem-sucedidos em `1e771b1`, `b43dfc1`, `9cd82a3` e `c115a3e`. O deploy de `61a276c` (PR 10) foi cancelado e substituído; `c115a3e` o inclui.
+- O Product Owner abriu e instalou o app no smartphone e no desktop. Isso não é registro de validação de fidelidade (veja `CHECKLIST-TELAS.md`).
 
-## Padrões fixados nas telas aprovadas
-- Calculadoras seguem a Conicidade: abre com valores, resultado ao vivo, cartões de resultado, "Resultados detalhados" expansível, figura SVG proporcional, copiar resultado, faixa vermelha para erro, selo "Em revisão técnica". Cálculo de demonstração: fórmulas não conferidas por revisão técnica. Cópia para a área de transferência não testada.
-- Barra inferior de 4 itens. Alvos de toque de 48 px ou mais. Ícones de traço de 2 px num mapa único por tela, para trocar o conjunto depois.
-- Logo provisório (Modelo 3) em SVG inline.
+## 3. Etapas realizadas
 
-## Identidade visual
-- Logo: provisório, Modelo 3 "C com ferramenta" (`casillas-logos.html`). O usuário disse que pode ser qualquer um e que será substituído depois. Conferir marca no INPI antes de adotar de vez. Nome vira vetor na versão final.
-- Ícones: a folha com Material Design Icons (`casillas-icones.html`) foi rejeitada por destoar da interface. Caminho escolhido: biblioteca de traço fino (Lucide, licença ISC) para os genéricos, desenho próprio para os de usinagem e ilustrações SVG com degradê no lugar de imagens 3D. A instalação da Lucide falhou no ambiente (rede). Falta o usuário enviar o pacote, ou aprovar o conjunto próprio completo.
+Três numerações convivem nos registros antigos: etapas `2.x` (commits e PRs), itens `B1–B14` (mapa antigo, descontinuado) e fatias (plano `03-FATIA-2-PLANO.md`). A tabela é a correspondência. Em `03-FATIA-2-PLANO.md`, a "2.5 Verificação" nunca foi uma etapa de código; no Git, 2.5 é a lista de Calculadoras.
 
-## Ajustes visuais para depois
-- Reduzir a fonte (decisão do usuário, ainda sem tela definida). Vale para as telas aprovadas.
-- Refinar a vista lateral da Trajetória.
-- Declaração de fonte inválida (`font:... inherit`) nos botões do protótipo do Guia: botões e abas usam o tamanho padrão do navegador. Corrigir junto com a redução da fonte.
+| Etapa | Item antigo | Conteúdo | Commit(s) | PR / SW |
+|---|---|---|---|---|
+| Tokens | A5 | Tokens de design em `css/variables.css` | `141adf3` | — |
+| Protótipos | — | Telas aprovadas e documentação em `docs/interface-2.1/` | `d91cdbd` | — |
+| 2.1 | B1 | Componentes base (toque, foco) | `7999596` | PR 7 · v14 |
+| 2.2 | B2 | Resultado em destaque (`.result-row--primary`) | `48700bf` | PR 7 |
+| 2.3 | B3 | Início (estado do acesso, cartão do Consultor, acesso rápido) | `95e25bf`, `39e1a30` | PR 7 |
+| 2.4 | B4 | Abas de modo e resultado em destaque (7 módulos) | `b607f50` | PR 7; refeita em 2.13 e 2.14 |
+| 2.5 | B5 | Lista de Calculadoras (busca, categorias) | `320410b`, `17da8ea` | PR 7 / PR 8 |
+| 2.6 | B6 | Barra inferior de 4 itens | `406d411`, `3d8dc1b` | PR 7 |
+| 2.7 | B7 | Login, Criar conta, Nova senha, Ativação | `0284edc` | PR 7 |
+| 2.8 | B11 | Biblioteca (Contato, Serviços, Cursos, Licença) | `052fe6c` | PR 7 |
+| Release | E3 | Service worker v14 e docs | `5319c83`; merge `1e771b1` | PR 7 · v14 |
+| 2.9 | B9 (parcial) | Guia CNC no design aprovado; conteúdo estendido só do G76 (`conteudo2.js`, rascunho com selo) | `7b0bb91` | PR 8 · v15 |
+| 2.10 | — | Moldura: KPIs só nos cálculos; cabeçalho sem emoji | `eb0e318`; merge `b43dfc1` | PR 8 |
+| 2.11 | B10 (parcial) | Ajustes do teste no celular: Instalar App, cabeçalho; Consultor Técnico no visual aprovado | `482e0b3`, `0bda7da`; merge `9cd82a3` | PR 9 · v16–v17 |
+| 2.12 | — | Instalar App compacto, títulos sem emoji, campo do Consultor | `bab134b`; merge `61a276c` | PR 10 · v18 |
+| 2.13 | B4 | Conicidade no design aprovado e kit `calcKit.js` | `37c466f` | PR 11 · v19 |
+| 2.14 | B4 | As 9 calculadoras no kit (cálculos inalterados) | `f585ef0`; merge `c115a3e` | PR 11 · v20 |
 
-## Pendências de decisão (aguardam o usuário)
-- Licença (decidido em 2026-10-10): vitalícia para o que o usuário já tem. Recursos novos de versões futuras exigem renovação. Quem não renova continua usando tudo sem os recursos novos, sem bloqueio. A definir depois: como o app sabe a versão da licença (Supabase, sem migration sem revisão) e valor e prazo da renovação. Nenhum número de renovação na tela até lá.
-- Escopo proposto para a fase de interface (Guia completo, depois Configurações, acesso e Consultor).
-- Ciclo de referência do Guia: G76 (proposto).
-- Telemetria: guardar ou não o texto das buscas sem resultado. Conflita com a regra da v2 de telemetria sem texto bruto.
-- Dados do exemplo do G76: X17.4 dá 1,3 mm de profundidade por lado (nominal 20 mm) e P(k) é 1,530 mm. Conferir com o manual. Chip da tela diz só "passo 2,5".
-- R(d) em microns (v2) contra mm (protótipo) e ausência de R(i) na v2.
-- D1 a D13 em `01-DECISOES-2.1.md`.
+## 4. Pendências comprovadas no código
 
-## Auditoria do Supabase já feita (sessão anterior, somente leitura)
-Projeto "Casillas", região sa-east-1. Resultado:
-- 14 migrations aplicadas. RLS ligado em 9 tabelas.
-- Tabelas comerciais sem grants nem policies para `anon` e `authenticated`. `anon` só lê `products` ativos.
-- Sem Edge Functions.
-- Alerta: proteção contra senhas vazadas desligada.
-- As tabelas de telemetria `chat_interactions` e `guide_feedback` existem, mas não estão documentadas.
-- Tabela de tentativas de ativação vazia. 2 licenças existentes.
-- Não conferido: se a confirmação de e-mail está ligada no projeto e quando o teste começa. A data da auditoria não está registrada, então o estado pode ter mudado.
+- **Início**: o cabeçalho ainda é o legado (botão `☰`, texto "Casillas", menu `⋮` com emojis). O protótipo tem logo e engrenagem. O cartão do Consultor é um botão, sem o campo de pergunta do protótipo.
+- **Configurações**: sem módulo nem tela (idioma só após revisão do inglês, CAS-UI-D8).
+- **Menu lateral**: continua em `index.html` até as funções dele terem novo lugar (CAS-UI-D6).
+- **Consultor**: busca por texto livre não existe (CAS-UI-D5). O campo atual usa o mecanismo existente (slots e FSM).
+- **Guia CNC**: só o G76 tem conteúdo estendido; os outros ciclos seguem no formato do EV3.
+- **Ícones**: emojis e símbolos ainda em `index.html`, `js/app.js`, `js/menu.js`, `prog.js`, `home.js` (✓, ◷). Identidade e ícones são provisórios.
+- **Números**: `formatNumber` exibe ponto decimal; o protótipo usa vírgula. A entrada já aceita vírgula.
+- **Service worker**: o ramo de navegação guarda respostas sem verificar `res.ok` (candidato a correção em missão própria; núcleo protegido).
+- **Primeiro uso e splash**: não iniciados.
+- **Renovação de licença**: bloqueada (exige migration revisada).
 
-## Git
-Nenhum push feito. Push só com "autorizo push" do usuário, para branch nova, nunca `casillas-2.0`.
+## 5. Decisões pendentes
+
+- Licença: valor e prazo da renovação, e como o app sabe a versão da licença (Supabase; sem migration sem revisão). Nenhum valor de renovação aparece nas telas.
+- G76: conferir `X17.4` contra `P(k)` 1,530 mm; `R(d)` em mm (protótipo) ou microns (v2) e a ausência de `R(i)`.
+- Biblioteca Técnica (linha 2.2): organização interna a decidir; é funcionalidade distinta da Biblioteca da aba.
+- Consolidação de tokens compartilhados, sem substituir globalmente cores nem alterar a identidade aprovada.
+- Logo definitivo (consultar INPI) e conjunto de ícones.
+- Revisão técnica do conteúdo do Guia e revisão do inglês (feitas pelo Product Owner).
+- Integração entre a linha `casillas-2.2` e a CAS-UI.
+- Limpeza de documentos históricos (CAS-UI-D13), fora desta fase.
+
+## 6. Próxima atividade (planejamento; não autorizada)
+
+**Home fiel ao protótipo** `casillas-inicio.html`, preservando os módulos funcionais existentes. Condições já definidas:
+- A engrenagem de Configurações não abre tela fictícia.
+- O campo de pergunta do Consultor usa o mecanismo existente, sem simular busca livre.
+- Execução em missão separada, com autorização específica e validação visual no smartphone.
+
+## 7. Verificações e limites
+
+- CI "Casillas baseline" passou nos merges dos PRs 7 a 11. Localmente, `node --test tests/*.test.mjs` dá 108 aprovados e 3 falhas que exigem Docker (rodam só na CI).
+- Não há registro de fidelidade validada de nenhuma tela pelo Product Owner.
+- Não verificado: estado atual do Supabase após 10/10; se a confirmação de e-mail está ligada; quando o teste de 30 dias de fato começa.
+- Reauditoria do Supabase (2026-10-10, somente leitura): 14 migrations, RLS ligado em todas as tabelas de `public`, proteção contra senhas vazadas desligada (alerta), telemetria do Consultor só com `controlador`, `maquina`, `operacao` e `codigo`, sem campo de versão da licença.
+
+## 8. Material de referência
+
+- Protótipos aprovados em `docs/interface-2.1/telas/` (referência visual vigente, substituíveis por versões futuras aprovadas); protótipos antigos em `telas/referencia-anterior/`.
+- Padrões das telas aprovadas: calculadoras seguem a Conicidade (abre com valores, resultado ao vivo, cartões, detalhes expansíveis, figura proporcional, copiar, faixa vermelha de erro, selo "Em revisão técnica"). Barra inferior de 4 itens. Alvos de toque de 48 px nas ações principais e 44 px no mínimo.
+- Logo provisório (Modelo 3, `casillas-logos.html`). A folha de ícones Material Design foi rejeitada; caminho previsto: traço fino (Lucide, licença ISC) mais desenho próprio.
+- Ajustes visuais combinados para depois: reduzir a fonte; refinar a vista lateral da Trajetória; corrigir a declaração de fonte inválida (`font:... inherit`) nos botões do protótipo do Guia.
+- `casillas-pwa.zip` (protótipo antigo) deu ideias para o Consultor (busca local) e para o formato do Guia; não entra no app.
+
+## 9. Retomada
+
+Última sessão (2026-10-10): reconciliação documental (CAS-DOC-RECONCILIACAO-01) em branch `cas-ui-docs-reconciliacao`, com um commit local único (o SHA está em `git log`). Sem push, PR, merge nem deploy: cada um exige autorização própria. Próximo passo: o Product Owner decide sobre o push e a integração. Depois, planejar a Home (seção 6).
