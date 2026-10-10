@@ -2,7 +2,7 @@
 
 ## Casillas 2.1 — redesenho da interface em fatias (candidato a release, 2026-10-10)
 
-Branch `casillas-2.1-fatia-2` (a partir de `casillas-2.0` em `1b3082e`). Só apresentação: login, licença, Supabase, cálculos (`js/calc/`) e testes de acesso não mudaram. Service Worker `casillas-v15`.
+Branch `casillas-2.1-fatia-2` (a partir de `casillas-2.0` em `1b3082e`). Só apresentação: login, licença, Supabase, cálculos (`js/calc/`) e testes de acesso não mudaram. Service Worker `casillas-v17`.
 
 | Etapa | Conteúdo |
 |---|---|
