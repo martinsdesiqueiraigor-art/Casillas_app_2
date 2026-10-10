@@ -37,9 +37,9 @@ export function updateKPIs(kpis = []) {
 
 export function updateHeader(nome, icone) {
   const nameEl = document.getElementById('module-indicator-name');
-  const iconEl = document.getElementById('module-indicator-icon');
   if (nameEl) nameEl.textContent = String(nome ?? '');
-  if (iconEl) iconEl.textContent = String(icone ?? '');
+  // Visual 2.1: o ícone do cabeçalho (SVG) é definido pelo app.js; emojis dos módulos são ignorados.
+  void icone;
 }
 
 export async function persistCurrentModule(key) {

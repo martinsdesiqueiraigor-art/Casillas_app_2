@@ -261,7 +261,7 @@ body {
 #btn-install {
   position: fixed;
   left: var(--sp-3);
-  bottom: calc(var(--safe-bottom) + var(--sp-3));
+  bottom: calc(var(--safe-bottom) + var(--bottom-nav-height, 72px) + var(--sp-3));
   z-index: 150;
   box-shadow: var(--shadow-strong);
 }
