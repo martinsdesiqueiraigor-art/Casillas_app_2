@@ -26,7 +26,7 @@ async function carregarDados() {
   return dadosCache;
 }
 
-/** @param {{comando:string,maquina:string,categoria:string,codigo:string,titulo:string,tags:string[]}[]} itens @param {{texto:string,controle:string,maquina:string,operacao:string}} f */
+/** @param {{id:string,comando:string,maquina:string,categoria:string,codigo:string,titulo:string,tags:string[]}[]} itens @param {{texto:string,controle:string,maquina:string,operacao:string}} f */
 function filtrar(itens, f) {
   const texto = normalizar(f.texto.trim());
   return itens.filter((item) => {
