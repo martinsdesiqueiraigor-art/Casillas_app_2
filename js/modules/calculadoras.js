@@ -1,4 +1,5 @@
 import { ICONS } from '../icons.js';
+import { updateKPIs } from '../state.js';
 
 const CATEGORIES = ['Todas', 'Geometria', 'Roscas e ajustes', 'Usinagem'];
 
@@ -99,6 +100,11 @@ export function render(container) {
       (!query || normalize(`${calc.name} ${calc.description}`).includes(query))
     );
     count.textContent = found.length === 1 ? '1 calculadora' : `${found.length} calculadoras`;
+    updateKPIs([
+      { label: 'Resultados', value: String(found.length) },
+      { label: 'Total', value: String(CALCULATORS.length) },
+      { label: 'Categoria', value: category }
+    ]);
 
     if (!found.length) {
       const empty = document.createElement('div');
