@@ -3,9 +3,10 @@
 Leia primeiro. Este arquivo aponta para as fontes oficiais; não as substitui nem copia.
 
 ## Nomes (não confundir)
-- **Produção**: branch `casillas-2.0` (referência `c115a3e` em 2026-10-10; confirme com `git`). A tag `v2.1.0` (`1b3082e`) é a release anterior.
+- **Produção**: branch `casillas-2.0`. Em 2026-10-10: HEAD da branch `cd1411f` (merge do PR #12, só documentação); aplicativo publicado `c115a3e` (service worker `casillas-v20`). Não confundir os dois; confirme com `git`. A tag `v2.1.0` (`1b3082e`) é a release anterior.
 - **CAS-UI**: frente de modernização da interface (`docs/interface-2.1/`). Não é a release v2.1.0.
 - **`casillas-2.2`**: linha de governança/desenvolvimento pendente de integração. Preservada; não mesclar, não dar por encerrada.
+- **Casillas 2.2 (produto)**: escopo da próxima versão, definido em CAS22-SCOPE-01 (`docs/interface-2.1/docs/01-DECISOES-2.1.md` §7). Não é a branch `casillas-2.2` e não termina com a CAS-UI.
 
 ## Fontes oficiais (o repositório é a referência)
 - Regras permanentes, segurança, autorizações: `AGENTS.md`.

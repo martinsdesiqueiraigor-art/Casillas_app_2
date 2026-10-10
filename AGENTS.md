@@ -183,7 +183,7 @@ A modernização reutiliza as funcionalidades existentes sempre que apropriado. 
 
 ## 17. Linhas de desenvolvimento e fontes oficiais
 
-- **Produção**: `casillas-2.0`. Referência `c115a3e` em 2026-10-10; confirme no Git antes de agir.
+- **Produção**: `casillas-2.0`. Em 2026-10-10, o HEAD da branch é `cd1411f` (merge do PR #12, só documentação) e o aplicativo publicado é `c115a3e` (service worker `casillas-v20`). São referências distintas; confirme no Git antes de agir.
 - **CAS-UI**: frente de modernização da interface; documentação em `docs/interface-2.1/docs/`. Não confundir com a release `v2.1.0`.
 - **`casillas-2.2`**: linha de desenvolvimento e governança com documentação e `AGENTS.md` próprios, pendente de integração. É preservada, não é considerada encerrada nem substituída, e não é mesclada sem decisão e autorização específicas.
 - O repositório `Casillas_app_2` é a fonte oficial versionada de código, estado e documentação. O Claude Project e as memórias de conversas são material auxiliar e não concorrem como fontes de decisão.

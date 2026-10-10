@@ -1,6 +1,6 @@
 # Estado atual — CAS-UI (Modernização da Interface)
 
-Atualizado em: 2026-10-10 (missão CAS-DOC-RECONCILIACAO-01). Fonte oficial de estado e próxima atividade. Os SHAs abaixo foram conferidos com `git fetch` e `git ls-remote` nesta data; **reconfirme no Git antes de agir** (veja `CLAUDE.md`).
+Atualizado em: 2026-10-10 (missão CAS-DOC-RECONCILIACAO-01; referências de estado corrigidas na missão CAS-UI-HOME-PLAN-01). Fonte oficial de estado e próxima atividade. Os SHAs abaixo foram conferidos com `git fetch` e `git ls-remote` nesta data; **reconfirme no Git antes de agir** (veja `CLAUDE.md`).
 
 CAS-UI é a frente de modernização da interface. Não é a release `v2.1.0` (a produção anterior, `1b3082e`).
 
@@ -8,7 +8,8 @@ CAS-UI é a frente de modernização da interface. Não é a release `v2.1.0` (a
 
 | Branch | SHA | Papel | Observação |
 |---|---|---|---|
-| `casillas-2.0` | `c115a3e` | **Produção** (referência) | Merge do PR 11. Deploy bem-sucedido (run 38078685051) |
+| `casillas-2.0` | `cd1411f` | **Produção** (HEAD da branch) | Merge do PR 12 (só documentação). CI pós-merge aprovada (run 38090964537). Sem deploy: o código do app é idêntico ao de `c115a3e` |
+| `casillas-2.0` (publicado) | `c115a3e` | **Aplicativo publicado** | Merge do PR 11. Service worker `casillas-v20`. Deploy bem-sucedido (run 38078685051) |
 | `casillas-2.1-fatia-2` | `f585ef0` | Desenvolvimento da CAS-UI | Árvore idêntica à produção. Aparece "5 commits atrás" só pelos merges dos PRs 7 a 11 |
 | `casillas-2.1-ui-tokens` | `d91cdbd` | Tokens e protótipos | Ancestral de `fatia-2`, sem conteúdo novo |
 | `casillas-2.2` | `88b1183` | Linha de governança e desenvolvimento | **Pendente de integração.** 4 commits documentais de 06/10, 29 atrás de `casillas-2.0`. Preservada; não encerrada, não mesclada |
@@ -18,7 +19,7 @@ Tag `v2.1.0` = `1b3082e` (release homologada anterior à CAS-UI).
 
 ## 2. Produção
 
-- Service worker `casillas-v20`. Endereço: https://martinsdesiqueiraigor-art.github.io/Casillas_app_2/
+- Aplicativo publicado: `c115a3e`, service worker `casillas-v20`. O HEAD da branch (`cd1411f`) difere só em documentação e não exige deploy. Endereço: https://martinsdesiqueiraigor-art.github.io/Casillas_app_2/
 - Deploys por workflow manual (`static.yml`, aprovação do environment `github-pages` pelo Product Owner). Bem-sucedidos em `1e771b1`, `b43dfc1`, `9cd82a3` e `c115a3e`. O deploy de `61a276c` (PR 10) foi cancelado e substituído; `c115a3e` o inclui.
 - O Product Owner abriu e instalou o app no smartphone e no desktop. Isso não é registro de validação de fidelidade (veja `CHECKLIST-TELAS.md`).
 
@@ -72,6 +73,8 @@ Três numerações convivem nos registros antigos: etapas `2.x` (commits e PRs),
 
 ## 6. Próxima atividade (planejamento; não autorizada)
 
+A Home é um item da interface; o Casillas 2.2 só se conclui com todo o escopo de CAS22-SCOPE-01 (`01-DECISOES-2.1.md` §7).
+
 **Home fiel ao protótipo** `casillas-inicio.html`, preservando os módulos funcionais existentes. Condições já definidas:
 - A engrenagem de Configurações não abre tela fictícia.
 - O campo de pergunta do Consultor usa o mecanismo existente, sem simular busca livre.
@@ -94,4 +97,8 @@ Três numerações convivem nos registros antigos: etapas `2.x` (commits e PRs),
 
 ## 9. Retomada
 
-Última sessão (2026-10-10): reconciliação documental (CAS-DOC-RECONCILIACAO-01) em branch `cas-ui-docs-reconciliacao`, com um commit local único (o SHA está em `git log`). Sem push, PR, merge nem deploy: cada um exige autorização própria. Próximo passo: o Product Owner decide sobre o push e a integração. Depois, planejar a Home (seção 6).
+Reconciliação documental (CAS-DOC-RECONCILIACAO-01) concluída em 2026-10-10: commit `a84e022` na branch `cas-ui-docs-reconciliacao`, integrado à `casillas-2.0` pelo PR #12 (merge `cd1411f`). A CI pós-merge passou (run 38090964537, "Casillas baseline"). Sem deploy: o PR só alterou documentação; o aplicativo publicado continua `c115a3e` (SW v20).
+
+Sessão seguinte (2026-10-10, CAS-UI-HOME-PLAN-01): correção destas referências de estado e plano da Home, somente leitura no código.
+
+Última sessão (2026-10-10, CAS22-DOC-CONSOLIDATION-01, só documentação): registrado o escopo do Casillas 2.2 (CAS22-SCOPE-01, `01-DECISOES-2.1.md` §7) e o inventário dos protótipos (`CHECKLIST-TELAS.md`). Nenhum item do escopo está concluído. Alterações locais, sem commit, push, PR, merge ou deploy. Próximo passo: o Product Owner revisa e autoriza (ou não) a integração destes documentos; depois, decide sobre o plano da Home (seção 6).

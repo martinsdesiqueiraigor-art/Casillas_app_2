@@ -32,3 +32,24 @@ Uma tela implementada não é considerada validada visualmente. Até esta data *
 | Seletor de idioma (English) | Sim, dentro de Configurações | **Não** | — | Depende de Configurações e da revisão do inglês |
 | Logos | Referência provisória (`casillas-logos.html`) | Não | — | Modelo 3 provisório; logo definitivo pendente |
 | Primeiro uso e splash | Não iniciado | Não | — | Baixa prioridade |
+
+## Inventário dos protótipos (CAS22-SCOPE-01)
+
+Conferido em 2026-10-10 sobre `casillas-2.0` @ `cd1411f`. Os protótipos são as referências candidatas para a implementação do Casillas 2.2 (`01-DECISOES-2.1.md` §7). A coluna "Situação documental" reproduz esta tabela; para o Casillas 2.2, a classificação como oficialmente aprovado depende de confirmação do Product Owner. Hash = primeiros 12 caracteres do SHA-256 do arquivo.
+
+| Arquivo | Último commit | Hash | Situação documental |
+|---|---|---|---|
+| `casillas-inicio.html` | `d91cdbd` | `e6818becfba9` | Aprovado (CAS-UI) |
+| `casillas-calculadoras.html` | `d91cdbd` | `06e9d32dae57` | Aprovado (CAS-UI) |
+| `casillas-conicidade.html` | `d91cdbd` | `3845f139a180` | Aprovado (CAS-UI); modelo das calculadoras |
+| `casillas-consultor.html` | `d91cdbd` | `bcadfefad0b5` | Aprovado (CAS-UI); busca da demonstração é ilustrativa |
+| `guia-cnc-g76-novo.html` | `d91cdbd` | `94a39ed909be` | Aprovado (CAS-UI); conteúdo G76 em rascunho (CAS-UI-D4a) |
+| `casillas-biblioteca.html` | `d91cdbd` | `fa6dfeddeb10` | Aprovado (CAS-UI); é a aba Biblioteca, não a Biblioteca Técnica |
+| `casillas-configuracoes.html` | `d91cdbd` | `6e5214872097` | Aprovado (CAS-UI); sem implementação |
+| `casillas-login.html` | `d91cdbd` | `a9fde0b8b39f` | Aprovado (CAS-UI) |
+| `casillas-nova-senha.html` | `d91cdbd` | `996d5675c3e5` | Aprovado (CAS-UI) |
+| `casillas-ativacao.html` | `d91cdbd` | `f2df2b465116` | Aprovado (CAS-UI) |
+| `casillas-estados-acesso.html` | `d91cdbd` | `6b310a324085` | Aprovado (CAS-UI) |
+| `casillas-logos.html` | `d91cdbd` | `29a469be3894` | Referência provisória; **não aprovado** |
+
+`telas/referencia-anterior/` (`casillas-app.html`, `guia-cnc-g76.html`) é histórico e não é referência. Não há protótipo da Biblioteca Técnica pesquisável nem do primeiro uso. Nenhum arquivo traz identificação de versão do próprio protótipo; a versão é o commit acima.

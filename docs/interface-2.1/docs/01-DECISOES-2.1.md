@@ -1,6 +1,6 @@
 # Decisões da CAS-UI (vigentes, substituídas, históricas e pendentes)
 
-Atualizado em: 2026-10-10 (CAS-DOC-RECONCILIACAO-01). Registro oficial das decisões da frente CAS-UI. Os identificadores levam o prefixo `CAS-UI-` para não se confundirem com as decisões D01 a D16 da linha `casillas-2.2` (em `docs/2.2/operations/DECISION-REGISTER.md`, na branch `casillas-2.2`).
+Atualizado em: 2026-10-10 (CAS-DOC-RECONCILIACAO-01; escopo do Casillas 2.2 registrado em CAS22-DOC-CONSOLIDATION-01, §7). Registro oficial das decisões da frente CAS-UI. Os identificadores levam o prefixo `CAS-UI-` para não se confundirem com as decisões D01 a D16 da linha `casillas-2.2` (em `docs/2.2/operations/DECISION-REGISTER.md`, na branch `casillas-2.2`).
 
 **Precedência e evolução contínua** (texto completo em `AGENTS.md` §15): nenhuma decisão de interface é permanente. Uma decisão nova e explícita do Product Owner substitui a anterior apenas no escopo definido; a substituída fica registrada aqui como histórico e perde autoridade sobre novas implementações. Segurança, integridade técnica e autorizações vigentes prevalecem sobre qualquer decisão de interface.
 
@@ -84,3 +84,28 @@ Veja a seção 5 de `00-ESTADO-ATUAL.md` (renovação e versão da licença, dad
 - Arquivo novo de runtime entra em `CACHE_ASSETS`, com versão nova do service worker e teste atualizado (`service-worker.js`).
 - Só vai ao ar o que está em `index.html`, `auth.html`, `offline.html`, `manifest.json`, `service-worker.js`, `css`, `js`, `dados`, `icons`, `manuais` (`production-gate.mjs`).
 - Mudanças em `js/app.js`, service worker, migrations e arquitetura comercial exigem a tarefa correspondente autorizada (`AGENTS.md` §9 e §16).
+
+## 7. Escopo do Casillas 2.2 (CAS22-SCOPE-01)
+
+| ID | Decisão | Estado | Data |
+|---|---|---|---|
+| CAS22-SCOPE-01 | O Casillas 2.2 não está concluído apenas com a modernização visual (CAS-UI). A versão só é dada como concluída quando todos os itens abaixo tiverem evidência registrada (commit, teste ou validação do Product Owner) e passarem por QA e homologação antes da publicação | Vigente. **Nenhum item concluído** | 2026-10-10 |
+
+O prefixo `CAS22-` identifica decisões do produto Casillas 2.2. Não se confunde com a branch `casillas-2.2` (linha preservada e pendente de integração, §4) nem com as decisões D01 a D16 daquela branch.
+
+Itens do escopo e situação em 2026-10-10 (`casillas-2.0` @ `cd1411f`; nenhum item tem homologação):
+
+| Item | Situação comprovada | Fonte |
+|---|---|---|
+| Interface completa e responsiva | Parcial. Telas das etapas 2.1 a 2.14 implementadas, sem fidelidade validada; Início parcial; Configurações não iniciada | `CHECKLIST-TELAS.md`; `00-ESTADO-ATUAL.md` §3 e §4 |
+| Consultor Técnico local e determinístico | Existe (slots e FSM, base local, telemetria sem texto bruto); busca por texto livre não implementada | `js/modules/consultor/`; CAS-UI-D5 |
+| Guia CNC integrado, com conteúdo tecnicamente validado | Parcial. Só o G76 tem conteúdo estendido, em rascunho "Em revisão técnica"; nenhum conteúdo validado | CAS-UI-D2, D3, D4a |
+| Biblioteca Técnica pesquisável e integrada | Não iniciada nesta linha; organização a decidir. Distinta da aba Biblioteca | CAS-UI-D15; `00-ESTADO-ATUAL.md` §5 |
+| Calculadoras funcionais | 9 calculadoras no kit da etapa 2.14 (cálculos inalterados); Programação CNC fora do kit; números exibidos com ponto decimal | `js/modules/ui/calcKit.js`; `00-ESTADO-ATUAL.md` §4 |
+| Preservação de autenticação, licenciamento, trial e offline | Requisito permanente (núcleo protegido). Renovação de licença bloqueada até migration revisada | `AGENTS.md` §16; `docs/DECISOES.md` |
+| Integração entre Consultor, Guia, Biblioteca e Calculadoras | Parcial. Só o Consultor abre o Guia (`Abrir no Guia`, rota `#/guia`); demais integrações não iniciadas | `js/modules/consultor/resultCard.js`; `js/core/router.js` |
+| Testes, segurança, QA e homologação antes da publicação | CI "Casillas baseline" ativa; QA e homologação do 2.2 não iniciados | `.github/workflows/ci.yml`; `docs/STATUS.md` |
+
+Referências visuais: os protótipos de `docs/interface-2.1/telas/` são as referências candidatas para a implementação. O inventário (arquivo, commit, hash e situação documental) está em `CHECKLIST-TELAS.md`. A classificação como oficialmente aprovados para o Casillas 2.2 depende de confirmação do Product Owner; `casillas-logos.html` continua provisório.
+
+Esta decisão não altera escopo comercial, preço, licença, Supabase nem o núcleo protegido.
