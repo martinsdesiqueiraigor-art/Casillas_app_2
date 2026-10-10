@@ -6,7 +6,8 @@ Estado do código local na branch `casillas-2.0`, referência `629ebe3` (29/09/2
 
 - `index.html`, `auth.html`, `css/`: interface e telas.
 - `js/app.js`: inicialização, verificação de identidade/acesso, roteador e carregamento dinâmico da Home e dos 12 módulos.
-- `js/modules/` e `js/calc/`: apresentação e cálculos técnicos locais.
+- `js/modules/` e `js/calc/`: apresentação e cálculos técnicos locais. A lista `calculadoras.js` agrupa os 10 módulos de cálculo; `consult.js` é a Biblioteca.
+- `js/bottom-nav.js`: barra inferior (Início, Calculadoras, Guia CNC, Biblioteca); só apresentação e item ativo, o carregamento continua em `app.js`.
 - `js/auth.js`, `js/auth-page.js`: Supabase Auth, sessão, login, cadastro, saída e solicitação de redefinição de senha.
 - `js/trial.js`: orquestra chamadas comerciais e atualiza a interface; não é autoridade final.
 - Supabase Auth/PostgreSQL: identidade e decisão comercial por RPC; tabelas expostas protegidas por RLS/grants conforme migrations.
@@ -31,7 +32,7 @@ As migrations definem `products`, `profiles`, `trials`, `licenses`, `entitlement
 
 ## PWA e offline
 
-`manifest.json` define `start_url: ./index.html`, `scope: ./`, `display: standalone`, orientação `portrait` e ícones 192×192 e 512×512. `js/app.js` registra `service-worker.js`; o escopo efetivo decorre da localização do script, no diretório raiz. O Service Worker atual usa `casillas-v12`, pré-cacheia os recursos do PWA e usa rede primeiro para navegação com fallback para `offline.html`; recursos GET locais usam cache primeiro.
+`manifest.json` define `start_url: ./index.html`, `scope: ./`, `display: standalone`, orientação `portrait` e ícones 192×192 e 512×512. `js/app.js` registra `service-worker.js`; o escopo efetivo decorre da localização do script, no diretório raiz. O Service Worker atual usa `casillas-v14`, pré-cacheia os recursos do PWA e usa rede primeiro para navegação com fallback para `offline.html`; recursos GET locais usam cache primeiro.
 
 Os cálculos permanecem locais. Auth e RPCs comerciais dependem de comunicação com Supabase quando precisam de validação remota. Em G4.2.2b foi validada sessão já autenticada com SW v12, reload offline, cálculos de Trigonometria e Roscas, Guia CNC offline e retorno normal ao online. Isso não significa que um usuário novo consiga autenticar ou obter autorização comercial pela primeira vez sem rede.
 

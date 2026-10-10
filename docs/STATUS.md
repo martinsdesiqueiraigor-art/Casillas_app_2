@@ -1,5 +1,21 @@
 # STATUS — CASILLAS 2.0
 
+## Casillas 2.1 — redesenho da interface em fatias (candidato a release, 2026-10-10)
+
+Branch `casillas-2.1-fatia-2` (a partir de `casillas-2.0` em `1b3082e`). Só apresentação: login, licença, Supabase, cálculos (`js/calc/`) e testes de acesso não mudaram. Service Worker `casillas-v14`.
+
+| Etapa | Conteúdo |
+|---|---|
+| 2.1 e 2.2 | Componentes base (alvos de toque de 44 a 52 px, foco visível) e resultado em destaque (`.result-row--primary`). |
+| 2.3 | Início: estado do acesso (últimos dias em vermelho), cartão do Consultor, acesso rápido. |
+| 2.4 | Abas de modo de 44 px e resultado principal em destaque em 7 módulos. |
+| 2.5 | Módulo `calculadoras`: lista com busca sem acento e categorias, com Conicidades Padrão. |
+| 2.6 | Barra inferior de 4 itens (`js/bottom-nav.js`); menu lateral mantido. |
+| 2.7 | Acesso: Entrar, Criar conta, Nova senha (ver senha, aviso sem internet) e Ativação. |
+| 2.8 | Biblioteca (antigo módulo Consultoria, `js/modules/consult.js`). |
+
+Não incluído nesta candidata: Configurações novas e idioma (aguarda revisão do inglês), Guia 2.0, Consultor com busca livre, renovação de licença (exige migration revisada). Validação em aparelho real ainda não feita; testes que exigem Docker e pacotes extras (`test:ev3` parcial) devem rodar no computador do Igor.
+
 Atualizado em 2026-10-04.
 
 ## Estado do projeto
