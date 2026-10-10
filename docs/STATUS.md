@@ -13,8 +13,10 @@ Branch `casillas-2.1-fatia-2` (a partir de `casillas-2.0` em `1b3082e`). Só apr
 | 2.6 | Barra inferior de 4 itens (`js/bottom-nav.js`); menu lateral mantido. |
 | 2.7 | Acesso: Entrar, Criar conta, Nova senha (ver senha, aviso sem internet) e Ativação. |
 | 2.8 | Biblioteca (antigo módulo Consultoria, `js/modules/consult.js`). |
+| 2.9 | Guia CNC no design 2.1: lista com busca e filtros, abas Visão geral, Trajetória, Parâmetros, Exemplo e Cuidados. Conteúdo estendido do G76 em `js/modules/guia/conteudo2.js` (schema_version 2), rascunho com selo "Em revisão técnica". Banco canônico e rotas do Consultor preservados. |
+| 2.10 | Moldura: faixa de KPIs só nos módulos de cálculo (some em Início, Calculadoras, Guia, Biblioteca e Consultor) e sem emoji no indicador do cabeçalho. |
 
-Não incluído nesta candidata: Configurações novas e idioma (aguarda revisão do inglês), Guia 2.0, Consultor com busca livre, renovação de licença (exige migration revisada). Validação em aparelho real ainda não feita; testes que exigem Docker e pacotes extras (`test:ev3` parcial) devem rodar no computador do Igor.
+Não incluído nesta candidata: Configurações novas e idioma (aguarda revisão do inglês), Guia dos demais ciclos (só o G76 tem conteúdo estendido), Consultor com busca livre, renovação de licença (exige migration revisada). Validação em aparelho real ainda não feita; testes que exigem Docker e pacotes extras (`test:ev3` parcial) devem rodar no computador do Igor.
 
 Atualizado em 2026-10-04.
 

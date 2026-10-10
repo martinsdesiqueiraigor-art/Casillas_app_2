@@ -378,3 +378,12 @@ body {
   stroke-linecap: round;
   stroke-linejoin: round;
 }
+
+/* Telas sem indicadores: a faixa de KPIs só aparece nos módulos de cálculo. */
+body:is([data-module="home"], [data-module="calculadoras"], [data-module="consult"], [data-module="guia"], [data-module="consultor-tecnico"]) {
+  --kpi-height: 0px;
+}
+
+body:is([data-module="home"], [data-module="calculadoras"], [data-module="consult"], [data-module="guia"], [data-module="consultor-tecnico"]) .kpi-strip {
+  display: none;
+}

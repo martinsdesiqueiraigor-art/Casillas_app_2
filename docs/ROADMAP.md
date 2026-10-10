@@ -14,7 +14,7 @@ Estado do código local na branch `casillas-2.0`, referência `629ebe3` em 29/09
 
 ## Em andamento / parcialmente validado
 
-- Casillas 2.1: redesenho da interface em fatias. Etapas 2.1 a 2.8 prontas na `casillas-2.1-fatia-2`; faltam Configurações (idioma após revisão do inglês), Guia 2.0, Consultor com busca livre e renovação de licença. Detalhes em `STATUS.md`.
+- Casillas 2.1: redesenho da interface em fatias. Etapas 2.1 a 2.10 prontas na `casillas-2.1-fatia-2`; faltam Configurações (idioma após revisão do inglês), conteúdo estendido dos demais ciclos do Guia, Consultor com busca livre e renovação de licença. Detalhes em `STATUS.md`.
 - Fluxo crítico de Auth, trial, entitlement e ativação já possui validação integrada registrada; cenários complementares permanecem em `TESTES.md`.
 - Sessão autenticada e cálculos offline foram validados em G4.2.2b; ampliar cobertura de navegadores permanece trabalho complementar.
 - Revalidação da implantação remota, RLS/grants e definições de RPC após as migrations locais.
