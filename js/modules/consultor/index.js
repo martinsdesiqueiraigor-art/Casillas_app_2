@@ -1,7 +1,7 @@
 // @ts-check
 import { ConsultorAgent } from './ConsultorAgent.js';
 import { ResultCard } from './resultCard.js';
-import { findBibliotecaReferences } from '../biblioteca/consultorBridge.js';
+import { findBibliotecaReferences, findPlannedMetrologyTopic } from '../biblioteca/consultorBridge.js';
 import { Telemetry } from './telemetry.js';
 import { SyncQueue } from '../../core/syncQueue.js';
 import { outboxStore } from '../../core/outboxStore.js';
@@ -77,6 +77,13 @@ export function render(container,accessStatus,context){
      }
     }
     results.append(section);
+    return;
+   }
+   const plannedTopic=findPlannedMetrologyTopic(text);
+   if(plannedTopic){
+    agent.reset();input.value='';
+    status.textContent='Este assunto está em preparação na Biblioteca Técnica. Ainda não há uma ficha disponível para consulta.';
+    results.append(element('p','cs-empty',plannedTopic.title+' — ficha em preparação, ainda não publicada.'));
     return;
    }
    agent.ask(text);input.value='';
