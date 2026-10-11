@@ -72,7 +72,11 @@ export function render(container) {
     if (target && cycle) {
       const voltar = h('button', {
         type: 'button', class: 'gx-back',
-        onclick: () => { window.location.hash = '#/guia'; }
+        onclick: () => {
+          const previous = window.history.state?.casillasGuideOrigin;
+          if (previous === 'consultor-tecnico') window.history.back();
+          else window.location.hash = '#/guia';
+        }
       }, h('span', { 'aria-hidden': 'true', text: '‹' }), 'Voltar à lista');
       container.append(h('div', { class: 'gx-view' }, voltar));
       renderCycleView(/** @type {HTMLElement} */ (container.firstElementChild), cycle, target, pedido?.tabId || null);

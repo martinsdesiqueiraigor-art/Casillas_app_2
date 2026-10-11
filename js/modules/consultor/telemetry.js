@@ -1,4 +1,5 @@
 // @ts-check
+import { createLocalId } from './localId.js';
 export class Telemetry {
  /** @param {string} ownerUserId @param {{enqueue:(item:import('../../core/syncQueue.js').OutboxItem)=>Promise<void>}} queue */
  constructor(ownerUserId,queue){this.ownerUserId=ownerUserId;this.queue=queue;/** @type {Map<string,Promise<void>>} */this.interactions=new Map();/** @type {Set<string>} */this.feedbacks=new Set();}
@@ -21,7 +22,7 @@ export class Telemetry {
   this.feedbacks.add(key);
   try{
    await this.record(agent);
-   const id=crypto.randomUUID(),createdAt=new Date().toISOString();
+   const id=createLocalId(),createdAt=new Date().toISOString();
    await this.queue.enqueue({id,type:'guide_feedback',ownerUserId:this.ownerUserId,createdAt,payload:{id,user_id:this.ownerUserId,
     interaction_id:interactionId,cycle_id:cycleId,helpful,client_created_at:createdAt,schema_version:1}});
    if(agent.state==='PRESENTING')agent.transition('FEEDBACK');return true;

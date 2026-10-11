@@ -1,7 +1,7 @@
 // service-worker.js — Cache offline-first do Casillas App
 // Estratégia: cache-first para assets estáticos, network-first para navegação.
 
-const CACHE_VERSION = 'casillas-v20';
+const CACHE_VERSION = 'casillas-v22-cnc-json-a';
 const CACHE_ASSETS = [
   './js/core/eventBus.js',
   './js/core/outboxStore.js',
@@ -11,6 +11,7 @@ const CACHE_ASSETS = [
   './js/modules/consultor/constants.js',
   './js/modules/consultor/ConsultorAgent.js',
   './js/modules/consultor/index.js',
+  './js/modules/consultor/localId.js',
   './js/modules/consultor/resolver.js',
   './js/modules/consultor/resultCard.js',
   './js/modules/consultor/slotExtractor.js',
@@ -36,6 +37,10 @@ const CACHE_ASSETS = [
   './css/layout.css',
   './css/components.css',
   './css/modules.css',
+  './css/consultor-22-local.css',
+  './css/guia-header-22-local.css',
+  './css/home-22-local.css',
+  './css/settings-22-local.css',
   './js/app.js',
   './js/auth.js',
   './js/supabase.js',
@@ -73,9 +78,11 @@ const CACHE_ASSETS = [
   './js/modules/guia.js',
   './js/modules/consult.js',
   './js/modules/home.js',
+  './js/modules/settings.js',
   './js/modules/calculadoras.js',
   './js/bottom-nav.js',
   './dados/guia_cnc.json',
+  './dados/ciclos-cnc.json',
   './icons/icon-192.png',
   './icons/icon-512.png',
 ];

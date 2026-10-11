@@ -20,13 +20,14 @@ test('app real respeita gates, deep link inicial, navegação e identidade Consu
  globalThis.fetch=()=>{network++;throw Error('nenhuma rede permitida');};
  const {document,window}=parseHTML(readFileSync(new URL('../../index.html',import.meta.url),'utf8'));
  Object.defineProperty(window,'location',{value:{hash:'#/guia/fanuc_torno_g76?tab=referencia&acc=sintaxe',href:'http://localhost/index.html'},configurable:true});
- Object.defineProperty(window,'history',{value:{replaceState(_a,_b,hash){window.location.hash=hash;}},configurable:true});
+ Object.defineProperty(window,'history',{value:{state:null,replaceState(state,_title,url){this.state=state;if(url && String(url).includes('#'))window.location.hash=new URL(url,'http://localhost/index.html').hash;},pushState(state,_title,url){this.state=state;if(url && String(url).includes('#'))window.location.hash=new URL(url,'http://localhost/index.html').hash;},back(){}},configurable:true});
+ globalThis.sessionStorage={getItem:()=>null,setItem:()=>{},removeItem:()=>{}};
  let lifecycleReady=false;
  const addEvent=window.addEventListener.bind(window);
  window.addEventListener=(type,handler,...args)=>{addEvent(type,handler,...args);if(type==='offline')lifecycleReady=true;};
  globalThis.document=document;globalThis.window=window;globalThis.Node=window.Node;globalThis.DOMParser=window.DOMParser;
  globalThis.indexedDB=new IDBFactory();Object.defineProperty(globalThis,'navigator',{value:{},configurable:true});
- async function until(predicate){for(let i=0;i<100;i++){if(await predicate())return;await new Promise(r=>setTimeout(r,10));}throw Error('timeout app');}
+ async function until(predicate){for(let i=0;i<100;i++){if(await predicate())return;await new Promise(r=>setTimeout(r,10));}throw Error('timeout app: access='+allowed+'; content='+document.getElementById('app-content')?.textContent?.slice(0,250)+'; hash='+window.location.hash);}
  try{
   await import('../../js/app.js');assert.equal(allowed,false);
   document.dispatchEvent(new window.Event('DOMContentLoaded'));
@@ -39,6 +40,7 @@ test('app real respeita gates, deep link inicial, navegação e identidade Consu
   window.dispatchEvent(new window.Event('offline'));
   await until(()=>document.getElementById('header-access-status').textContent==='Modo offline');
   document.querySelector('[data-module="consultor-tecnico"]').click();
+  window.dispatchEvent(new window.Event('hashchange')); // linkedom não dispara hashchange ao alterar location.hash
   await until(()=>document.getElementById('consultor-pergunta'));
   assert.equal(document.getElementById('module-indicator-name').textContent,'Consultor Técnico');
   document.getElementById('consultor-pergunta').value='rosca torno fanuc';
@@ -46,6 +48,7 @@ test('app real respeita gates, deep link inicial, navegação e identidade Consu
   await until(()=>document.querySelector('[data-action="guide-open"]'));
   const {getAllDB}=await import('../../js/db.js');await until(async()=> (await getAllDB('outbox')).length===1);
   document.querySelector('[data-action="guide-open"]').click();
+  window.dispatchEvent(new window.Event('hashchange')); // em navegador real é disparado automaticamente
   await until(()=>document.querySelector('details[data-accordion-id="sintaxe"]')?.open);
   assert.equal(window.location.hash,'#/guia/fanuc_torno_g76?tab=referencia&acc=sintaxe');
   window.location.hash='#/guia/missing';window.dispatchEvent(new window.Event('hashchange'));

@@ -2,6 +2,7 @@
 // app.js — Ponto de entrada: inicializa DB, trial, menu, teclado e roteia módulos
 
 import { eventBus } from './core/eventBus.js';
+import { applySettings } from './modules/settings.js';
 import { wireGuideRouter } from './core/router.js';
 import { GuiaManager } from './modules/guia/GuiaManager.js';
 import { SyncQueue } from './core/syncQueue.js';
@@ -22,6 +23,7 @@ import { getCurrentUser, onAuthStateChange, signOut } from './auth.js';
 // Registro dos módulos (carregamento dinâmico)
 const MODULE_LOADERS = {
   home:      () => import('./modules/home.js'),
+  settings: () => import('./modules/settings.js'),
   calculadoras: () => import('./modules/calculadoras.js'),
   trig:      () => import('./modules/trig.js'),
   coni:      () => import('./modules/coni.js'),
@@ -40,6 +42,7 @@ const MODULE_LOADERS = {
 
 const MODULE_TITLES = {
   home:     { name: 'Visão geral',        icon: '⌂' },
+  settings: { name: 'Configurações', icon: '' },
   calculadoras: { name: 'Calculadoras',   icon: '🧮' },
   trig:     { name: 'Trigonometria',      icon: '📐' },
   coni:     { name: 'Conicidade',         icon: '📏' },
@@ -60,6 +63,21 @@ let accessStatus = null;
 let currentUserId = null;
 let stopAccessLifecycle;
 let hasMountedModule = false;
+let navigationSequence = 0;
+/** @type {DocumentFragment|null} */
+let consultorViewCache = null;
+function navigateModule(key) {
+  if (!MODULE_LOADERS[key]) return;
+  const hash = key === 'guia' ? '#/guia' : '#/modulo/' + encodeURIComponent(key);
+  if (window.location.hash === hash) { void loadModule(key); return; }
+  window.location.hash = hash;
+}
+function routeFromHash() {
+  const hash = window.location.hash;
+  if (hash.startsWith('#/guia')) return 'guia';
+  const match = /^#\/modulo\/([a-z-]+)$/.exec(hash);
+  return match && MODULE_LOADERS[match[1]] ? match[1] : 'home';
+}
 
 async function refreshAccess() {
   guardAccess();
@@ -69,7 +87,7 @@ async function refreshAccess() {
     status.textContent = !accessStatus.ok ? 'Validação necessária' : accessStatus.offline ? 'Modo offline' : accessStatus.activated ? 'Acesso ativo' : 'Período de teste · ' + accessStatus.daysLeft + 'd';
     status.dataset.access = accessStatus.ok ? (accessStatus.activated ? 'licensed' : 'trial') : 'blocked';
   }
-  if (accessStatus.ok && !hasMountedModule) await loadModule(window.location.hash?.startsWith('#/guia') ? 'guia' : 'home');
+  if (accessStatus.ok && !hasMountedModule) await loadModule(routeFromHash());
   return accessStatus;
 }
 function guardAccess() {
@@ -89,14 +107,19 @@ async function loadModule(key) {
   const content = document.getElementById('app-content');
   if (!content) return;
 
-  // Limpa conteúdo
-  while (content.firstChild) content.removeChild(content.firstChild);
+  const sequence = ++navigationSequence;
+  // Preserva a consulta ao abrir uma ficha e retornar ao Consultor.
+  if (appState.currentModule === 'consultor-tecnico' && key !== 'consultor-tecnico' && content.childNodes.length) {
+    consultorViewCache = document.createDocumentFragment();
+    while (content.firstChild) consultorViewCache.append(content.firstChild);
+  }
+  content.replaceChildren();
 
   hideKeyboard();
 
   try {
     const mod = await MODULE_LOADERS[key]();
-    if (!guardAccess()) return;
+    if (sequence !== navigationSequence || !guardAccess()) return;
     if (typeof mod.render !== 'function') {
       showToast('Módulo inválido (sem render)', 'error');
       return;
@@ -119,7 +142,12 @@ async function loadModule(key) {
       }
     }
 
-    mod.render(content, accessStatus, { ownerUserId: currentUserId });
+    if (key === 'consultor-tecnico' && consultorViewCache) {
+      content.append(consultorViewCache);
+      consultorViewCache = null;
+    } else {
+      mod.render(content, accessStatus, { ownerUserId: currentUserId });
+    }
     hasMountedModule = true;
     bindInputsToKeyboard(content);
 
@@ -184,6 +212,11 @@ function registerServiceWorker() {
 // ═══════════════════════════════════════════════════════════
 
 function wireOptionsButtons() {
+  const settingsButton = document.getElementById('opt-settings');
+  if (settingsButton && settingsButton.dataset.wired !== '1') {
+    settingsButton.dataset.wired = '1';
+    settingsButton.addEventListener('click', () => { closeOptionsMenu(); navigateModule('settings'); });
+  }
   const optKeyboard = document.getElementById('opt-keyboard');
   const optClear = document.getElementById('opt-clear');
   const optSignOut = document.getElementById('opt-signout');
@@ -285,10 +318,16 @@ function initGuideBridge() {
   const queue = new SyncQueue(outboxStore, sessionOwner, createTransport());
   wireGuideRouter(eventBus, new GuiaManager(), hash => {
     if (window.location.hash === hash) loadModule('guia');
-    else window.location.hash = hash;
+    else {
+      const origin = appState.currentModule;
+      window.location.hash = hash;
+      if (origin === 'consultor-tecnico') {
+        window.history.replaceState({ ...(window.history.state || {}), casillasGuideOrigin: origin }, '', window.location.href);
+      }
+    }
   });
   window.addEventListener('hashchange', () => {
-    if (window.location.hash.startsWith('#/guia')) loadModule('guia');
+    if (hasMountedModule) void loadModule(routeFromHash());
   });
   const flush = () => { void queue.flush().catch(error => console.warn('[EV3] Sync pendente', error)); };
   window.addEventListener('online', flush);
@@ -321,10 +360,11 @@ async function boot() {
   registerServiceWorker();
 
   await loadInitialState();
-  initMenu(loadModule);
-  initBottomNav(loadModule);
+  initMenu(navigateModule);
+  initBottomNav(navigateModule);
   renderMenuIcons();
   initShareButton();
+  applySettings();
   initOptionsMenu();
   wireOptionsButtons();
 
@@ -338,8 +378,8 @@ async function boot() {
 
 window.addEventListener('casillas:navigate-module', (event) => {
   const key = event.detail?.key;
-  if (!key || !MODULE_LOADERS[key] || key === 'home') return;
-  loadModule(key);
+  if (!key || !MODULE_LOADERS[key]) return;
+  navigateModule(key);
 });
 
 // ═══════════════════════════════════════════════════════════
@@ -392,4 +432,12 @@ onAuthStateChange((event, session) => {
   }
 });
 
-document.addEventListener('DOMContentLoaded', boot);
+function iniciarApp() {
+  void boot().catch(error => console.error('[CAS22-BOOT] falha na inicialização', error));
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', iniciarApp, { once: true });
+} else {
+  iniciarApp();
+}

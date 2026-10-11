@@ -3,6 +3,7 @@ import { bancoCiclosCNC } from '../guia/bancoCiclosCNC.js';
 import { extractSlots } from './slotExtractor.js';
 import { resolveSlots } from './resolver.js';
 import { TRANSITIONS } from './constants.js';
+import { createLocalId } from './localId.js';
 export class ConsultorAgent {
  /** @param {import('../guia/types.js').Cycle[]} bank */
  constructor(bank=bancoCiclosCNC){
@@ -16,7 +17,7 @@ export class ConsultorAgent {
  /** @param {string} text */
  ask(text){
   if(this.state==='PRESENTING'||this.state==='FEEDBACK')this.reset();
-  if(this.state==='IDLE'){this.interactionId=crypto.randomUUID();this.clientCreatedAt=new Date().toISOString();}
+  if(this.state==='IDLE'){this.interactionId=createLocalId();this.clientCreatedAt=new Date().toISOString();}
   this.slots={...this.slots,...extractSlots(text,this.bank)};
   if(this.state==='IDLE'&&!this.slots.codigo)this.transition('FILLING_SLOTS');
   this.transition('RESOLVING');this.result=resolveSlots(this.slots,this.bank);
