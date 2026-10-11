@@ -1,8 +1,8 @@
 # CASILLAS 2.2 — Progresso da navegação
 
-**ID:** CAS22-PROGRESS-NAV-01  
-**Data:** 2026-10-10  
-**Ambiente:** `C:\Projetos\Casillas_2.2_OFICIAL`  
+**ID:** CAS22-PROGRESS-NAV-01
+**Data:** 2026-10-10
+**Ambiente:** `C:\Projetos\Casillas_2.2_OFICIAL`
 **Estado:** APROVADO EM TESTE MANUAL NO SMARTPHONE; integração Git pendente.
 
 ## Contexto e problema

@@ -1,8 +1,8 @@
 # CASILLAS 2.2 — Primeira regressão automatizada
 
-**Data:** 2026-10-10  
-**Ambiente:** `C:\Projetos\Casillas_2.2_OFICIAL`  
-**Branch local observada:** `casillas-2.0`  
+**Data:** 2026-10-10
+**Ambiente:** `C:\Projetos\Casillas_2.2_OFICIAL`
+**Branch local observada:** `casillas-2.0`
 **Status:** NÃO APROVADO PARA INTEGRAÇÃO; diagnóstico inicial.
 
 ## Execução
