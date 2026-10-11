@@ -237,3 +237,166 @@ export const sheets = {
     ],
   },
 };
+
+/**
+ * Rascunhos de fichas (CAS22-BIB-FICHA-02).
+ *
+ * NÃO PUBLICADOS: estas fichas não fazem parte de `sheets`. A Biblioteca, a
+ * busca, os contadores, o Consultor e a navegação pública não as enxergam, e o
+ * assunto correspondente continua "Em preparação" (sem sheetId).
+ * Só a página de teste (tests/biblioteca/harness.html?rascunho=<id>) as exibe,
+ * pela opção previewSheet de mountBiblioteca.
+ *
+ * Publicar exige, conforme docs/2.2/CAS22-BIB-PAQUIMETRO-FICHA-02-PREPARACAO.md:
+ * fonte documental real vinculada, revisão humana independente, versão e
+ * evidência registradas; depois mover a ficha para `sheets` e marcar o assunto
+ * como disponível, com os testes de rotas e busca passando.
+ *
+ * Conteúdo introdutório, sem valores de resolução, exatidão, incerteza,
+ * tolerância ou método de calibração, e sem citação de normas.
+ */
+export const draftSheets = {
+  'paquimetro-fundamentos': {
+    id: 'paquimetro-fundamentos',
+    code: 'BIB-MET-002',
+    categoryId: 'metrologia',
+    topicId: 'paquimetro',
+    title: 'Paquímetro',
+    subtitle: 'Fundamentos de medição',
+    version: '0.1-demo',
+    reviewState: 'demo',
+    level: 'Introdutório',
+    readingTime: '5 min',
+
+    summary:
+      'O paquímetro é um instrumento de medição linear usado em medidas externas, internas, de profundidade e de ressalto. Um cursor desliza sobre uma régua graduada, e a medida é lida na escala principal com o auxílio do nônio, de um relógio ou de um mostrador digital, conforme o modelo. Esta ficha apresenta suas partes, o princípio de leitura e uma rotina geral de uso.',
+
+    concepts: [
+      { term: 'Escala principal', text: 'Régua graduada fixa, ao longo da qual o cursor se desloca. Nela se lê a parte principal da medida.' },
+      { term: 'Cursor', text: 'Parte móvel que desliza sobre a escala principal e leva o encosto móvel, a orelha móvel, o nônio e a haste de profundidade.' },
+      { term: 'Encostos (bicos)', text: 'Faces de medição para medidas externas. Um encosto é fixo na escala e o outro se move com o cursor.' },
+      { term: 'Orelhas', text: 'Faces de medição para medidas internas, como diâmetros de furos e larguras de rasgos.' },
+      { term: 'Haste de profundidade', text: 'Haste que avança junto com o cursor pela extremidade da escala, usada em medidas de profundidade.' },
+      { term: 'Faces de ressalto', text: 'Faces na extremidade da escala e do cursor, usadas para medir a altura de degraus (ressaltos).' },
+      { term: 'Nônio (vernier)', text: 'Escala gravada no cursor que subdivide a menor divisão da escala principal.' },
+      { term: 'Impulsor e trava', text: 'O impulsor permite mover o cursor com o polegar; a trava fixa o cursor para retirar o instrumento sem alterar a leitura.' },
+      { term: 'Tipos', text: 'O paquímetro universal tem leitura por nônio. Há também modelos com relógio, em que um ponteiro indica a fração da medida, e modelos digitais, com mostrador eletrônico.' },
+    ],
+
+    principle:
+      'A escala principal indica a parte inteira da medida até o zero do nônio. A fração é lida no nônio: é o traço do nônio que coincide com um traço da escala principal. A resolução, a faixa de medição e a forma de leitura dependem do modelo e devem ser consultadas no manual do fabricante. Quando o requisito do desenho exigir resolução maior que a do instrumento, use um instrumento adequado a esse requisito.',
+
+    // Procedimentos em blocos (CAS22-BIB-FICHA-02). Fichas antigas usam `procedure` (lista simples).
+    procedures: [
+      {
+        title: 'Preparação',
+        steps: [
+          'Limpe os encostos, as orelhas, a haste de profundidade e a superfície da peça.',
+          'Verifique se o cursor desliza sem folga nem travamento ao longo da escala.',
+          'Feche os encostos e confira a indicação de zero conforme o manual do instrumento. Nos modelos digitais, siga o procedimento de zeragem do fabricante.',
+        ],
+      },
+      {
+        title: 'Escolha da superfície de medição',
+        steps: [
+          'Medidas externas: use os encostos.',
+          'Medidas internas: use as orelhas.',
+          'Profundidade: use a haste de profundidade.',
+          'Ressalto: use as faces de ressalto.',
+        ],
+      },
+      {
+        title: 'Medida externa',
+        steps: [
+          'Abra o cursor um pouco além da dimensão a medir.',
+          'Apoie o encosto fixo na peça e aproxime o encosto móvel pelo impulsor, com força leve e constante.',
+          'Mantenha os encostos perpendiculares à dimensão medida e posicione a peça o mais perto possível da escala, e não na ponta dos encostos.',
+        ],
+      },
+      {
+        title: 'Medida interna',
+        steps: [
+          'Introduza as orelhas fechadas no furo ou no rasgo e abra o cursor até as orelhas tocarem as paredes.',
+          'Mantenha o instrumento alinhado à dimensão medida. Em furos, procure a posição de maior leitura, que corresponde ao diâmetro.',
+        ],
+      },
+      {
+        title: 'Profundidade',
+        steps: [
+          'Apoie a extremidade da escala na face de referência, perpendicular à superfície.',
+          'Desloque o cursor até a haste de profundidade tocar o fundo, sem inclinar o instrumento.',
+        ],
+      },
+      {
+        title: 'Ressalto',
+        steps: [
+          'Apoie a face de ressalto da escala em um nível do degrau e desloque o cursor até a face de ressalto do cursor tocar o outro nível.',
+        ],
+      },
+      {
+        title: 'Leitura e registro',
+        steps: [
+          'Se precisar retirar o instrumento da peça para ler, acione a trava antes.',
+          'Leia de frente: a escala principal e o nônio, o relógio ou o mostrador, conforme o modelo.',
+          'Registre o valor com a unidade indicada no instrumento e repita a medição para confirmar.',
+        ],
+      },
+    ],
+
+    // kind: 'erro' (erro comum de medição) | 'alerta' (risco ao instrumento, à pessoa ou uso inadequado)
+    cautions: [
+      { kind: 'erro', title: 'Paralaxe', text: 'Ler o nônio ou o relógio em ângulo desloca a leitura. Olhe de frente para a escala.' },
+      { kind: 'erro', title: 'Força excessiva', text: 'Pressionar demais o impulsor deforma o contato e altera a medida.' },
+      { kind: 'erro', title: 'Medir na ponta dos encostos', text: 'Quanto mais longe da escala estiver o ponto de contato, maior a influência de folgas e flexões na leitura.' },
+      { kind: 'erro', title: 'Instrumento inclinado', text: 'Encostos, orelhas ou haste fora do alinhamento com a dimensão medida resultam em leitura diferente da real.' },
+      { kind: 'erro', title: 'Orelhas fora do diâmetro', text: 'Em furos, orelhas fora do centro medem uma corda, menor que o diâmetro.' },
+      { kind: 'erro', title: 'Sujeira e rebarbas', text: 'Cavaco, óleo ou rebarbas entre as faces de medição e a peça falseiam a medida.' },
+      { kind: 'erro', title: 'Temperatura', text: 'Instrumento e peça devem estar em temperatura semelhante. Peças recém-usinadas podem estar aquecidas.' },
+      { kind: 'alerta', title: 'Peça em movimento', text: 'Nunca meça uma peça em movimento ou com a máquina em funcionamento.' },
+      { kind: 'alerta', title: 'Uso indevido', text: 'O paquímetro não deve ser usado como riscador, compasso, chave ou martelo. As faces de medição se danificam.' },
+    ],
+
+    // Recomendações gerais, sem valores. Demonstrativas, como o restante da ficha.
+    conservation: [
+      'Limpe o instrumento depois do uso e guarde-o no estojo.',
+      'Guarde com os encostos levemente afastados e sem a trava acionada.',
+      'Evite quedas e impactos. Após uma queda, separe o instrumento para verificação.',
+      'Mantenha longe de cavaco, fluido de corte e fontes de calor.',
+      'Nos modelos digitais, siga as orientações do fabricante sobre bateria e proteção contra líquidos.',
+      'Siga o plano de verificação e calibração definido pela empresa.',
+    ],
+
+    illustrations: [
+      { id: 'paquimetro-partes', caption: 'Esquema de identificação das partes do paquímetro universal. Ilustração demonstrativa, fora de escala.' },
+    ],
+
+    references: [
+      { label: 'Manual do fabricante do instrumento (modelo usado)', status: 'pending', note: 'A vincular na homologação' },
+      { label: 'Documento normativo aplicável a paquímetros', status: 'pending', note: 'A definir e conferir pelo revisor técnico' },
+      { label: 'Vocabulário de metrologia (termos)', status: 'pending', note: 'A definir pelo revisor técnico' },
+      { label: 'Procedimento interno de metrologia', status: 'pending', note: 'A definir' },
+    ],
+
+    review: {
+      author: 'Equipe Casillas (rascunho)',
+      reviewer: 'Pendente',
+      updated: '—',
+      history: [
+        { version: '0.1-demo', note: 'Rascunho demonstrativo criado na missão CAS22-BIB-FICHA-02. Não publicado.' },
+      ],
+    },
+
+    // Sem ações `verified`: nenhum vínculo com Calculadoras ou Guia CNC autorizado (preparação, critério 6).
+    related: [
+      { kind: 'consultor', label: 'Perguntar ao Consultor', hint: 'Usa esta ficha como contexto' },
+      { kind: 'topic', label: 'Micrômetro externo', target: 'micrometro-externo', hint: 'Mesma área' },
+      { kind: 'topic', label: 'Relógio comparador', target: 'relogio-comparador', hint: 'Mesma área' },
+    ],
+
+    consultorExamples: [
+      'Como usar o paquímetro em medidas internas?',
+      'Qual a diferença entre medir profundidade e medida externa?',
+      'Quais erros de posicionamento mais alteram a leitura?',
+    ],
+  },
+};

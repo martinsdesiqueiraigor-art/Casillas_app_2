@@ -202,6 +202,9 @@
 .cbib .cbib-callout { padding: 14px 16px; border-left: 3px solid var(--cbib-bl); background: var(--cbib-bl-soft); border-radius: 0 var(--cbib-r-md) var(--cbib-r-md) 0; }
 .cbib .cbib-callout__label { display: block; font: 600 11px/1 var(--cbib-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--cbib-bl); margin-bottom: 8px; }
 .cbib .cbib-callout p { font-size: .9375rem; color: var(--cbib-tx); }
+.cbib .cbib-proc { display: grid; gap: 10px; }
+.cbib .cbib-proc + .cbib-proc { padding-top: 6px; border-top: 1px solid var(--cbib-line); }
+.cbib .cbib-proc__h { margin: 0; font: 600 11px/1.3 var(--cbib-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--cbib-tx-2); }
 .cbib .cbib-steps { counter-reset: s; display: grid; gap: 0; }
 .cbib .cbib-steps li { counter-increment: s; position: relative; padding: 0 0 16px 44px; min-height: 30px; }
 .cbib .cbib-steps li::before { content: counter(s); position: absolute; left: 0; top: -2px; width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; font: 600 13px/1 var(--cbib-mono); color: var(--cbib-or); background: var(--cbib-or-soft); border: 1px solid var(--cbib-or-line); }

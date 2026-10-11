@@ -50,7 +50,7 @@ export function buildIndex(categories, sheets, topicStatus) {
       sections: [
         { name: 'Visão geral · Resumo técnico', tab: 'visao', text: s.summary },
         { name: 'Visão geral · Conceitos', tab: 'visao', text: s.concepts.map((c) => `${c.term} ${c.text}`).join(' ') + ' ' + s.principle },
-        { name: 'Utilização · Procedimento', tab: 'uso', text: s.procedure.join(' ') },
+        { name: 'Utilização · Procedimento', tab: 'uso', text: procedureText(s) },
         { name: 'Cuidados', tab: 'cuidados', text: [...s.cautions.map((c) => `${c.title} ${c.text}`), ...(s.conservation || [])].join(' ') },
         { name: 'Fontes e revisão', tab: 'fontes', text: s.references.map((r) => r.label).join(' ') },
       ],
@@ -63,6 +63,14 @@ export function buildIndex(categories, sheets, topicStatus) {
     e.fAll = [e.fTitle, fold(e.sub), ...e.fSections].join(' ');
   }
   return idx;
+}
+
+/** Texto dos procedimentos: blocos ({ title, steps }) quando houver, senão a lista simples `procedure`. */
+export function procedureText(s) {
+  if (Array.isArray(s.procedures) && s.procedures.length) {
+    return s.procedures.flatMap((b) => (b && Array.isArray(b.steps) ? [b.title, ...b.steps] : [])).join(' ');
+  }
+  return (s.procedure || []).join(' ');
 }
 
 const TYPE_RANK = { ficha: 0, assunto: 1, area: 2 };

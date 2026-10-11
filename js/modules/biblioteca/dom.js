@@ -103,6 +103,38 @@ const ART = {
       <text x="75" y="127">Arco</text>
     </g>
   </svg>`,
+  // Esquema do paquímetro universal (aba Utilização da ficha BIB-MET-002, rascunho).
+  // Fora de escala, sem cotas e sem valores; só identifica as partes.
+  'paquimetro-partes': `<svg xmlns="${SVG_NS}" class="cbib-figure__svg" viewBox="0 8 264 132" role="img"
+       aria-label="Esquema do paquímetro universal com as partes orelhas, encostos, escala principal, cursor, nônio, trava, impulsor e haste de profundidade">
+    <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="22" y="52" width="210" height="16" rx="2" stroke="var(--cbib-tx-2)" stroke-width="2.5"/>
+      <path d="M40 52v5M52 52v5M64 52v5M76 52v5M88 52v5M100 52v8M112 52v5M124 52v5M136 52v5M148 52v5M160 52v8M172 52v5M184 52v5M196 52v5M208 52v5M220 52v8" stroke="var(--cbib-tx-3)" stroke-width="1.5"/>
+      <path d="M22 68v44h8l10-30v-14" stroke="var(--cbib-line-strong)" stroke-width="3" fill="var(--cbib-surface-3)"/>
+      <path d="M22 52v-22h6l4 22" stroke="var(--cbib-line-strong)" stroke-width="3" fill="var(--cbib-surface-3)"/>
+      <rect x="84" y="46" width="48" height="28" rx="3" stroke="var(--cbib-bl)" stroke-width="2.5"/>
+      <path d="M84 74v8l10 30h8v-38" stroke="var(--cbib-bl)" stroke-width="3" fill="var(--cbib-bl-soft)"/>
+      <path d="M84 46l-4-16h6l6 16" stroke="var(--cbib-bl)" stroke-width="3" fill="var(--cbib-bl-soft)"/>
+      <path d="M90 68v4M96 68v4M102 68v4M108 68v6M114 68v4M120 68v4M126 68v4" stroke="var(--cbib-or)" stroke-width="1.5"/>
+      <circle cx="118" cy="40" r="4" stroke="var(--cbib-bl)" stroke-width="2"/>
+      <path d="M118 44v2" stroke="var(--cbib-bl)" stroke-width="2"/>
+      <path d="M120 74v6h10v-6" stroke="var(--cbib-bl)" stroke-width="2.5"/>
+      <path d="M232 60h22" stroke="var(--cbib-bl)" stroke-width="2.5"/>
+      <g stroke="var(--cbib-tx-3)" stroke-width="1" stroke-dasharray="2 2">
+        <path d="M30 20v10M82 20v10M118 22v14M190 38v12M150 98l-38-26M150 116l-24-34M238 21l10 37M62 126l-28-16M62 126l34-14"/>
+      </g>
+    </g>
+    <g class="cbib-figure__labels" text-anchor="middle">
+      <text x="56" y="17">Orelhas</text>
+      <text x="118" y="17">Trava</text>
+      <text x="190" y="34">Escala principal</text>
+      <text x="164" y="102" class="cbib-is-or">Nônio</text>
+      <text x="164" y="120">Impulsor</text>
+      <text x="262" y="17" class="cbib-is-bl" text-anchor="end">Haste de profundidade</text>
+      <text x="62" y="136">Encostos</text>
+      <text x="108" y="66" class="cbib-is-bl">Cursor</text>
+    </g>
+  </svg>`,
 };
 
 const cache = new Map();

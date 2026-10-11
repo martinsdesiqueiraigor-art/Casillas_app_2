@@ -183,6 +183,46 @@ function identList(rows, compact = false) {
     rows.map(([k, v, mono]) => h('div', null, h('dt', null, k), h('dd', { class: mono ? 'cbib-mono' : null }, v))));
 }
 
+/**
+ * Destino de um assunto relacionado: só navega quando o assunto está disponível
+ * e a ficha dele existe nos dados exibidos. Caso contrário, devolve null e a
+ * linha continua como "em preparação" (comportamento anterior, sem mudança).
+ */
+export function relatedSheetId(topicId, data) {
+  if (typeof topicId !== 'string') return null;
+  for (const c of data.categories) {
+    const t = c.topics.find((x) => x.id === topicId);
+    if (!t) continue;
+    const ok = t.status === 'available' && typeof t.sheetId === 'string'
+      && Object.prototype.hasOwnProperty.call(data.sheets, t.sheetId);
+    return ok ? t.sheetId : null;
+  }
+  return null;
+}
+
+function relatedTopicRow(r, data) {
+  const sheetId = relatedSheetId(r.target, data);
+  const main = (status) => h('span', { class: 'cbib-row__main' },
+    h('span', { class: 'cbib-row__title' }, r.label),
+    h('span', { class: 'cbib-row__sub' }, `${r.hint} · ${status}`));
+  if (sheetId) {
+    return nav({ name: 'ficha', id: sheetId }, { class: 'cbib-row cbib-row--compact' },
+      h('span', { class: 'cbib-row__icon' }, icon('doc')),
+      main(data.TOPIC_STATUS.available),
+      icon('chev', 'cbib-row__chev'));
+  }
+  return h('button', { type: 'button', class: 'cbib-row cbib-row--compact', 'data-planned': r.label },
+    h('span', { class: 'cbib-row__icon' }, icon('doc')),
+    main(data.TOPIC_STATUS.planned));
+}
+
+/** Procedimentos em blocos ({ title, steps }) quando a ficha os tiver; senão null (usa `procedure`). */
+export function procedureBlocks(s) {
+  if (!Array.isArray(s.procedures)) return null;
+  const blocks = s.procedures.filter((b) => b && typeof b.title === 'string' && Array.isArray(b.steps) && b.steps.length);
+  return blocks.length ? blocks : null;
+}
+
 function panelVisao(s, cat, data) {
   const st = data.REVIEW_STATES[s.reviewState] || data.REVIEW_STATES.demo;
   return [
@@ -194,12 +234,7 @@ function panelVisao(s, cat, data) {
       s.concepts.map((c) => h('div', null, h('dt', null, c.term), h('dd', null, c.text))))),
     psec('Princípio de funcionamento', h('div', { class: 'cbib-callout' }, h('p', null, s.principle))),
     psec('Relacionados', h('ul', { class: 'cbib-rows' },
-      (s.related || []).filter((r) => r.kind === 'topic').map((r) => h('li', null,
-        h('button', { type: 'button', class: 'cbib-row cbib-row--compact', 'data-planned': r.label },
-          h('span', { class: 'cbib-row__icon' }, icon('doc')),
-          h('span', { class: 'cbib-row__main' },
-            h('span', { class: 'cbib-row__title' }, r.label),
-            h('span', { class: 'cbib-row__sub' }, `${r.hint} · ${data.TOPIC_STATUS.planned}`))))),
+      (s.related || []).filter((r) => r.kind === 'topic').map((r) => h('li', null, relatedTopicRow(r, data))),
       h('li', null, nav({ name: 'categoria', id: cat.id }, { class: 'cbib-row cbib-row--compact' },
         h('span', { class: 'cbib-row__icon' }, icon(cat.icon)),
         h('span', { class: 'cbib-row__main' },
@@ -214,7 +249,11 @@ function panelUso(s) {
   return [
     figs.map(([f, svg]) => h('figure', { class: 'cbib-figure' }, svg, h('figcaption', null, f.caption))),
     psec('Procedimento geral',
-      h('ol', { class: 'cbib-steps' }, s.procedure.map((p) => h('li', null, p))),
+      procedureBlocks(s)
+        ? procedureBlocks(s).map((b) => h('section', { class: 'cbib-proc' },
+          h('h4', { class: 'cbib-proc__h' }, b.title),
+          h('ol', { class: 'cbib-steps' }, b.steps.map((p) => h('li', null, p)))))
+        : h('ol', { class: 'cbib-steps' }, (s.procedure || []).map((p) => h('li', null, p))),
       h('p', { class: 'cbib-hint' }, 'Sequência geral. Siga sempre o manual do instrumento e o procedimento da sua empresa.')),
     figs.length ? null : h('p', { class: 'cbib-hint' }, 'Nenhuma ilustração disponível para esta ficha.'),
   ];

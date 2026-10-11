@@ -82,3 +82,14 @@ A integração com o Voltar do Android depende do roteador do app e fica para a 
 Registro completo e handoff: `docs/2.2/CAS22-BIB-FASE-02-VALIDACAO-HANDOFF-20261011.md`.
 
 **Governança:** nenhuma publicação, commit, push, merge ou deploy autorizados nesta etapa.
+---
+
+## Rascunho da ficha de Paquímetro — CAS22-BIB-FICHA-02 (2026-10-11)
+
+- **Onde está:** `draftSheets['paquimetro-fundamentos']` em `data.js` (código `BIB-MET-002`, `reviewState: "demo"`). A ficha **não** está em `sheets`; o assunto `paquimetro` continua `planned`, sem `sheetId`.
+- **Isolamento:** Biblioteca, busca, contadores, Consultor (`consultorBridge.js`) e rotas públicas não enxergam o rascunho. Nenhum arquivo do app referencia `draftSheets`; os testes verificam isso.
+- **Pré-visualização:** só na página de teste, `tests/biblioteca/harness.html?rascunho=paquimetro-fundamentos[&aba=uso]`. Ela usa `mountBiblioteca(container, { previewSheet })`, que acrescenta a ficha só às rotas daquela montagem; busca, categorias e contadores continuam os publicados.
+- **Procedimentos em blocos:** campo opcional `procedures: [{ title, steps }]`. Fichas com `procedure` (lista simples), como o Micrômetro, continuam iguais; a busca indexa os dois formatos (`procedureText`).
+- **Relacionados entre fichas:** o assunto relacionado só vira link quando está disponível e a ficha existe nos dados exibidos; senão, mantém o aviso "em preparação".
+- **Ilustração:** `paquimetro-partes` em `dom.js`, própria, fora de escala, sem cotas.
+- **Publicar (fora desta missão):** seguir `docs/2.2/CAS22-BIB-PAQUIMETRO-FICHA-02-PREPARACAO.md`: fonte real vinculada, revisão humana independente, versão e evidência registradas; então mover a ficha para `sheets`, marcar o assunto como disponível com `sheetId`, ajustar os testes de isolamento para os de publicação e atualizar a versão do cache do service worker.

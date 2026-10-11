@@ -14,7 +14,7 @@
 
 import { categories, sheets, REVIEW_STATES, TOPIC_STATUS } from './data.js';
 import { buildIndex, filterTopics } from './search.js';
-import { normalizeRoute, parentOf, TAB_IDS } from './routes.js';
+import { normalizeRoute, parentOf, TAB_IDS, isValidId, isHomologated } from './routes.js';
 import { h, append } from './dom.js';
 import {
   ROUTES, homeView, categoryView, sheetView, consultorView, searchView, notFoundView,
@@ -97,13 +97,37 @@ const VIEWS = {
 };
 
 /**
+ * Dados usados por uma montagem. Sem previewSheet, são os dados publicados.
+ * Com previewSheet (só a página de teste usa), a ficha de rascunho é acrescentada
+ * às fichas navegáveis DESTA montagem, para abri-la por rota direta.
+ * A busca (INDEX), as categorias e os contadores continuam os publicados:
+ * o rascunho não aparece em listas, resultados nem no Consultor.
+ * Ficha inválida, homologada ou com id de ficha publicada é ignorada.
+ */
+function previewData(sheet) {
+  if (!sheet || typeof sheet !== 'object') return DATA;
+  const id = sheet.id;
+  const ok = isValidId(id) && !Object.prototype.hasOwnProperty.call(sheets, id)
+    && !isHomologated(sheet) && Object.prototype.hasOwnProperty.call(REVIEW_STATES, sheet.reviewState)
+    && categories.some((c) => c.id === sheet.categoryId);
+  if (!ok) {
+    console.warn('[Biblioteca] previewSheet ignorada: ficha de rascunho inválida.');
+    return DATA;
+  }
+  return Object.freeze({ categories, sheets: Object.freeze({ ...sheets, [id]: sheet }), REVIEW_STATES, TOPIC_STATUS });
+}
+
+/**
  * Monta a Biblioteca Técnica no contêiner.
  * @param {HTMLElement} container
- * @param {{ initialRoute?: object, onRouteChange?: (route: object) => void }} [options]
+ * @param {{ initialRoute?: object, onRouteChange?: (route: object) => void, previewSheet?: object }} [options]
  *   onRouteChange: gancho para a Fase 2 sincronizar com o roteador do app.
+ *   previewSheet: ficha de rascunho para a página de teste (não usar no app).
  */
 export function mountBiblioteca(container, options = {}) {
   MOUNTED.get(container)?.destroy(); // remontagem no mesmo contêiner desliga a anterior
+  const data = previewData(options.previewSheet);
+  const ctx = data === DATA ? CTX : Object.freeze({ data, index: INDEX });
   const root = h('div', { class: 'cbib', 'data-screen': '' });
   const toast = h('div', { class: 'cbib-toast', role: 'status', 'aria-live': 'polite', hidden: true });
   const view = h('div', { class: 'cbib-view' });
@@ -151,7 +175,7 @@ export function mountBiblioteca(container, options = {}) {
     const build = VIEWS[route.name] || notFoundView;
     let nodes;
     try {
-      nodes = build(CTX, route);
+      nodes = build(ctx, route);
     } catch (err) {
       console.error('[Biblioteca] Falha ao montar a tela', err);
       route = { name: 'notfound' };
@@ -178,7 +202,7 @@ export function mountBiblioteca(container, options = {}) {
   /** Abre uma rota (empilha a atual para o Voltar). */
   function navigate(next, { replace = false } = {}) {
     if (!isAlive()) return;
-    const target = normalizeRoute(next, DATA, remembered);
+    const target = normalizeRoute(next, data, remembered);
     if (!replace) stack.push({ route, scrollY: window.scrollY });
     route = target;
     draw({ focus: true, scrollY: 0, historyMode: replace ? 'silent' : 'push' });
@@ -189,10 +213,10 @@ export function mountBiblioteca(container, options = {}) {
     if (!isAlive()) return;
     const prev = stack.pop();
     if (prev) {
-      route = normalizeRoute(prev.route, DATA, remembered);
+      route = normalizeRoute(prev.route, data, remembered);
       draw({ focus: route.name === 'busca' ? 'title' : true, scrollY: prev.scrollY, historyMode: 'replace' });
     } else if (route.name !== 'home') {
-      route = normalizeRoute(parentOf(route, DATA), DATA, remembered);
+      route = normalizeRoute(parentOf(route, data), data, remembered);
       draw({ focus: true, scrollY: 0, historyMode: 'replace' });
     }
   }
@@ -200,7 +224,7 @@ export function mountBiblioteca(container, options = {}) {
   /** Troca a aba da ficha sem redesenhar a tela. */
   function selectTab(tab, { focusTab = false } = {}) {
     if (route.name !== 'ficha' || !TAB_IDS.includes(tab)) return;
-    const s = DATA.sheets[route.id];
+    const s = data.sheets[route.id];
     route = { ...route, tab };
     rememberTab(route.id, tab);
     view.querySelectorAll('[role="tab"]').forEach((b) => {
@@ -214,7 +238,7 @@ export function mountBiblioteca(container, options = {}) {
     if (panel) {
       panel.setAttribute('aria-labelledby', `cbib-tab-${tab}`);
       panel.replaceChildren();
-      append(panel, [panelContent(CTX, s, tab)]);
+      append(panel, [panelContent(ctx, s, tab)]);
     }
     const tabs = view.querySelector('.cbib-tabs');
     if (tabs && tabs.getBoundingClientRect().top < 0) tabs.scrollIntoView({ block: 'start' });
@@ -226,7 +250,7 @@ export function mountBiblioteca(container, options = {}) {
     const results = view.querySelector('#cbib-results');
     if (!results) return;
     results.replaceChildren();
-    append(results, [resultsContent(CTX, route.q)]);
+    append(results, [resultsContent(ctx, route.q)]);
     const count = view.querySelector('#cbib-result-count');
     if (count) count.textContent = countLabel(INDEX, route.q);
     const clear = /** @type {HTMLElement|null} */ (view.querySelector('.cbib-search__clear'));
@@ -235,7 +259,7 @@ export function mountBiblioteca(container, options = {}) {
   }
 
   function filterCategory(input) {
-    const cat = DATA.categories.find((c) => c.id === input.dataset.filter);
+    const cat = data.categories.find((c) => c.id === input.dataset.filter);
     const list = view.querySelector('#cbib-topic-list');
     if (!cat || !list) return;
     const topics = filterTopics(cat.topics, input.value);
@@ -338,7 +362,7 @@ export function mountBiblioteca(container, options = {}) {
     if (MOUNTED.get(container) === controller) MOUNTED.delete(container);
   }
 
-  route = normalizeRoute(options.initialRoute ?? { name: 'home' }, DATA, remembered);
+  route = normalizeRoute(options.initialRoute ?? { name: 'home' }, data, remembered);
   draw({ focus: false });
 
   const controller = {
@@ -346,7 +370,7 @@ export function mountBiblioteca(container, options = {}) {
     syncRoute(next) {
       if (!isAlive()) return;
       stack.length = 0;
-      route = normalizeRoute(next, DATA, remembered);
+      route = normalizeRoute(next, data, remembered);
       draw({ focus: false, historyMode: 'silent' });
     },
     back,

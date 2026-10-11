@@ -12,7 +12,8 @@
     e barra inferior real) e monta a Biblioteca Técnica pelo contrato render(container).
     Abrir com um servidor local na raiz do repositório:
       python -m http.server 8080   →   http://localhost:8080/tests/biblioteca/harness.html
-    Parâmetros: ?manual=1 só monta ao tocar em "Montar"; ?rota=ficha/<id>?aba=uso abre direto.
+    Parâmetros: ?manual=1 só monta ao tocar em "Montar"; ?rota=ficha/<id>?aba=uso abre direto;
+    ?rascunho=paquimetro-fundamentos[&aba=uso] pré-visualiza um rascunho de draftSheets (não publicado).
   -->
   <link rel="stylesheet" href="../../css/reset.css">
   <link rel="stylesheet" href="../../css/variables.css">
@@ -27,10 +28,11 @@
     /* Só da página de teste: barra de controles fora da casca do app. */
     .harness-bar { position: fixed; top: 0; right: 0; z-index: 500; display: flex; gap: 4px; padding: 4px; }
     .harness-bar button { font: 600 11px/1 monospace; padding: 6px 8px; background: #2a1a0c; color: #ffb35c; border: 1px solid #8a4a14; border-radius: 6px; }
+    .harness-draft { font: 600 11px/1 monospace; padding: 6px 8px; background: #2a1a0c; color: #ffb35c; border: 1px dashed #ffb35c; border-radius: 6px; }
     #probe { position: absolute; left: -9999px; top: 0; }
   </style>
 </head>
-<body data-module="consult">
+<body data-module="biblioteca">
   <header class="app-header" id="app-header">
     <button class="icon-btn" type="button" aria-label="Abrir menu"><span aria-hidden="true">☰</span></button>
     <div class="header-main">
@@ -55,6 +57,7 @@
   <div class="harness-bar">
     <button type="button" id="h-mount">Montar</button>
     <button type="button" id="h-swap">Trocar módulo</button>
+    <span id="h-draft" class="harness-draft" hidden>Rascunho · não publicado</span>
   </div>
 
   <script type="module">
@@ -62,16 +65,26 @@
     import { bindInputsToKeyboard } from '../../js/keyboard.js';
     import { render, mountBiblioteca, unmount, clearSessionMemory } from '../../js/modules/biblioteca/index.js';
     import { parsePath } from '../../js/modules/biblioteca/routes.js';
+    import { draftSheets } from '../../js/modules/biblioteca/data.js';
 
     const content = document.getElementById('app-content');
     const params = new URLSearchParams(location.search);
     initBottomNav((key) => { window.__navSelected = key; });
-    setBottomNavActive('consult');
+    setBottomNavActive('biblioteca'); // chave da aba desde a integração (js/bottom-nav.js)
 
     function mount() {
       content.replaceChildren(); // como js/app.js antes de cada render
       const rota = params.get('rota');
-      if (rota) window.__cbib = mountBiblioteca(content, { initialRoute: parsePath(rota) });
+      const rascunho = params.get('rascunho');
+      if (rascunho) {
+        // Pré-visualização isolada de rascunho (CAS22-BIB-FICHA-02): só nesta página de teste.
+        const sheet = Object.prototype.hasOwnProperty.call(draftSheets, rascunho) ? draftSheets[rascunho] : null;
+        document.getElementById('h-draft').hidden = false;
+        window.__cbib = mountBiblioteca(content, {
+          previewSheet: sheet,
+          initialRoute: sheet ? parsePath(`ficha/${rascunho}${params.get('aba') ? `?aba=${params.get('aba')}` : ''}`) : { name: 'notfound' },
+        });
+      } else if (rota) window.__cbib = mountBiblioteca(content, { initialRoute: parsePath(rota) });
       else window.__cbib = render(content, { ok: true }, { ownerUserId: null });
       bindInputsToKeyboard(content); // mesmo passo do app depois de render
       window.__mounted = (window.__mounted || 0) + 1;
