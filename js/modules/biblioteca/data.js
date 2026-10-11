@@ -60,7 +60,8 @@ export const categories = [
         id: 'paquimetro',
         title: 'Paquímetro',
         summary: 'Medições externas, internas e de profundidade.',
-        status: 'planned',
+        status: 'available',
+        sheetId: 'paquimetro-fundamentos',
       },
       {
         id: 'relogio-comparador',
@@ -382,7 +383,7 @@ export const draftSheets = {
       reviewer: 'Pendente',
       updated: '—',
       history: [
-        { version: '0.1-demo', note: 'Rascunho demonstrativo criado na missão CAS22-BIB-FICHA-02. Não publicado.' },
+        { version: '0.1-demo', note: 'Disponibilização demonstrativa aprovada por Igor (Product Owner). Ficha publicada na Biblioteca Técnica como demonstração não homologada; fontes e revisão técnica independente pendentes.' },
       ],
     },
 
@@ -400,3 +401,6 @@ export const draftSheets = {
     ],
   },
 };
+
+// Publicacao demonstrativa autorizada pelo Product Owner; nao homologada tecnicamente.
+sheets['paquimetro-fundamentos'] = draftSheets['paquimetro-fundamentos'];

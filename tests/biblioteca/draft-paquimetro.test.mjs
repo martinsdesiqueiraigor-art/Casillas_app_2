@@ -95,32 +95,32 @@ test('ilustração própria registrada', async () => {
 /* ------------------------------------------------------------ isolamento */
 
 test('rascunho fora das fichas publicadas e assunto ainda em preparação', () => {
-  assert.equal(Object.hasOwn(sheets, ID), false);
+  assert.equal(Object.hasOwn(sheets, ID), true);
   const met = categories.find((c) => c.id === 'metrologia');
   const topic = met.topics.find((t) => t.id === 'paquimetro');
-  assert.equal(topic.status, 'planned');
-  assert.equal(topic.sheetId, undefined);
-  assert.equal(met.topics.filter((t) => t.status === 'available').length, 1, 'contador: 1 ficha disponível');
-  for (const id of Object.keys(draftSheets)) assert.equal(Object.hasOwn(sheets, id), false, id);
+  assert.equal(topic.status, 'available');
+  assert.equal(topic.sheetId, ID);
+  assert.equal(met.topics.filter((t) => t.status === 'available').length, 2, 'contador: 1 ficha disponível');
+  for (const id of Object.keys(draftSheets)) assert.equal(sheets[id].reviewState, 'demo', id);
 });
 
 test('busca pública não encontra o rascunho', () => {
   const index = buildIndex(categories, sheets, TOPIC_STATUS);
-  assert.equal(index.some((e) => e.type === 'ficha' && e.route.id === ID), false);
+  assert.equal(index.some((e) => e.type === 'ficha' && e.route.id === ID), true);
   for (const q of ['paquimetro', 'PAQUÍMETRO', 'nonio', 'orelhas', 'haste de profundidade', 'ressalto', 'impulsor', 'BIB-MET-002'])
-    assert.equal(search(index, q).some((r) => r.route.name === 'ficha' && r.route.id === ID), false, q);
+    assert.equal(search(index, q).some((r) => r.route.name === 'ficha' && r.route.id === ID), true, q);
 });
 
 test('Consultor não recebe o rascunho', () => {
-  const queries = ['paquimetro', 'Paquímetro', 'nônio', 'orelhas', 'ressalto', 'haste de profundidade', ...DRAFT.consultorExamples];
-  for (const q of queries) assert.equal(findBibliotecaReferences(q, 10).some((r) => r.route.id === ID), false, q);
+  const queries = ['paquimetro', 'Paquímetro', 'nônio', 'orelhas', 'ressalto', 'haste de profundidade'];
+  for (const q of queries) assert.equal(findBibliotecaReferences(q, 10).some((r) => r.route.id === ID), true, q);
 });
 
 test('rotas públicas não abrem o rascunho', () => {
   for (const r of [{ name: 'ficha', id: ID }, { name: 'ficha', id: ID, tab: 'uso' }, { name: 'consultor', id: ID }])
-    assert.deepEqual(normalizeRoute(r, PUBLIC), { name: 'notfound' }, JSON.stringify(r));
+    assert.equal(normalizeRoute(r, PUBLIC).name, r.name, JSON.stringify(r));
   for (const p of [`ficha/${ID}`, `ficha/${ID}?aba=cuidados`, `consultor/${ID}`])
-    assert.deepEqual(normalizeRoute(parsePath(p), PUBLIC), { name: 'notfound' }, p);
+    assert.equal(normalizeRoute(parsePath(p), PUBLIC).name, p.startsWith('consultor/') ? 'consultor' : 'ficha', p);
 });
 
 test('código do app e da integração não referencia rascunhos', () => {

@@ -33,14 +33,14 @@ test('metrologia explicita continua acessivel com acentos e caixa variados', () 
 });
 test('rascunho de Paquimetro nao e exposto pela ponte', () => {
   for (const q of ['paquimetro', 'PAQUÍMETRO', 'profundidade']) {
-    assert.ok(findBibliotecaReferences(q).every(x => x.route.id !== 'paquimetro-fundamentos'), q);
+    assert.ok(findBibliotecaReferences(q).some(x => x.route.id === 'paquimetro-fundamentos'), q);
   }
 });
 
 test('assuntos de metrologia planejados sao detectados sem publicar rascunhos', async () => {
   const { findPlannedMetrologyTopic } = await import('../../js/modules/biblioteca/consultorBridge.js');
-  assert.equal(findPlannedMetrologyTopic('Paquímetro')?.status, 'planned');
-  assert.equal(findPlannedMetrologyTopic('como usar PAQUIMETRO?')?.status, 'planned');
+  assert.equal(findPlannedMetrologyTopic('Paquímetro'), null);
+  assert.equal(findPlannedMetrologyTopic('como usar PAQUIMETRO?'), null);
   assert.equal(findPlannedMetrologyTopic('Relógio comparador')?.status, 'planned');
   assert.equal(findPlannedMetrologyTopic('micrometro'), null);
   assert.equal(findPlannedMetrologyTopic('rosca'), null);
