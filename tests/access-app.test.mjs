@@ -8,7 +8,7 @@ const source = readFileSync(new URL('../js/app.js', import.meta.url), 'utf8')
 function fixture({ allowed = true, identity = true, loader } = {}) {
   let permit = allowed, renders = 0, cleared = 0, refresh, waiting, blocked = 0;
   const winEvents = new Map(), docEvents = new Map();
-  const content = { firstChild: null, classList: { add(){}, remove(){} }, removeChild(){} };
+  const content = { firstChild: null, childNodes: [], classList: { add(){}, remove(){} }, removeChild(){}, replaceChildren(){}, append(){} };
   const header = {textContent:'',dataset:{}};
   const deps = {
     initDB: async()=>{}, showToast:()=>{}, loadInitialState:async()=>{}, persistCurrentModule:async()=>{},
@@ -16,11 +16,12 @@ function fixture({ allowed = true, identity = true, loader } = {}) {
     invalidateAccessLease:()=>{cleared++;permit=false;}, inspectAccessLease:()=>({ok:permit}),
     showActivationScreen:()=>{blocked++;}, startAccessLifecycle: options=>{refresh=options.refresh;return()=>{};},
     LEASE_KEY:'lease', initKeyboard:()=>{}, bindInputsToKeyboard:()=>{}, hideKeyboard:()=>{},
-    initMenu:()=>{}, setActiveMenuItem:()=>{}, initOptionsMenu:()=>{}, closeOptionsMenu:()=>{},
+    SyncQueue:class { flush(){return Promise.resolve();} }, outboxStore:{}, sessionOwner:()=>null, createTransport:()=>({}), wireGuideRouter:()=>{}, eventBus:{}, GuiaManager:class {},
+    applySettings:()=>{}, initMenu:()=>{}, setActiveMenuItem:()=>{}, initOptionsMenu:()=>{}, closeOptionsMenu:()=>{},
     initShareButton:()=>{}, renderMenuIcons:()=>{}, ICONS:{}, initBottomNav:()=>{}, setBottomNavActive:()=>{},
     supabase:{auth:{storageKey:'session'}}, getCurrentUser:async()=>({user:identity?{id:'A'}:null,error:null}),
     onAuthStateChange:fn=>{winEvents.set('auth',fn);}, signOut:async()=>({error:null}),
-    window:{addEventListener:(k,v)=>winEvents.set(k,v),location:{},console:{}},
+    window:{addEventListener:(k,v)=>winEvents.set(k,v),location:{hash:''},console:{}},
     document:{addEventListener:(k,v)=>docEvents.set(k,v),getElementById:id=>id==='app-content'?content:id==='header-access-status'?header:null},
     navigator:{}, console:{log(){},error(){},warn(){}}, setTimeout:()=>{},
     testLoader:loader || (async()=>({render:()=>{renders++;}}))

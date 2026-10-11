@@ -1,0 +1,10 @@
+﻿/* CAS22: cabeçalho do Guia CNC, somente apresentação. */
+body[data-module="guia"] .app-header{background:#0b1118;border-bottom:1px solid #24364a;padding-inline:18px;gap:10px}
+body[data-module="guia"] #open-menu-btn{display:none}
+body[data-module="guia"] .header-main{display:flex;flex-direction:row;align-items:center;justify-content:flex-start;gap:10px}
+body[data-module="guia"] .header-main::before{content:"";display:block;width:34px;height:34px;flex:none;background-repeat:no-repeat;background-position:center;background-size:contain;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M73 69.3A31 31 0 1 1 73 30.7' fill='none' stroke='%23f0883e' stroke-width='15'/%3E%3Cpolygon points='70,50 82,40 94,50 82,60' fill='%2358a6ff'/%3E%3C/svg%3E")}
+body[data-module="guia"] .header-title{color:#eef3f8;font-size:22px;letter-spacing:0}
+body[data-module="guia"] .header-subtitle,body[data-module="guia"] .header-access-status,body[data-module="guia"] .header-indicator{display:none}
+body[data-module="guia"] #open-options-btn{position:relative;font-size:0;color:#93a4b6}
+body[data-module="guia"] #open-options-btn::after{content:"";position:absolute;inset:10px;background:currentColor;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='black' d='M19.14 12.94a7.6 7.6 0 0 0 .05-1.88l2.03-1.58-2-3.46-2.39.96a7.6 7.6 0 0 0-1.63-.95L14.84 3h-4l-.36 3.03c-.59.23-1.13.55-1.63.95l-2.39-.96-2 3.46 2.03 1.58a7.6 7.6 0 0 0 0 1.88l-2.03 1.58 2 3.46 2.39-.96c.5.4 1.04.72 1.63.95l.36 3.03h4l.36-3.03c.59-.23 1.13-.55 1.63-.95l2.39.96 2-3.46-2.03-1.58ZM12.84 15.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7Z'/%3E%3C/svg%3E") center/contain no-repeat}
+

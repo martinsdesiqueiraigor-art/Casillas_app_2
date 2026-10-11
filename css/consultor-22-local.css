@@ -1,0 +1,54 @@
+/* CAS22 — Consultor Técnico: apresentação data-driven */
+body[data-module="consultor-tecnico"] .app-content{padding-top:20px}
+.cs-shell{max-width:740px;margin:0 auto;padding-bottom:28px;display:grid;gap:16px}
+.cs-hero{display:grid;gap:8px}
+.cs-eyebrow{color:#f0883e;font-size:.75rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase}
+.cs-title{margin:0;font-size:clamp(1.5rem,5vw,2rem);line-height:1.2;color:#f0f4f9}
+.cs-lead{margin:0;color:#a5b4c6;line-height:1.5;font-size:.9rem}
+.cs-form{display:grid;gap:12px;padding:18px;background:#111d2a;border:1px solid #26374a;border-radius:18px}
+.cs-label{font-size:.9rem;font-weight:700;color:#dfe9f4}
+.cs-form .input{width:100%;min-height:56px;box-sizing:border-box;background:#0c1520;border:1px solid #40536a;border-radius:12px;color:#f5f7fa;font:inherit;padding:12px 14px}
+.cs-form .input::placeholder{color:#96a7b8}
+.cs-actions{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px}
+.cs-actions .btn{min-height:52px;border-radius:12px;font:inherit;font-weight:700;padding:10px 14px}
+.cs-actions .btn-primary,.cs-result .btn-primary{background:#f0883e;color:#101318;border:0}
+.cs-actions .btn-outline{background:transparent;border:1px solid #58a6ff;color:#58a6ff}
+.cs-status{margin:0;color:#b2c2d3;line-height:1.5}
+.cs-status:empty{display:none}
+.cs-results{display:grid;gap:14px;min-width:0}
+.cs-result{background:#111d2a;border:1px solid #2a4158;border-radius:18px;padding:18px;display:grid;gap:14px;min-width:0}
+.cs-result-tag{color:#58a6ff;font-size:.8rem;font-weight:700;letter-spacing:.03em}
+.cs-result h3{margin:0;font-size:1.1rem;line-height:1.35;color:#f0f4f9}
+.cs-result-meta{display:flex;flex-wrap:wrap;gap:7px}
+.cs-chip{display:inline-flex;align-items:center;border:1px solid #38516c;background:#14283b;color:#dce8f5;border-radius:999px;padding:6px 10px;font-size:.8rem}
+.cs-result .btn-primary{min-height:52px;border-radius:12px;font:inherit;font-weight:700;padding:10px 14px}
+.cs-feedback{display:grid;gap:10px}
+.cs-feedback-label{margin:0;color:#a5b4c6;font-size:.9rem}
+.cs-feedback-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.cs-feedback-actions .btn{min-height:48px;border:1px solid #58a6ff;border-radius:12px;color:#58a6ff;background:transparent;font:inherit}
+.cs-clarify{background:#111d2a;border:1px solid #2a4158;border-radius:18px;padding:16px;display:grid;gap:12px}
+.cs-clarify h3{margin:0;color:#f0f4f9;font-size:1.05rem}
+.cs-clarify p{margin:0;color:#a5b4c6}
+.cs-clarify-options{display:flex;flex-wrap:wrap;gap:9px}
+.cs-clarify-options button{min-height:44px;border:1px solid #58a6ff;border-radius:10px;color:#dce8f5;background:#13263a;padding:9px 12px;font:inherit}
+.cs-empty{padding:18px;border:1px solid #31465b;border-radius:16px;background:#111d2a;color:#c2d1df}
+.cs-shell button:focus-visible,.cs-shell input:focus-visible{outline:3px solid #58a6ff;outline-offset:2px}
+:root[data-casillas-contrast=high] .cs-result,:root[data-casillas-contrast=high] .cs-form,:root[data-casillas-contrast=high] .cs-clarify{background:#080808;border:2px solid #a0b4c7}
+@media(max-width:380px){.cs-form,.cs-result{padding:13px}.cs-actions{grid-template-columns:1fr}.cs-clarify-options button{flex:1}}
+
+
+/* Consultor 2.2: histórico visível da pergunta e do contexto */
+.cs-trail{display:grid;gap:8px;padding:14px 16px;border:1px solid #2a4158;border-radius:14px;background:#0d1a27}
+.cs-trail[hidden]{display:none}
+.cs-trail-row{display:flex;flex-wrap:wrap;align-items:baseline;gap:5px 12px;min-width:0}
+.cs-trail-label{font-size:.78rem;color:#93a4b6;min-width:128px}
+.cs-trail-value{color:#eef3f8;font-size:.92rem;overflow-wrap:anywhere}
+@media(max-width:380px){.cs-trail-row{display:grid;gap:3px}.cs-trail-label{min-width:0}}
+body[data-module="consultor-tecnico"] .app-header{background:#0b1118;border-bottom:1px solid #24364a;padding-inline:18px;gap:10px}
+body[data-module="consultor-tecnico"] #open-menu-btn{display:none}
+body[data-module="consultor-tecnico"] .header-main{display:flex;flex-direction:row;align-items:center;justify-content:flex-start;gap:10px}
+body[data-module="consultor-tecnico"] .header-main::before{content:"";display:block;width:34px;height:34px;flex:none;background-repeat:no-repeat;background-position:center;background-size:contain;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M73 69.3A31 31 0 1 1 73 30.7' fill='none' stroke='%23f0883e' stroke-width='15'/%3E%3Cpolygon points='70,50 82,40 94,50 82,60' fill='%2358a6ff'/%3E%3C/svg%3E")}
+body[data-module="consultor-tecnico"] .header-title{color:#eef3f8;font-size:22px;letter-spacing:0}
+body[data-module="consultor-tecnico"] .header-subtitle,body[data-module="consultor-tecnico"] .header-access-status,body[data-module="consultor-tecnico"] .header-indicator{display:none}
+body[data-module="consultor-tecnico"] #open-options-btn{position:relative;font-size:0;color:#93a4b6}
+body[data-module="consultor-tecnico"] #open-options-btn::after{content:"";position:absolute;inset:10px;background:currentColor;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='black' d='M19.14 12.94a7.6 7.6 0 0 0 .05-1.88l2.03-1.58-2-3.46-2.39.96a7.6 7.6 0 0 0-1.63-.95L14.84 3h-4l-.36 3.03c-.59.23-1.13.55-1.63.95l-2.39-.96-2 3.46 2.03 1.58a7.6 7.6 0 0 0 0 1.88l-2.03 1.58 2 3.46 2.39-.96c.5.4 1.04.72 1.63.95l.36 3.03h4l.36-3.03c.59-.23 1.13-.55 1.63-.95l2.39.96 2-3.46-2.03-1.58ZM12.84 15.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7Z'/%3E%3C/svg%3E") center/contain no-repeat}

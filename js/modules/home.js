@@ -1,275 +1,113 @@
 import { ICONS } from '../icons.js';
 
-const MODULE_GROUPS = [
-  {
-    title: 'Cálculos',
-    modules: [
-      { key: 'trig', name: 'Trigonometria', description: 'Ângulos e relações do triângulo.' },
-      { key: 'coni', name: 'Conicidade', description: 'Cálculos de cones e ângulos.' },
-      { key: 'poly', name: 'Polígonos', description: 'Geometria de perfis poligonais.' },
-      { key: 'furos', name: 'Furação Circular', description: 'Coordenadas para padrões circulares.' }
-    ]
-  },
-  {
-    title: 'Roscas e ajustes',
-    modules: [
-      { key: 'rosca', name: 'Roscas', description: 'Consulta técnica de roscas.' },
-      { key: 'tol', name: 'Tolerâncias ISO', description: 'Ajustes e tolerâncias dimensionais.' },
-      { key: 'chaveta', name: 'Chaveta DIN 6885', description: 'Dimensões normalizadas de chavetas.' },
-      { key: 'conicpad', name: 'Conicidades Padrão', description: 'Referência de conicidades usuais.' }
-    ]
-  },
-  {
-    title: 'Usinagem',
-    modules: [
-      { key: 'potencia', name: 'Potência de Corte', description: 'Apoio ao planejamento de corte.' },
-      { key: 'prog', name: 'Programação CNC', description: 'Ferramentas e referências CNC.' }
-    ]
-  },
-  {
-    title: 'Guias e suporte',
-    modules: [
-      { key: 'guia', name: 'Guia de Programação', description: 'Consulta de comandos e ciclos.' },
-      { key: 'consult', name: 'Biblioteca', description: 'Contato, serviços, cursos e licença.' }
-    ]
-  }
+const QUICK = [
+  ['trig', 'Trigonometria', 'Triângulos e ângulos'],
+  ['coni', 'Conicidade', 'Cones e conicidades'],
+  ['poly', 'Polígonos', 'Cálculos geométricos'],
+  ['furos', 'Furação circular', 'Padrões de furos']
 ];
 
-const QUICK_ACCESS = ['trig', 'coni', 'poly', 'furos'];
-const LAST_DAYS_LIMIT = 3;
-const MODULES_BY_KEY = new Map(
-  MODULE_GROUPS.flatMap((group) => group.modules).map((module) => [module.key, module])
-);
-
-function getAccessPresentation(accessStatus) {
-  if (accessStatus?.activated === true && accessStatus?.daysLeft === Infinity) {
-    return {
-      kind: 'licensed',
-      icon: '✓',
-      title: 'Licença ativa',
-      description: 'Sua licença comercial está ativa.',
-      detail: 'Acesso comercial confirmado'
-    };
-  }
-
-  if (accessStatus?.ok === true && Number.isFinite(accessStatus.daysLeft)) {
-    const last = accessStatus.daysLeft <= LAST_DAYS_LIMIT;
-    return {
-      kind: 'trial',
-      last,
-      icon: '◷',
-      title: 'Período de teste',
-      description: last
-        ? (accessStatus.daysLeft <= 1 ? 'Último dia! Ative agora.' : `Últimos ${accessStatus.daysLeft} dias! Ative agora.`)
-        : 'Seu período de teste está em andamento.',
-      daysLeft: accessStatus.daysLeft
-    };
-  }
-
-  return {
-    kind: 'verified',
-    icon: '✓',
-    title: 'Acesso verificado',
-    description: 'Status confirmado pelo Casillas.',
-    detail: ''
-  };
+function element(tag, className, text) {
+  const node = document.createElement(tag);
+  if (className) node.className = className;
+  if (text !== undefined) node.textContent = text;
+  return node;
 }
 
-function createModuleCard(module, compact = false) {
-  const button = document.createElement('button');
-  button.className = `home-module-card${compact ? ' home-quick-card' : ''}`;
-  button.type = 'button';
-  button.dataset.module = module.key;
-  button.setAttribute('aria-label', `Abrir módulo ${module.name}`);
+function navigate(key) {
+  window.dispatchEvent(new CustomEvent('casillas:navigate-module', { detail: { key } }));
+}
 
-  const icon = document.createElement('span');
-  icon.className = 'home-module-icon';
+function accessPill(status) {
+  const activated = status?.activated === true && status?.daysLeft === Infinity;
+  const trial = status?.ok === true && Number.isFinite(status.daysLeft);
+  const pill = element('span', 'home22-pill ' + (activated ? 'is-active' : trial ? 'is-trial' : 'is-neutral'));
+  if (activated) pill.textContent = '✓ Licença ativa';
+  else if (trial) pill.textContent = '◷ Teste · ' + status.daysLeft + (status.daysLeft === 1 ? ' dia' : ' dias');
+  else pill.textContent = '✓ Acesso verificado';
+  return pill;
+}
+
+function shortcut(key, title, description) {
+  const btn = element('button', 'home22-tile');
+  btn.type = 'button';
+  btn.setAttribute('aria-label', 'Abrir ' + title);
+  const icon = element('span', 'home22-tile-icon');
   icon.setAttribute('aria-hidden', 'true');
-  icon.innerHTML = ICONS[module.key] ? ICONS[module.key](20) : '';
-
-  const copy = document.createElement('span');
-  copy.className = 'home-module-copy';
-
-  const title = document.createElement('span');
-  title.className = 'home-module-title';
-  title.textContent = module.name;
-  copy.append(title);
-
-  if (!compact && module.description) {
-    const description = document.createElement('span');
-    description.className = 'home-module-description';
-    description.textContent = module.description;
-    copy.append(description);
-  }
-
-  const arrow = document.createElement('span');
-  arrow.className = 'home-module-arrow';
-  arrow.setAttribute('aria-hidden', 'true');
-  arrow.textContent = '›';
-
-  button.append(icon, copy, arrow);
-  return button;
-}
-
-function createSectionHeading(kicker, title, id) {
-  const heading = document.createElement('div');
-  heading.className = 'home-section-heading';
-
-  const copy = document.createElement('div');
-  const label = document.createElement('div');
-  label.className = 'home-section-kicker';
-  label.textContent = kicker;
-
-  const headingTitle = document.createElement('h2');
-  headingTitle.className = 'home-section-title';
-  headingTitle.id = id;
-  headingTitle.textContent = title;
-  copy.append(label, headingTitle);
-  heading.append(copy);
-  return heading;
-}
-
-function createAccessCard(access) {
-  const card = document.createElement('section');
-  card.className = `home-access-card is-${access.kind}${access.last ? ' is-last' : ''}`;
-  card.setAttribute('aria-label', `Status da conta: ${access.title}`);
-  card.setAttribute('role', 'status');
-
-  const icon = document.createElement('span');
-  icon.className = 'home-access-icon';
-  icon.setAttribute('aria-hidden', 'true');
-  icon.textContent = access.icon;
-
-  const copy = document.createElement('div');
-  copy.className = 'home-access-copy';
-
-  const label = document.createElement('span');
-  label.className = 'home-access-label';
-  label.textContent = 'Status da conta';
-
-  const title = document.createElement('h2');
-  title.className = 'home-access-title';
-  title.textContent = access.title;
-
-  const description = document.createElement('p');
-  description.className = 'home-access-description';
-  description.textContent = access.description;
-  copy.append(label, title, description);
-  card.append(icon, copy);
-
-  if (access.kind === 'trial') {
-    const days = document.createElement('div');
-    days.className = 'home-access-days';
-    days.setAttribute('aria-label', `${access.daysLeft} ${access.daysLeft === 1 ? 'dia restante' : 'dias restantes'}`);
-
-    const number = document.createElement('strong');
-    number.className = 'home-access-days-number';
-    number.textContent = String(access.daysLeft);
-
-    const caption = document.createElement('span');
-    caption.className = 'home-access-days-caption';
-    caption.textContent = access.daysLeft === 1 ? 'dia restante' : 'dias restantes';
-    days.append(number, caption);
-    card.append(days);
-  } else if (access.detail) {
-    const detail = document.createElement('span');
-    detail.className = 'home-access-detail';
-    detail.textContent = access.detail;
-    card.append(detail);
-  }
-
-  return card;
-}
-
-function createModuleGroup(group, headingIndex) {
-  const section = document.createElement('section');
-  section.className = 'home-module-group';
-  const titleId = `home-group-title-${headingIndex}`;
-  section.setAttribute('aria-labelledby', titleId);
-  section.append(createSectionHeading('Ferramentas', group.title, titleId));
-
-  const grid = document.createElement('div');
-  grid.className = 'home-module-grid';
-  group.modules.forEach((module) => {
-    grid.append(createModuleCard(module));
-  });
-  section.append(grid);
-  return section;
+  if (ICONS[key]) icon.innerHTML = ICONS[key](24);
+  const label = element('strong', '', title);
+  const sub = element('small', '', description);
+  btn.append(icon, label, sub);
+  btn.addEventListener('click', () => navigate(key));
+  return btn;
 }
 
 export function render(container, accessStatus) {
-  const access = getAccessPresentation(accessStatus);
-  const view = document.createElement('div');
-  view.className = 'home-view';
+  const view = element('div', 'home22-view');
 
-  const hero = document.createElement('section');
-  hero.className = 'home-hero';
-  hero.setAttribute('aria-labelledby', 'home-title');
+  const status = element('div', 'home22-status');
+  status.append(accessPill(accessStatus));
+  // A disponibilidade offline não pode ser inferida só pela conexão de rede.
+  // Não exibir um selo de cache/offline sem verificação real.
 
-  const title = document.createElement('h2');
-  title.className = 'home-title';
-  title.id = 'home-title';
-  title.textContent = 'O que vamos resolver?';
+  const intro = element('section', 'home22-intro');
+  intro.append(
+    element('h2', '', 'O que vamos resolver?'),
+    element('p', '', 'Calcule, consulte e encontre informações técnicas.')
+  );
 
-  const lead = document.createElement('p');
-  lead.className = 'home-lead';
-  lead.textContent = 'Calcule, consulte e encontre informações técnicas.';
-
-  const heroCopy = document.createElement('div');
-  heroCopy.append(title, lead);
-  hero.append(heroCopy);
-
-  const consultor = document.createElement('section');
-  consultor.className = 'home-consultor';
-  consultor.setAttribute('aria-labelledby', 'home-consultor-title');
-
-  const consultorTitle = document.createElement('h2');
-  consultorTitle.className = 'home-consultor-title';
-  consultorTitle.id = 'home-consultor-title';
-  consultorTitle.textContent = 'Consultor Técnico';
-
-  const consultorText = document.createElement('p');
-  consultorText.className = 'home-consultor-text';
-  consultorText.textContent = 'Pergunte. O Casillas encontra o caminho técnico.';
-
-  const consultorButton = document.createElement('button');
-  consultorButton.className = 'home-consultor-btn';
-  consultorButton.type = 'button';
-  consultorButton.dataset.module = 'consultor-tecnico';
-  consultorButton.textContent = 'Consultar';
-  consultor.append(consultorTitle, consultorText, consultorButton);
-
-  const quickSection = document.createElement('section');
-  quickSection.className = 'home-quick-section';
-  quickSection.setAttribute('aria-labelledby', 'home-quick-title');
-  quickSection.append(createSectionHeading('Comece por aqui', 'Acesso rápido', 'home-quick-title'));
-
-  const quickGrid = document.createElement('div');
-  quickGrid.className = 'home-quick-grid';
-  QUICK_ACCESS.forEach((key) => {
-    const module = MODULES_BY_KEY.get(key);
-    if (module) quickGrid.append(createModuleCard(module, true));
-  });
-  quickSection.append(quickGrid);
-
-  const catalog = document.createElement('section');
-  catalog.className = 'home-catalog';
-  catalog.setAttribute('aria-labelledby', 'home-catalog-title');
-  catalog.append(createSectionHeading('Todos os módulos', 'Ferramentas de usinagem', 'home-catalog-title'));
-
-  MODULE_GROUPS.forEach((group, index) => {
-    catalog.append(createModuleGroup(group, index));
+  const form = element('form', 'home22-consultor');
+  form.setAttribute('aria-label', 'Acessar Consultor Técnico');
+  const heading = element('div', 'home22-consultor-heading');
+  heading.append(
+    element('h2', '', 'Consultor Técnico'),
+    element('p', '', 'Pergunte. O Casillas encontra o caminho técnico.')
+  );
+  const field = element('input', 'home22-question');
+  field.type = 'text';
+  field.dataset.nativeKeyboard = '1';
+  field.setAttribute('inputmode', 'text');
+  field.placeholder = 'Digite sua dúvida de usinagem ou CNC...';
+  field.setAttribute('aria-label', 'Pergunta para o Consultor Técnico');
+  field.autocomplete = 'off';
+  const submit = element('button', 'home22-submit', 'Consultar');
+  submit.type = 'submit';
+  form.append(heading, field, submit);
+  form.addEventListener('submit', (event) => {
+    event.preventDefault();
+    // A integração de envio automático depende de contrato do Consultor.
+    // Navega para o módulo funcional sem simular que a pergunta foi enviada.
+    const question = field.value.trim();
+    if (question) {
+      try { sessionStorage.setItem('casillas:consultor-prefill', question); } catch (error) { console.warn('Consulta nao persistida', error); }
+    }
+    navigate('consultor-tecnico');
   });
 
-  const accessCard = createAccessCard(access);
-  view.append(accessCard, hero, consultor, quickSection, catalog);
-  view.addEventListener('click', (event) => {
-    const card = event.target.closest('button[data-module]');
-    if (!card || !view.contains(card)) return;
-    window.dispatchEvent(new CustomEvent('casillas:navigate-module', {
-      detail: { key: card.dataset.module }
-    }));
-  });
+  const quick = element('section', 'home22-quick');
+  const quickHead = element('div', 'home22-section-head');
+  quickHead.append(element('h2', '', 'Acesso rápido'));
+  const all = element('button', 'home22-text-link', 'Ver todas ›');
+  all.type = 'button';
+  all.addEventListener('click', () => navigate('calculadoras'));
+  quickHead.append(all);
+  const grid = element('div', 'home22-grid');
+  QUICK.forEach(([key, name, description]) => grid.append(shortcut(key, name, description)));
+  quick.append(quickHead, grid);
 
+  const guide = element('section', 'home22-guide');
+  guide.append(element('h2', '', 'Guia CNC'));
+  const guideButton = element('button', 'home22-guide-link');
+  guideButton.type = 'button';
+  guideButton.append(
+    element('span', 'home22-guide-icon', '▤'),
+    element('span', 'home22-guide-copy', 'Consultar ciclos CNC'),
+    element('span', 'home22-chevron', '›')
+  );
+  guideButton.querySelector('.home22-guide-copy').append(element('small', '', 'Referências técnicas disponíveis no app'));
+  guideButton.addEventListener('click', () => navigate('guia'));
+  guide.append(guideButton);
+
+  view.append(status, intro, form, quick, guide);
   container.append(view);
 }
