@@ -1,7 +1,7 @@
 // service-worker.js — Cache offline-first do Casillas App
 // Estratégia: cache-first para assets estáticos, network-first para navegação.
 
-const CACHE_VERSION = 'casillas-v22-cnc-json-a';
+const CACHE_VERSION = 'casillas-v22-bib-actions-f3-dev-c';
 const CACHE_ASSETS = [
   './js/core/eventBus.js',
   './js/core/outboxStore.js',
@@ -77,6 +77,15 @@ const CACHE_ASSETS = [
   './js/modules/prog.js',
   './js/modules/guia.js',
   './js/modules/consult.js',
+  './js/modules/biblioteca/index.js',
+  './js/modules/biblioteca/consultorBridge.js',
+  './js/modules/biblioteca/relatedActions.js',
+  './js/modules/biblioteca/data.js',
+  './js/modules/biblioteca/dom.js',
+  './js/modules/biblioteca/routes.js',
+  './js/modules/biblioteca/search.js',
+  './js/modules/biblioteca/views.js',
+  './js/modules/biblioteca/biblioteca.css',
   './js/modules/home.js',
   './js/modules/settings.js',
   './js/modules/calculadoras.js',

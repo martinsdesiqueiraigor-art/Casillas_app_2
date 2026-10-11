@@ -17,6 +17,7 @@ import { initKeyboard, bindInputsToKeyboard, hideKeyboard } from './keyboard.js'
 import {initMenu, setActiveMenuItem, initOptionsMenu, closeOptionsMenu, initShareButton, renderMenuIcons } from './menu.js';
 import { ICONS } from './icons.js';
 import { initBottomNav, setBottomNavActive } from './bottom-nav.js';
+import { parsePath as parseBibliotecaPath, toPath as bibliotecaPath } from './modules/biblioteca/routes.js';
 import { supabase } from './supabase.bundle.js';
 import { getCurrentUser, onAuthStateChange, signOut } from './auth.js';
 
@@ -37,7 +38,8 @@ const MODULE_LOADERS = {
   prog:      () => import('./modules/prog.js'),
   guia:      () => import('./modules/guia.js'),
   'consultor-tecnico': () => import('./modules/consultor/index.js'),
-  consult:   () => import('./modules/consult.js')
+  consult:   () => import('./modules/consult.js'),
+  biblioteca: () => import('./modules/biblioteca/index.js')
 };
 
 const MODULE_TITLES = {
@@ -56,6 +58,7 @@ const MODULE_TITLES = {
   prog:     { name: 'Programação CNC',    icon: '🖥️' },
   guia:     { name: 'Guia de Programação', icon: '📖' },
   'consultor-tecnico': { name: 'Consultor Técnico', icon: '🔎' },
+  biblioteca: { name: 'Biblioteca Tecnica', icon: '' },
   consult:  { name: 'Biblioteca',         icon: '📚' }
 };
 
@@ -64,17 +67,19 @@ let currentUserId = null;
 let stopAccessLifecycle;
 let hasMountedModule = false;
 let navigationSequence = 0;
+let bibliotecaController = null;
 /** @type {DocumentFragment|null} */
 let consultorViewCache = null;
 function navigateModule(key) {
   if (!MODULE_LOADERS[key]) return;
   const hash = key === 'guia' ? '#/guia' : '#/modulo/' + encodeURIComponent(key);
-  if (window.location.hash === hash) { void loadModule(key); return; }
+  if (window.location.hash === hash) { if (key !== appState.currentModule) void loadModule(key); return; }
   window.location.hash = hash;
 }
 function routeFromHash() {
   const hash = window.location.hash;
   if (hash.startsWith('#/guia')) return 'guia';
+  if (hash === '#/biblioteca' || hash.startsWith('#/biblioteca/')) return 'biblioteca';
   const match = /^#\/modulo\/([a-z-]+)$/.exec(hash);
   return match && MODULE_LOADERS[match[1]] ? match[1] : 'home';
 }
@@ -108,6 +113,10 @@ async function loadModule(key) {
   if (!content) return;
 
   const sequence = ++navigationSequence;
+  if (bibliotecaController) {
+    bibliotecaController.destroy();
+    bibliotecaController = null;
+  }
   // Preserva a consulta ao abrir uma ficha e retornar ao Consultor.
   if (appState.currentModule === 'consultor-tecnico' && key !== 'consultor-tecnico' && content.childNodes.length) {
     consultorViewCache = document.createDocumentFragment();
@@ -146,7 +155,32 @@ async function loadModule(key) {
       content.append(consultorViewCache);
       consultorViewCache = null;
     } else {
-      mod.render(content, accessStatus, { ownerUserId: currentUserId });
+      if (key === 'biblioteca') {
+        const initialRoute = parseBibliotecaPath(window.location.hash.replace(/^#\/biblioteca\/?/, ''));
+        let ready = false;
+        bibliotecaController = mod.mountBiblioteca(content, {
+          initialRoute,
+          onBack() {
+            if (window.history.state?.casillasBiblioteca === true) {
+              window.history.back();
+              return true;
+            }
+            return false;
+          },
+          onRouteChange(route, historyMode = 'push') {
+            if (!ready || historyMode === 'silent') return;
+            const path = bibliotecaPath(route);
+            const hash = '#/biblioteca' + (path ? '/' + path : '');
+            if (window.location.hash !== hash) {
+              if (historyMode === 'replace') window.history.replaceState(window.history.state, '', hash);
+              else window.history.pushState({ ...(window.history.state || {}), casillasBiblioteca: true }, '', hash);
+            }
+          },
+        });
+        ready = true;
+      } else {
+        mod.render(content, accessStatus, { ownerUserId: currentUserId });
+      }
     }
     hasMountedModule = true;
     bindInputsToKeyboard(content);
@@ -327,7 +361,15 @@ function initGuideBridge() {
     }
   });
   window.addEventListener('hashchange', () => {
-    if (hasMountedModule) void loadModule(routeFromHash());
+    if (!hasMountedModule) return;
+    const next = routeFromHash();
+    if (next === 'biblioteca' && appState.currentModule === 'biblioteca' && bibliotecaController) {
+      const route = parseBibliotecaPath(window.location.hash.replace(/^#\/biblioteca\/?/, ''));
+      bibliotecaController.syncRoute(route);
+      return;
+    }
+    if (next === 'guia' && appState.currentModule === 'guia') { void loadModule('guia'); return; }
+    if (next !== appState.currentModule) void loadModule(next);
   });
   const flush = () => { void queue.flush().catch(error => console.warn('[EV3] Sync pendente', error)); };
   window.addEventListener('online', flush);
