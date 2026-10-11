@@ -6,7 +6,7 @@ import { SyncQueue } from '../../core/syncQueue.js';
 import { outboxStore } from '../../core/outboxStore.js';
 import { createTransport,sessionOwner } from '../../core/supabaseClient.js';
 
-/** @param {string} tag @param {string} className @param {string} [text] */
+/** @template {keyof HTMLElementTagNameMap} T @param {T} tag @param {string} className @param {string} [text] @returns {HTMLElementTagNameMap[T]} */
 function element(tag,className,text){
  const node=document.createElement(tag);node.className=className;
  if(text!==undefined)node.textContent=text;return node;
