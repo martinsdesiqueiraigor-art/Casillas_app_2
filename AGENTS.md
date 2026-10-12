@@ -1,6 +1,8 @@
 # Contrato operacional — Casillas
 
-Estas instruções se aplicam às tarefas de desenvolvimento realizadas neste repositório. Instruções explícitas do usuário definem o escopo da tarefa e devem ser respeitadas, observadas a hierarquia do §15 e as autorizações do §14. Para continuidade entre sessões, veja `CLAUDE.md`.
+> **Metadados:** finalidade: regras operacionais comuns; destinatários: agentes de desenvolvimento (ChatGPT, Claude Code, Codex e outros); estado: vigente para proteções e autorizações, referências de versão sujeitas a conferência; revisão documental: 2026-10-11; revisão assistida por ChatGPT, sob autorização do Product Owner. Autoria original: não verificada. Este documento não concede permissão para modificar código, GitHub ou Supabase.
+
+Estas instruções se aplicam às tarefas de desenvolvimento realizadas neste repositório. Instruções explícitas do usuário definem o escopo da tarefa e devem ser respeitadas, observadas a hierarquia do §15 e as autorizações do §14. Para instruções específicas de uso do Claude Code, veja `CLAUDE.md`; elas não são obrigatórias para outras IAs.
 
 ## 1. Identidade do projeto
 
@@ -161,7 +163,7 @@ Use a menor solução segura e sustentável. Não introduza infraestrutura, abst
 
 Nenhuma interface, protótipo, identidade visual, arquitetura ou decisão de produto é permanentemente imutável. O Product Owner pode aprovar, a qualquer momento, imagens técnicas, ilustrações e diagramas; animações e transições; mudanças de cores, tipografia, ícones e identidade; reorganização de cards, menus, navegação e componentes; redesenho parcial ou completo de qualquer tela; inclusão, remoção ou evolução de funcionalidades; e mudanças arquiteturais justificadas tecnicamente.
 
-Os protótipos atualmente aprovados (`docs/interface-2.1/telas/`) são a **referência visual vigente**, não uma proibição de melhorias. Uma nova decisão aprovada substitui a anterior somente no escopo definido; a decisão substituída permanece registrada como histórico e deixa de exercer autoridade sobre novas implementações. Uma IA não pode rejeitar uma proposta visual só porque um documento antigo descreve outro design. Antes de implementar, deve avaliar o impacto e identificar os requisitos funcionais e técnicos a preservar.
+Os protótipos em `docs/interface-2.1/telas/` registram referências da fase CAS-UI e não devem ser presumidos como a referência visual vigente da 2.2 sem confirmação do Product Owner. Uma nova decisão aprovada substitui a anterior somente no escopo definido; a decisão substituída permanece registrada como histórico e deixa de exercer autoridade sobre novas implementações. Uma IA não pode rejeitar uma proposta visual só porque um documento antigo descreve outro design. Antes de implementar, deve avaliar o impacto e identificar os requisitos funcionais e técnicos a preservar.
 
 Hierarquia, da maior para a menor autoridade:
 
@@ -185,10 +187,11 @@ A modernização reutiliza as funcionalidades existentes sempre que apropriado. 
 
 - **Produção**: `casillas-2.0`. Em 2026-10-10, o HEAD da branch é `cd1411f` (merge do PR #12, só documentação) e o aplicativo publicado é `c115a3e` (service worker `casillas-v20`). São referências distintas; confirme no Git antes de agir.
 - **CAS-UI**: frente de modernização da interface; documentação em `docs/interface-2.1/docs/`. Não confundir com a release `v2.1.0`.
-- **`casillas-2.2`**: linha de desenvolvimento e governança com documentação e `AGENTS.md` próprios, pendente de integração. É preservada, não é considerada encerrada nem substituída, e não é mesclada sem decisão e autorização específicas.
-- O repositório `Casillas_app_2` é a fonte oficial versionada de código, estado e documentação. O Claude Project e as memórias de conversas são material auxiliar e não concorrem como fontes de decisão.
-- Fonte de cada assunto: estado e próxima atividade em `docs/interface-2.1/docs/00-ESTADO-ATUAL.md`; decisões da interface em `01-DECISOES-2.1.md`; release em `docs/STATUS.md`; segurança, licença e banco em `docs/DECISOES.md`, `docs/BANCO-DADOS.md` e `docs/SEGURANCA.md`.
+- **`casillas-2.2`**: branch histórica de desenvolvimento e governança, distinta da branch local atual `casillas-2.2-consolidacao`. Ambas devem ser preservadas; não mesclar sem decisão e autorização específicas.
+- O desenvolvimento local da 2.2 é realizado em `C:\Projetos\Casillas_2.2_OFICIAL`, branch `casillas-2.2-consolidacao` na verificação de 2026-10-11. O GitHub pode não conter os commits locais mais recentes. Confirmar branch, SHA e sincronização antes de usar qualquer cópia como base de implementação.
+- Para o estado local 2.2, confrontar o Git e o código atual com `docs/2.2/`; seus documentos são registros datados, não necessariamente um retrato atualizado. `docs/interface-2.1/` registra a frente CAS-UI histórica; `docs/STATUS.md` registra sobretudo a produção. Segurança, licença e banco: `docs/DECISOES.md`, `docs/BANCO-DADOS.md` e `docs/SEGURANCA.md`.
+- O Claude Project e as memórias de conversas são material auxiliar. Decisões recentes do Product Owner ainda não registradas em Git devem ser explicitamente identificadas e confirmadas; não presumir que a cópia remota as contém.
 
 ## 18. Continuidade entre sessões
 
-O protocolo de início de sessão, retomada após compactação, uso entre smartphone e desktop e encerramento está em `CLAUDE.md`. O registro do estado fica em `docs/interface-2.1/docs/00-ESTADO-ATUAL.md`.
+`CLAUDE.md` orienta somente sessões do Claude Code. Outras IAs devem verificar o estado real do ambiente acessível, consultar os documentos pertinentes e registrar limitações. O registro `docs/interface-2.1/docs/00-ESTADO-ATUAL.md` é histórico da CAS-UI, não o estado operacional da 2.2.
