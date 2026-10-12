@@ -1,7 +1,7 @@
 // service-worker.js — Cache offline-first do Casillas App
 // Estratégia: cache-first para assets estáticos, network-first para navegação.
 
-const CACHE_VERSION = 'casillas-v22-bib-actions-f3-dev-c';
+const CACHE_VERSION = 'casillas-v22-bib-aprender-local-01';
 const CACHE_ASSETS = [
   './js/core/eventBus.js',
   './js/core/outboxStore.js',
@@ -86,6 +86,18 @@ const CACHE_ASSETS = [
   './js/modules/biblioteca/search.js',
   './js/modules/biblioteca/views.js',
   './js/modules/biblioteca/biblioteca.css',
+  './js/modules/biblioteca/aprender/index.js',
+  './js/modules/biblioteca/aprender/aprender.css',
+  './js/modules/biblioteca/aprender/aula-g71.js',
+  './js/modules/biblioteca/aprender/catalogo.js',
+  './js/modules/biblioteca/aprender/desenho.js',
+  './js/modules/biblioteca/aprender/quiz-g71.js',
+  './js/modules/biblioteca/aprender/quiz.js',
+  './js/modules/biblioteca/aprender/routes.js',
+  './js/modules/biblioteca/aprender/trajetoria.js',
+  './js/modules/mapas/dados.js',
+  './js/modules/mapas/mapa.js',
+  './js/modules/mapas/mapas.css',
   './js/modules/home.js',
   './js/modules/settings.js',
   './js/modules/calculadoras.js',

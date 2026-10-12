@@ -18,6 +18,7 @@ import {initMenu, setActiveMenuItem, initOptionsMenu, closeOptionsMenu, initShar
 import { ICONS } from './icons.js';
 import { initBottomNav, setBottomNavActive } from './bottom-nav.js';
 import { parsePath as parseBibliotecaPath, toPath as bibliotecaPath } from './modules/biblioteca/routes.js';
+import { mountAprender, parsePath as parseAprenderPath, toPath as aprenderPath, seletorBiblioteca } from './modules/biblioteca/aprender/index.js';
 import { supabase } from './supabase.bundle.js';
 import { getCurrentUser, onAuthStateChange, signOut } from './auth.js';
 
@@ -68,6 +69,7 @@ let stopAccessLifecycle;
 let hasMountedModule = false;
 let navigationSequence = 0;
 let bibliotecaController = null;
+let bibliotecaArea = null;
 /** @type {DocumentFragment|null} */
 let consultorViewCache = null;
 function navigateModule(key) {
@@ -100,6 +102,62 @@ function guardAccess() {
   if (accessStatus?.ok && current.ok) return true;
   showActivationScreen('Conecte-se para validar seu acesso ao Casillas.');
   return false;
+}
+
+function montarBibliotecaIntegrada(content, mod) {
+  const hash = window.location.hash;
+  bibliotecaArea = /^#\/biblioteca\/aprender(?:\/|$)/.test(hash) ? 'aprender' : 'consultar';
+  const isAprender = bibliotecaArea === 'aprender';
+  const registrar = (route, mode, area) => {
+    if (mode === 'silent') return;
+    const path = area === 'aprender' ? aprenderPath(route) : bibliotecaPath(route);
+    const next = '#/biblioteca' + (area === 'aprender' ? '/aprender' : '') + (path ? '/' + path : '');
+    if (window.location.hash === next) return;
+    if (mode === 'replace') window.history.replaceState(window.history.state, '', next);
+    else window.history.pushState({ ...(window.history.state || {}), casillasBiblioteca: true }, '', next);
+  };
+  const abrir = (area, route) => {
+    registrar(route || { name: 'home' }, 'push', area);
+    void loadModule('biblioteca');
+  };
+  const voltar = () => {
+    if (window.history.state?.casillasBiblioteca === true) {
+      window.history.back();
+      return true;
+    }
+    return false;
+  };
+  let ready = false;
+  if (isAprender) {
+    bibliotecaController = mountAprender(content, {
+      initialRoute: parseAprenderPath(hash.replace(/^#\/biblioteca\/aprender\/?/, '')),
+      onBack: voltar,
+      onRouteChange(route, mode = 'push') { if (ready) registrar(route, mode, 'aprender'); },
+      onOpenConsultar(route) { abrir('consultar', route); },
+    });
+  } else {
+    bibliotecaController = mod.mountBiblioteca(content, {
+      initialRoute: parseBibliotecaPath(hash.replace(/^#\/biblioteca\/?/, '')),
+      onBack: voltar,
+      onRouteChange(route, mode = 'push') {
+        if (!ready) return;
+        registrar(route, mode, 'consultar');
+        atualizarSeletorConsultar(content, route, () => abrir('aprender'));
+      },
+    });
+    atualizarSeletorConsultar(content, bibliotecaController.getRoute?.(), () => abrir('aprender'));
+  }
+  ready = true;
+}
+
+function atualizarSeletorConsultar(content, route, abrirAprender) {
+  const anterior = content.querySelector('.capr-topo');
+  anterior?.remove();
+  if (route?.name && route.name !== 'home') return;
+  const topo = document.createElement('div');
+  topo.className = 'cbib capr capr-topo';
+  topo.append(seletorBiblioteca('consultar', abrirAprender));
+  content.prepend(topo);
 }
 
 /** @param {string} key */
@@ -156,28 +214,7 @@ async function loadModule(key) {
       consultorViewCache = null;
     } else {
       if (key === 'biblioteca') {
-        const initialRoute = parseBibliotecaPath(window.location.hash.replace(/^#\/biblioteca\/?/, ''));
-        let ready = false;
-        bibliotecaController = mod.mountBiblioteca(content, {
-          initialRoute,
-          onBack() {
-            if (window.history.state?.casillasBiblioteca === true) {
-              window.history.back();
-              return true;
-            }
-            return false;
-          },
-          onRouteChange(route, historyMode = 'push') {
-            if (!ready || historyMode === 'silent') return;
-            const path = bibliotecaPath(route);
-            const hash = '#/biblioteca' + (path ? '/' + path : '');
-            if (window.location.hash !== hash) {
-              if (historyMode === 'replace') window.history.replaceState(window.history.state, '', hash);
-              else window.history.pushState({ ...(window.history.state || {}), casillasBiblioteca: true }, '', hash);
-            }
-          },
-        });
-        ready = true;
+        montarBibliotecaIntegrada(content, mod);
       } else {
         mod.render(content, accessStatus, { ownerUserId: currentUserId });
       }
@@ -364,8 +401,15 @@ function initGuideBridge() {
     if (!hasMountedModule) return;
     const next = routeFromHash();
     if (next === 'biblioteca' && appState.currentModule === 'biblioteca' && bibliotecaController) {
-      const route = parseBibliotecaPath(window.location.hash.replace(/^#\/biblioteca\/?/, ''));
+      const areaHash = /^#\/biblioteca\/aprender(?:\/|$)/.test(window.location.hash) ? 'aprender' : 'consultar';
+      if (areaHash !== bibliotecaArea) { void loadModule('biblioteca'); return; }
+      const route = areaHash === 'aprender'
+        ? parseAprenderPath(window.location.hash.replace(/^#\/biblioteca\/aprender\/?/, ''))
+        : parseBibliotecaPath(window.location.hash.replace(/^#\/biblioteca\/?/, ''));
       bibliotecaController.syncRoute(route);
+      if (areaHash === 'consultar') atualizarSeletorConsultar(document.getElementById('app-content'), route, () => {
+        window.location.hash = '#/biblioteca/aprender';
+      });
       return;
     }
     if (next === 'guia' && appState.currentModule === 'guia') { void loadModule('guia'); return; }

@@ -179,14 +179,14 @@
 .cbib .cbib-sheet { display: grid; gap: 0; }
 .cbib .cbib-sheet__header { display: grid; gap: 10px; padding: 8px 0 18px; }
 .cbib .cbib-sheet__chips { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
-.cbib .cbib-sheet__subtitle { font-family: var(--cbib-serif); font-size: 1.375rem; line-height: 1.2; color: var(--cbib-tx-2); margin-top: -4px; }
+.cbib .cbib-sheet__subtitle { font-family: var(--cbib-sans); font-size: 1.125rem; line-height: 1.35; color: var(--cbib-tx-2); margin-top: -4px; }
 .cbib .cbib-notice { display: flex; gap: 12px; align-items: flex-start; padding: 14px; border-radius: var(--cbib-r-md); background: var(--cbib-warn-soft); border: 1px solid var(--cbib-warn-line); color: var(--cbib-tx); font-size: .875rem; line-height: 1.45; }
 .cbib .cbib-notice svg.cbib-i { color: var(--cbib-warn); width: 20px; height: 20px; margin-top: 1px; }
 .cbib .cbib-notice b { color: var(--cbib-warn); }
 .cbib .cbib-notice--info { background: var(--cbib-bl-soft); border-color: var(--cbib-bl-line); }
 .cbib .cbib-notice--info svg.cbib-i,
 .cbib .cbib-notice--info b { color: var(--cbib-bl); }
-.cbib .cbib-sheet__lead { font-family: var(--cbib-serif); font-size: 1.1875rem; line-height: 1.5; color: var(--cbib-tx); }
+.cbib .cbib-sheet__lead { font-family: var(--cbib-sans); font-size: 1rem; line-height: 1.6; color: var(--cbib-tx); }
 .cbib .cbib-ident { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px; background: var(--cbib-line); border: 1px solid var(--cbib-line); border-radius: var(--cbib-r-md); overflow: hidden; }
 .cbib .cbib-ident > div { background: var(--cbib-surface); padding: 12px 14px; min-width: 0; }
 .cbib .cbib-ident dt { color: var(--cbib-tx-3); font-size: .75rem; }
