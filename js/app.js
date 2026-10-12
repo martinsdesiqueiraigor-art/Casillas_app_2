@@ -17,6 +17,8 @@ import { initKeyboard, bindInputsToKeyboard, hideKeyboard } from './keyboard.js'
 import {initMenu, setActiveMenuItem, initOptionsMenu, closeOptionsMenu, initShareButton, renderMenuIcons } from './menu.js';
 import { ICONS } from './icons.js';
 import { initBottomNav, setBottomNavActive } from './bottom-nav.js';
+import { parsePath as parseBibliotecaPath, toPath as bibliotecaPath } from './modules/biblioteca/routes.js';
+import { mountAprender, parsePath as parseAprenderPath, toPath as aprenderPath, seletorBiblioteca } from './modules/biblioteca/aprender/index.js';
 import { supabase } from './supabase.bundle.js';
 import { getCurrentUser, onAuthStateChange, signOut } from './auth.js';
 
@@ -37,7 +39,8 @@ const MODULE_LOADERS = {
   prog:      () => import('./modules/prog.js'),
   guia:      () => import('./modules/guia.js'),
   'consultor-tecnico': () => import('./modules/consultor/index.js'),
-  consult:   () => import('./modules/consult.js')
+  consult:   () => import('./modules/consult.js'),
+  biblioteca: () => import('./modules/biblioteca/index.js')
 };
 
 const MODULE_TITLES = {
@@ -56,6 +59,7 @@ const MODULE_TITLES = {
   prog:     { name: 'Programação CNC',    icon: '🖥️' },
   guia:     { name: 'Guia de Programação', icon: '📖' },
   'consultor-tecnico': { name: 'Consultor Técnico', icon: '🔎' },
+  biblioteca: { name: 'Biblioteca Tecnica', icon: '' },
   consult:  { name: 'Biblioteca',         icon: '📚' }
 };
 
@@ -64,17 +68,20 @@ let currentUserId = null;
 let stopAccessLifecycle;
 let hasMountedModule = false;
 let navigationSequence = 0;
+let bibliotecaController = null;
+let bibliotecaArea = null;
 /** @type {DocumentFragment|null} */
 let consultorViewCache = null;
 function navigateModule(key) {
   if (!MODULE_LOADERS[key]) return;
   const hash = key === 'guia' ? '#/guia' : '#/modulo/' + encodeURIComponent(key);
-  if (window.location.hash === hash) { void loadModule(key); return; }
+  if (window.location.hash === hash) { if (key !== appState.currentModule) void loadModule(key); return; }
   window.location.hash = hash;
 }
 function routeFromHash() {
   const hash = window.location.hash;
   if (hash.startsWith('#/guia')) return 'guia';
+  if (hash === '#/biblioteca' || hash.startsWith('#/biblioteca/')) return 'biblioteca';
   const match = /^#\/modulo\/([a-z-]+)$/.exec(hash);
   return match && MODULE_LOADERS[match[1]] ? match[1] : 'home';
 }
@@ -97,6 +104,62 @@ function guardAccess() {
   return false;
 }
 
+function montarBibliotecaIntegrada(content, mod) {
+  const hash = window.location.hash;
+  bibliotecaArea = /^#\/biblioteca\/aprender(?:\/|$)/.test(hash) ? 'aprender' : 'consultar';
+  const isAprender = bibliotecaArea === 'aprender';
+  const registrar = (route, mode, area) => {
+    if (mode === 'silent') return;
+    const path = area === 'aprender' ? aprenderPath(route) : bibliotecaPath(route);
+    const next = '#/biblioteca' + (area === 'aprender' ? '/aprender' : '') + (path ? '/' + path : '');
+    if (window.location.hash === next) return;
+    if (mode === 'replace') window.history.replaceState(window.history.state, '', next);
+    else window.history.pushState({ ...(window.history.state || {}), casillasBiblioteca: true }, '', next);
+  };
+  const abrir = (area, route) => {
+    registrar(route || { name: 'home' }, 'push', area);
+    void loadModule('biblioteca');
+  };
+  const voltar = () => {
+    if (window.history.state?.casillasBiblioteca === true) {
+      window.history.back();
+      return true;
+    }
+    return false;
+  };
+  let ready = false;
+  if (isAprender) {
+    bibliotecaController = mountAprender(content, {
+      initialRoute: parseAprenderPath(hash.replace(/^#\/biblioteca\/aprender\/?/, '')),
+      onBack: voltar,
+      onRouteChange(route, mode = 'push') { if (ready) registrar(route, mode, 'aprender'); },
+      onOpenConsultar(route) { abrir('consultar', route); },
+    });
+  } else {
+    bibliotecaController = mod.mountBiblioteca(content, {
+      initialRoute: parseBibliotecaPath(hash.replace(/^#\/biblioteca\/?/, '')),
+      onBack: voltar,
+      onRouteChange(route, mode = 'push') {
+        if (!ready) return;
+        registrar(route, mode, 'consultar');
+        atualizarSeletorConsultar(content, route, () => abrir('aprender'));
+      },
+    });
+    atualizarSeletorConsultar(content, bibliotecaController.getRoute?.(), () => abrir('aprender'));
+  }
+  ready = true;
+}
+
+function atualizarSeletorConsultar(content, route, abrirAprender) {
+  const anterior = content.querySelector('.capr-topo');
+  anterior?.remove();
+  if (route?.name && route.name !== 'home') return;
+  const topo = document.createElement('div');
+  topo.className = 'cbib capr capr-topo';
+  topo.append(seletorBiblioteca('consultar', abrirAprender));
+  content.prepend(topo);
+}
+
 /** @param {string} key */
 async function loadModule(key) {
   if (!guardAccess()) return;
@@ -108,6 +171,10 @@ async function loadModule(key) {
   if (!content) return;
 
   const sequence = ++navigationSequence;
+  if (bibliotecaController) {
+    bibliotecaController.destroy();
+    bibliotecaController = null;
+  }
   // Preserva a consulta ao abrir uma ficha e retornar ao Consultor.
   if (appState.currentModule === 'consultor-tecnico' && key !== 'consultor-tecnico' && content.childNodes.length) {
     consultorViewCache = document.createDocumentFragment();
@@ -146,7 +213,11 @@ async function loadModule(key) {
       content.append(consultorViewCache);
       consultorViewCache = null;
     } else {
-      mod.render(content, accessStatus, { ownerUserId: currentUserId });
+      if (key === 'biblioteca') {
+        montarBibliotecaIntegrada(content, mod);
+      } else {
+        mod.render(content, accessStatus, { ownerUserId: currentUserId });
+      }
     }
     hasMountedModule = true;
     bindInputsToKeyboard(content);
@@ -327,7 +398,22 @@ function initGuideBridge() {
     }
   });
   window.addEventListener('hashchange', () => {
-    if (hasMountedModule) void loadModule(routeFromHash());
+    if (!hasMountedModule) return;
+    const next = routeFromHash();
+    if (next === 'biblioteca' && appState.currentModule === 'biblioteca' && bibliotecaController) {
+      const areaHash = /^#\/biblioteca\/aprender(?:\/|$)/.test(window.location.hash) ? 'aprender' : 'consultar';
+      if (areaHash !== bibliotecaArea) { void loadModule('biblioteca'); return; }
+      const route = areaHash === 'aprender'
+        ? parseAprenderPath(window.location.hash.replace(/^#\/biblioteca\/aprender\/?/, ''))
+        : parseBibliotecaPath(window.location.hash.replace(/^#\/biblioteca\/?/, ''));
+      bibliotecaController.syncRoute(route);
+      if (areaHash === 'consultar') atualizarSeletorConsultar(document.getElementById('app-content'), route, () => {
+        window.location.hash = '#/biblioteca/aprender';
+      });
+      return;
+    }
+    if (next === 'guia' && appState.currentModule === 'guia') { void loadModule('guia'); return; }
+    if (next !== appState.currentModule) void loadModule(next);
   });
   const flush = () => { void queue.flush().catch(error => console.warn('[EV3] Sync pendente', error)); };
   window.addEventListener('online', flush);

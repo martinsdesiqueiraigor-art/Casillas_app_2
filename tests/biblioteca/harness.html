@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="robots" content="noindex">
+  <title>Biblioteca Técnica · página de teste (Fase 1)</title>
+  <!--
+    Página de teste da CAS22-BIB-INTEGRATION-FASE-01. NÃO faz parte do app publicado
+    (tests/ não entra no artefato do Production Gate).
+    Reproduz a casca do Casillas (mesmos CSS do index.html, cabeçalho, #app-content
+    e barra inferior real) e monta a Biblioteca Técnica pelo contrato render(container).
+    Abrir com um servidor local na raiz do repositório:
+      python -m http.server 8080   →   http://localhost:8080/tests/biblioteca/harness.html
+    Parâmetros: ?manual=1 só monta ao tocar em "Montar"; ?rota=ficha/<id>?aba=uso abre direto;
+    ?rascunho=paquimetro-fundamentos[&aba=uso] pré-visualiza um rascunho de draftSheets (não publicado).
+  -->
+  <link rel="stylesheet" href="../../css/reset.css">
+  <link rel="stylesheet" href="../../css/variables.css">
+  <link rel="stylesheet" href="../../css/layout.css">
+  <link rel="stylesheet" href="../../css/components.css">
+  <link rel="stylesheet" href="../../css/modules.css">
+  <link rel="stylesheet" href="../../css/home-22-local.css">
+  <link rel="stylesheet" href="../../css/settings-22-local.css">
+  <link rel="stylesheet" href="../../css/consultor-22-local.css">
+  <link rel="stylesheet" href="../../css/guia-header-22-local.css">
+  <style>
+    /* Só da página de teste: barra de controles fora da casca do app. */
+    .harness-bar { position: fixed; top: 0; right: 0; z-index: 500; display: flex; gap: 4px; padding: 4px; }
+    .harness-bar button { font: 600 11px/1 monospace; padding: 6px 8px; background: #2a1a0c; color: #ffb35c; border: 1px solid #8a4a14; border-radius: 6px; }
+    .harness-draft { font: 600 11px/1 monospace; padding: 6px 8px; background: #2a1a0c; color: #ffb35c; border: 1px dashed #ffb35c; border-radius: 6px; }
+    #probe { position: absolute; left: -9999px; top: 0; }
+  </style>
+</head>
+<body data-module="biblioteca">
+  <header class="app-header" id="app-header">
+    <button class="icon-btn" type="button" aria-label="Abrir menu"><span aria-hidden="true">☰</span></button>
+    <div class="header-main">
+      <h1 class="header-title">Casillas</h1>
+      <p class="header-subtitle">Calculadora Técnica de Usinagem</p>
+    </div>
+    <div class="header-indicator"><span id="module-indicator-name" class="module-name">Biblioteca</span></div>
+    <button id="open-options-btn" class="icon-btn" type="button" aria-label="Opções"><span aria-hidden="true">⋮</span></button>
+  </header>
+  <section class="kpi-strip" aria-label="Indicadores"></section>
+
+  <main id="app-content" class="app-content" aria-live="polite"></main>
+  <nav id="bottom-nav" class="bottom-nav" aria-label="Navegação principal"></nav>
+
+  <!-- Elementos com classes do app, fora do módulo, para medir efeitos colaterais do CSS da Biblioteca. -->
+  <div id="probe" aria-hidden="true">
+    <button class="btn btn-primary" type="button">btn</button>
+    <div class="card">card</div><div class="toast">toast</div><div class="badge">badge</div>
+    <input class="input" type="search" value="x"><ul class="list"><li>li</li></ul><h2>h2</h2><mark>mark</mark>
+  </div>
+
+  <div class="harness-bar">
+    <button type="button" id="h-mount">Montar</button>
+    <button type="button" id="h-swap">Trocar módulo</button>
+    <span id="h-draft" class="harness-draft" hidden>Rascunho · não publicado</span>
+  </div>
+
+  <script type="module">
+    import { initBottomNav, setBottomNavActive } from '../../js/bottom-nav.js';
+    import { bindInputsToKeyboard } from '../../js/keyboard.js';
+    import { render, mountBiblioteca, unmount, clearSessionMemory } from '../../js/modules/biblioteca/index.js';
+    import { parsePath } from '../../js/modules/biblioteca/routes.js';
+    import { draftSheets } from '../../js/modules/biblioteca/data.js';
+
+    const content = document.getElementById('app-content');
+    const params = new URLSearchParams(location.search);
+    initBottomNav((key) => { window.__navSelected = key; });
+    setBottomNavActive('biblioteca'); // chave da aba desde a integração (js/bottom-nav.js)
+
+    function mount() {
+      content.replaceChildren(); // como js/app.js antes de cada render
+      const rota = params.get('rota');
+      const rascunho = params.get('rascunho');
+      if (rascunho) {
+        // Pré-visualização isolada de rascunho (CAS22-BIB-FICHA-02): só nesta página de teste.
+        const sheet = Object.prototype.hasOwnProperty.call(draftSheets, rascunho) ? draftSheets[rascunho] : null;
+        document.getElementById('h-draft').hidden = false;
+        window.__cbib = mountBiblioteca(content, {
+          previewSheet: sheet,
+          initialRoute: sheet ? parsePath(`ficha/${rascunho}${params.get('aba') ? `?aba=${params.get('aba')}` : ''}`) : { name: 'notfound' },
+        });
+      } else if (rota) window.__cbib = mountBiblioteca(content, { initialRoute: parsePath(rota) });
+      else window.__cbib = render(content, { ok: true }, { ownerUserId: null });
+      bindInputsToKeyboard(content); // mesmo passo do app depois de render
+      window.__mounted = (window.__mounted || 0) + 1;
+    }
+    document.getElementById('h-mount').addEventListener('click', mount);
+    // Simula a troca de módulo do app: o contêiner é esvaziado e outro conteúdo entra.
+    document.getElementById('h-swap').addEventListener('click', () => {
+      content.replaceChildren();
+      const p = document.createElement('p');
+      p.id = 'other-module';
+      p.textContent = 'Outro módulo';
+      content.append(p);
+      document.body.dataset.module = 'home';
+    });
+    if (params.get('manual') !== '1') mount();
+    window.__cbibApi = { unmount: () => unmount(content), clearSessionMemory };
+    window.__harnessReady = true;
+  </script>
+</body>
+</html>

@@ -1,6 +1,7 @@
 // @ts-check
 import { ConsultorAgent } from './ConsultorAgent.js';
 import { ResultCard } from './resultCard.js';
+import { findBibliotecaReferences, findPlannedMetrologyTopic } from '../biblioteca/consultorBridge.js';
 import { Telemetry } from './telemetry.js';
 import { SyncQueue } from '../../core/syncQueue.js';
 import { outboxStore } from '../../core/outboxStore.js';
@@ -53,6 +54,38 @@ export function render(container,accessStatus,context){
   try{
    cards.clear();results.replaceChildren();
    if(agent.state!=='FILLING_SLOTS'){originalQuestion=text.trim();updateTrail(originalQuestion);}
+   const directReferences=findBibliotecaReferences(text);
+   if(directReferences.length){
+    agent.reset();
+    input.value='';
+    status.textContent='Fichas relacionadas encontradas na Biblioteca Técnica.';
+    const section=element('section','cs-biblioteca');
+    section.append(element('h3','','Na Biblioteca Técnica'));
+    for(const ref of directReferences){
+     const link=element('a','cs-biblioteca-link',ref.title);
+     link.href=ref.hash;
+     link.style.display='block';link.style.padding='12px 0';
+     link.append(element('small','',ref.homologated?' — Homologada':' — Demonstração / não homologada'));
+     section.append(link);
+     const excerpt=element('p','cs-biblioteca-excerpt',ref.excerpt);
+     excerpt.style.margin='4px 0 16px';
+     section.append(excerpt);
+     for(const action of ref.actions){
+      const target=element('a','btn btn-outline',action.label);
+      target.href=action.hash;
+      section.append(target);
+     }
+    }
+    results.append(section);
+    return;
+   }
+   const plannedTopic=findPlannedMetrologyTopic(text);
+   if(plannedTopic){
+    agent.reset();input.value='';
+    status.textContent='Este assunto está em preparação na Biblioteca Técnica. Ainda não há uma ficha disponível para consulta.';
+    results.append(element('p','cs-empty',plannedTopic.title+' — ficha em preparação, ainda não publicada.'));
+    return;
+   }
    agent.ask(text);input.value='';
    if(agent.result.outcome==='ambiguous'){
     status.textContent='Preciso de mais contexto para localizar a ficha correta.';
@@ -93,6 +126,20 @@ export function render(container,accessStatus,context){
      });feedbackActions.append(button);
     }
     feedback.append(feedbackActions);results.append(feedback);
+   }
+   const refs=findBibliotecaReferences(originalQuestion || text);
+   if(refs.length){
+    const related=element('section','cs-biblioteca');
+    related.setAttribute('aria-label','Fichas relacionadas da Biblioteca Técnica');
+    related.append(element('h3','','Na Biblioteca Técnica'));
+    for(const ref of refs){
+     const link=element('a','cs-biblioteca-link',ref.title);
+     link.href=ref.hash;
+     link.append(element('small','',ref.homologated?' — Homologada':' — Não homologada'));
+     related.append(link);
+    }
+    results.append(related);
+    if(agent.result.outcome==='no_match')status.textContent='Sem resultado CNC correspondente. Veja as fichas relacionadas da Biblioteca.';
    }
    try{await telemetry.record(agent);void queue.flush().catch(error=>console.warn('[EV3] Sync pendente',error));}
    catch(error){storageError(error);}
