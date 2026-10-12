@@ -1,5 +1,7 @@
 # Casillas
 
+> **Metadados:** finalidade: apresentação e orientação do repositório; destinatários: colaboradores e IAs; revisão: 2026-10-11; revisão assistida por ChatGPT com autorização do Product Owner; autoria original: não verificada. As referências de produção são registros datados e não equivalem a verificação remota atual.
+
 Calculadora técnica de usinagem em formato PWA, feita para torneiros, fresadores, ferramenteiros e outros profissionais da área. Reúne cálculos locais, tabelas de consulta, ferramentas CNC e guias de apoio.
 
 ## Produto
@@ -20,7 +22,7 @@ Sirva a pasta por HTTP, por exemplo `python -m http.server 8080`, e abra `http:/
 
 ## Estado atual
 
-`casillas-2.0` é a referência de produção (`c115a3e` em 2026-10-10). A frente **CAS-UI** (modernização da interface) está documentada em [docs/interface-2.1/](docs/interface-2.1/README.md); o estado e a próxima atividade ficam em [00-ESTADO-ATUAL](docs/interface-2.1/docs/00-ESTADO-ATUAL.md). A tag `v2.1.0` é a release anterior à CAS-UI. A linha `casillas-2.2` é preservada e está pendente de integração. Instruções para agentes de IA: [AGENTS.md](AGENTS.md) e [CLAUDE.md](CLAUDE.md). Este texto não equivale a uma nova checagem do site ou do Supabase remoto.
+`casillas-2.0` é a referência de produção (`c115a3e` em 2026-10-10). A frente **CAS-UI** (modernização da interface) está documentada em [docs/interface-2.1/](docs/interface-2.1/README.md); o registro [00-ESTADO-ATUAL](docs/interface-2.1/docs/00-ESTADO-ATUAL.md) documenta a fase histórica CAS-UI, não a próxima atividade da 2.2. A tag `v2.1.0` é a release anterior à CAS-UI. A linha histórica `casillas-2.2` permanece distinta da branch local de consolidação `casillas-2.2-consolidacao`, verificada no PC em 2026-10-11 no commit `b75523f`. O desenvolvimento local 2.2 inclui evolução de interface, Consultor, Guia e Biblioteca; a Biblioteca foi validada funcionalmente em Android, mas suas fichas demonstrativas não estão homologadas tecnicamente. Isso não significa que o GitHub ou a produção já tenham recebido essa evolução. Instruções para agentes de IA: [AGENTS.md](AGENTS.md) e [CLAUDE.md](CLAUDE.md). Este texto não equivale a uma nova checagem do site ou do Supabase remoto.
 
 Este repositório não inclui mais a ferramenta legada `gerar-codigo.html`. A geração local de códigos/hashes e o antigo modelo de 3 aparelhos não fazem parte da arquitetura comercial atual.
 
@@ -33,4 +35,4 @@ Este repositório não inclui mais a ferramenta legada `gerar-codigo.html`. A ge
 - [Progresso](docs/PROGRESSO.md) (histórico), [Roadmap](docs/ROADMAP.md) e [Status](docs/STATUS.md).
 - [Decisões](docs/DECISOES.md) e [mapa de dependências](docs/MAPA-DEPENDENCIAS.md).
 
-Os marcos datados em `docs/` são registros históricos preservados; discrepâncias com o código atual estão descritas nos documentos de estado.
+Os marcos datados em `docs/` são registros preservados e podem estar superados. `docs/2.2/` reúne evidências locais da evolução 2.2, mas não constitui por si só um estado único atualizado. Antes de implementar, conferir o código e o Git do ambiente real; o GitHub pode estar atrás do PC oficial. `AGENTS.md` contém regras comuns, enquanto `CLAUDE.md` se destina especificamente ao Claude Code. Nenhum documento autoriza alterações ou publicação por si só.
