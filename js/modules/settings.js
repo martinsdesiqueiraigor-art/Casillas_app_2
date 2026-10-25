@@ -12,7 +12,9 @@ export function readSettings() {
   } catch { return { ...DEFAULTS }; }
 }
 export function applySettings(settings = readSettings()) {
-  document.documentElement.style.fontSize = settings.fontSize + 'px';
+  // Escala proporcional de toda a interface (textos, espaços e ícones). "Normal" (16) = 87,5%.
+  document.documentElement.style.fontSize = '16px';
+  document.documentElement.style.setProperty('--cas-ui-zoom', String(+(settings.fontSize / 16 * 0.875).toFixed(4)));
   document.documentElement.dataset.casillasContrast = settings.highContrast ? 'high' : 'normal';
 }
 function saveSettings(settings) {
